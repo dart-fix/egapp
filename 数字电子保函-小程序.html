@@ -1,0 +1,1910 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>数字电子保函 · 小程序</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background: #f0f2f6;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            font-family: -apple-system, 'SF Pro Text', 'Helvetica Neue', Helvetica, 'Segoe UI', Roboto, system-ui, sans-serif;
+        }
+
+        /* iPhone 16 风格容器 - 使用flex列布局，确保底部栏固定在最底部 */
+        .iphone-frame {
+            width: 390px;
+            height: 844px;
+            background: #FFFFFF;
+            border-radius: 44px;
+            box-shadow: 0 30px 40px -20px rgba(0,0,0,0.4), 0 0 0 8px #3A3D44, 0 0 0 12px #1F2128;
+            overflow: hidden;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* 主滚动容器 - 占据剩余所有空间，超出滚动 */
+        .app-container {
+            flex: 1;
+            overflow-y: auto;
+            overflow-x: hidden;
+            background: #F5F7FB;
+            scroll-behavior: smooth;
+            padding-bottom: 0;
+        }
+
+        .app-container::-webkit-scrollbar {
+            width: 4px;
+        }
+        .app-container::-webkit-scrollbar-track {
+            background: #e9ecef;
+        }
+        .app-container::-webkit-scrollbar-thumb {
+            background: #b9c0cc;
+            border-radius: 10px;
+        }
+
+        /* 头部导航 */
+        .wechat-nav {
+            background: white;
+            padding: 12px 20px 8px 20px;
+            border-bottom: 1px solid #ebedf0;
+            background: rgba(255,255,255,0.96);
+        }
+        .nav-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+        }
+        .nav-left {
+            font-size: 20px;
+            font-weight: 620;
+            color: #0A2540;
+            letter-spacing: -0.3px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .nav-left span {
+            background: #1E6F3F;
+            color: white;
+            font-size: 12px;
+            padding: 2px 8px;
+            border-radius: 20px;
+            font-weight: 500;
+        }
+        .nav-right {
+            display: flex;
+            gap: 20px;
+        }
+        .nav-right i {
+            font-style: normal;
+            font-size: 18px;
+            cursor: pointer;
+        }
+        .subhead {
+            font-size: 13px;
+            color: #64748B;
+            margin-top: 8px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        /* 核心数据卡片 */
+        .stats-card {
+            background: linear-gradient(135deg, #1e3c72 0%, #2b4c7c 100%);
+            border-radius: 28px;
+            padding: 20px;
+            margin: 16px 16px 20px 16px;
+            color: white;
+            box-shadow: 0 8px 20px rgba(0, 20, 50, 0.08);
+        }
+        .stats-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .stat-item {
+            flex: 1;
+        }
+        .stat-label {
+            font-size: 13px;
+            opacity: 0.8;
+            margin-bottom: 6px;
+            text-align: center;
+        }
+        .stat-number {
+            font-size: 28px;
+            font-weight: 800;
+            letter-spacing: 0.5px;
+            text-align: center;
+        }
+        .divider-line {
+            width: 1px;
+            height: 30px;
+            background: rgba(255,255,255,0.3);
+        }
+        .apply-btn {
+            background: rgba(255,255,255,0.2);
+            backdrop-filter: blur(4px);
+            padding: 8px 16px;
+            border-radius: 40px;
+            font-size: 14px;
+            font-weight: 500;
+            text-align: center;
+            margin-top: 16px;
+            border: 0.5px solid rgba(255,255,255,0.3);
+            transition: 0.2s;
+            cursor: pointer;
+        }
+        .apply-btn:active { background: rgba(255,255,255,0.35); transform: scale(0.97); }
+
+        /* 通用区块标题 */
+        .section-title {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            padding: 0 16px;
+            margin: 20px 0 14px 0;
+        }
+        .section-title h3 {
+            font-size: 18px;
+            font-weight: 600;
+            color: #1e293b;
+        }
+        .section-title a {
+            font-size: 13px;
+            color: #1E6F3F;
+            text-decoration: none;
+        }
+
+        /* 金融超市宫格 */
+        .grid-menu {
+            background: white;
+            border-radius: 28px;
+            padding: 16px 12px;
+            margin: 16px 16px 20px 16px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.02);
+            border: 1px solid #edf2f7;
+        }
+        .menu-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #1a2c3e;
+            margin-bottom: 16px;
+            padding-left: 4px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .grid-4col {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px 8px;
+            text-align: center;
+        }
+        .grid-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            transition: 0.1s;
+        }
+        .grid-item:active { transform: scale(0.94); opacity: 0.8; }
+        .icon-circle {
+            width: 52px;
+            height: 52px;
+            background: #f0f4fa;
+            border-radius: 28px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 26px;
+        }
+        .grid-label {
+            font-size: 12px;
+            color: #2c3e50;
+            font-weight: 500;
+        }
+
+        /* 列表卡片 */
+        .list-card {
+            background: white;
+            margin: 0 16px 16px 16px;
+            border-radius: 24px;
+            padding: 6px 0;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+            border: 1px solid #edf2f7;
+        }
+        .list-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px;
+            border-bottom: 1px solid #f0f2f5;
+            cursor: pointer;
+        }
+        .list-item:last-child { border-bottom: none; }
+        .item-info h4 { font-size: 15px; font-weight: 590; color: #0f172a; }
+        .item-info p { font-size: 12px; color: #5b6e8c; margin-top: 4px; }
+        .item-status {
+            background: #E6F7EC;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 500;
+            color: #1E6F3F;
+        }
+        .status-warning { background: #FFF4E5; color: #C26B1A; }
+
+        /* 底部Tab栏 - 固定在容器底部 */
+        .bottom-tab {
+            flex-shrink: 0;
+            background: rgba(255,255,255,0.96);
+            backdrop-filter: blur(20px);
+            border-top: 0.5px solid #e9ebf0;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            padding: 8px 20px 12px 20px;
+            width: 100%;
+            z-index: 12;
+        }
+        .tab-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            font-size: 10px;
+            color: #8f9bb3;
+            transition: color 0.1s;
+            cursor: pointer;
+            flex: 1;
+        }
+        .tab-item.active { color: #1E6F3F; font-weight: 500; }
+        .tab-icon { font-size: 22px; }
+
+        .toast-mock {
+            position: fixed;
+            bottom: 100px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0,0,0,0.8);
+            color: white;
+            padding: 8px 20px;
+            border-radius: 40px;
+            font-size: 13px;
+            z-index: 999;
+            white-space: nowrap;
+            backdrop-filter: blur(8px);
+            pointer-events: none;
+        }
+
+        /* 首页新增模块样式 */
+        .mini-banner {
+            background: linear-gradient(105deg, #EFF6FF 0%, #E1EEFA 100%);
+            border-radius: 20px;
+            padding: 12px 16px;
+            margin: 8px 16px 16px 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+        }
+        .banner-text { font-weight: 600; font-size: 13px; color: #1e3c72; }
+        .banner-tag { background: #1E6F3F; padding: 4px 12px; border-radius: 30px; color: white; font-size: 12px; }
+
+        .service-quick {
+            display: flex;
+            gap: 12px;
+            margin: 0 16px 20px 16px;
+        }
+        .service-quick-item {
+            flex: 1;
+            background: white;
+            border-radius: 24px;
+            padding: 12px 8px;
+            text-align: center;
+            border: 1px solid #edf2f7;
+            cursor: pointer;
+        }
+        /* 我的板块 - 企业绑定卡片 */
+        .bind-card {
+            background: linear-gradient(105deg, #F0F9F0 0%, #E8F5E9 100%);
+            border-radius: 20px;
+            padding: 14px 16px;
+            margin: 12px 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border: 1px solid #C8E6C9;
+        }
+        .bind-info h4 { font-size: 14px; color: #2E7D32; margin-bottom: 4px; }
+        .bind-info p { font-size: 11px; color: #558B2F; }
+        .bind-btn { background: #2E7D32; padding: 6px 16px; border-radius: 30px; color: white; font-size: 12px; cursor: pointer; }
+        /* 设置列表样式 */
+        .settings-list {
+            background: white;
+            margin: 12px 16px;
+            border-radius: 24px;
+            overflow: hidden;
+            border: 1px solid #edf2f7;
+        }
+        .settings-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 16px;
+            border-bottom: 1px solid #f0f2f5;
+            cursor: pointer;
+        }
+        .settings-item:last-child { border-bottom: none; }
+        .setting-left { display: flex; align-items: center; gap: 12px; }
+        .setting-left i { font-size: 20px; width: 28px; }
+        .setting-left span { font-size: 15px; color: #1e293b; }
+        .setting-right { color: #94a3b8; font-size: 13px; }
+        .switch-toggle { width: 44px; height: 24px; background: #cbd5e1; border-radius: 24px; position: relative; transition: 0.2s; cursor: pointer; }
+        .switch-toggle.active { background: #1E6F3F; }
+        .switch-toggle::after { content: ""; width: 20px; height: 20px; background: white; border-radius: 20px; position: absolute; top: 2px; left: 2px; transition: 0.2s; }
+        .switch-toggle.active::after { left: 22px; }
+
+        /* 个人账号卡片优化样式 */
+        .profile-card-enhanced {
+            background: linear-gradient(135deg, #FFFFFF 0%, #F8FAFF 100%);
+            margin: 16px;
+            border-radius: 32px;
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.04), 0 1px 3px rgba(0, 0, 0, 0.02);
+            border: 1px solid rgba(30, 111, 63, 0.15);
+            position: relative;
+            overflow: hidden;
+        }
+        .profile-card-enhanced::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 100px;
+            height: 100px;
+            background: radial-gradient(circle, rgba(30,111,63,0.08) 0%, transparent 70%);
+            border-radius: 50%;
+        }
+        .avatar-wrapper {
+            background: linear-gradient(145deg, #1E6F3F, #0F4C2D);
+            width: 70px;
+            height: 70px;
+            border-radius: 35px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 6px 12px rgba(30,111,63,0.25);
+        }
+        .avatar-emoji { font-size: 40px; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1)); }
+        .profile-info h3 { font-size: 18px; font-weight: 700; color: #0F2B5E; margin-bottom: 4px; }
+        .profile-badge-group { display: flex; gap: 8px; margin-top: 8px; flex-wrap: wrap; }
+        .profile-badge { background: #EFF6FF; padding: 4px 10px; border-radius: 30px; font-size: 11px; color: #1E6F3F; font-weight: 500; }
+
+        /* 项目动态专用顶部卡片 ———— 与其它板块完全不同的视觉风格 */
+        .dynamic-stats-card {
+            background: linear-gradient(125deg, #2D3E50 0%, #1B2A3A 100%);
+            border-radius: 32px;
+            padding: 20px 20px;
+            margin: 16px 16px 24px 16px;
+            color: white;
+            box-shadow: 0 12px 22px -8px rgba(0,0,0,0.2), inset 0 1px 0 rgba(255,255,255,0.08);
+            border: 1px solid rgba(255,255,255,0.15);
+            backdrop-filter: blur(2px);
+            position: relative;
+            overflow: hidden;
+        }
+        .dynamic-stats-card::after {
+            content: "⚡";
+            position: absolute;
+            bottom: -10px;
+            right: -10px;
+            font-size: 70px;
+            opacity: 0.1;
+            pointer-events: none;
+        }
+        .dynamic-stats-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+        .dynamic-icon {
+            font-size: 32px;
+            background: rgba(255,215,0,0.2);
+            width: 54px;
+            height: 54px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 30px;
+            backdrop-filter: blur(4px);
+        }
+        .dynamic-title h4 {
+            font-size: 18px;
+            font-weight: 700;
+            letter-spacing: -0.2px;
+        }
+        .dynamic-title p {
+            font-size: 12px;
+            opacity: 0.8;
+            margin-top: 4px;
+        }
+        .dynamic-stats-row {
+            display: flex;
+            justify-content: space-between;
+            margin: 12px 0 4px;
+        }
+        .dynamic-stat {
+            flex: 1;
+            text-align: center;
+        }
+        .dynamic-stat-number {
+            font-size: 26px;
+            font-weight: 800;
+        }
+        .dynamic-stat-label {
+            font-size: 11px;
+            opacity: 0.7;
+            margin-top: 4px;
+        }
+        .dynamic-btn-group {
+            display: flex;
+            gap: 12px;
+            margin-top: 14px;
+        }
+        .dynamic-btn {
+            flex: 1;
+            background: rgba(255,255,255,0.18);
+            text-align: center;
+            padding: 8px 0;
+            border-radius: 40px;
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: 0.2s;
+            backdrop-filter: blur(4px);
+        }
+        .dynamic-btn:active { background: rgba(255,255,255,0.3); transform: scale(0.97); }
+        .project-badge {
+            background: #F59E0B;
+            color: #1E1A1A;
+        }
+
+        /* ========== 二级/三级子页面通用样式 ========== */
+        .sub-nav {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 8px 16px 12px;
+            background: white;
+            border-bottom: 1px solid #edf2f7;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+        .back-btn {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 15px;
+            color: #1E6F3F;
+            cursor: pointer;
+            font-weight: 500;
+            padding: 6px 10px;
+            border-radius: 20px;
+            background: #F0F9F4;
+        }
+        .back-btn:active { opacity: 0.7; }
+        .sub-nav-title { font-size: 17px; font-weight: 600; color: #0A2540; flex: 1; }
+
+        .page-hero {
+            margin: 16px;
+            border-radius: 24px;
+            padding: 24px 20px;
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+        .page-hero h2 { font-size: 22px; font-weight: 700; margin-bottom: 8px; }
+        .page-hero p { font-size: 13px; opacity: 0.9; line-height: 1.5; }
+        .hero-tag {
+            display: inline-block;
+            background: rgba(255,255,255,0.25);
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 11px;
+            margin-top: 12px;
+        }
+        .hero-deco {
+            position: absolute;
+            right: -10px;
+            bottom: -10px;
+            font-size: 80px;
+            opacity: 0.15;
+        }
+
+        .content-card {
+            background: white;
+            margin: 0 16px 16px;
+            border-radius: 20px;
+            padding: 16px;
+            border: 1px solid #edf2f7;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.02);
+        }
+        .card-title {
+            font-size: 15px;
+            font-weight: 600;
+            color: #1e293b;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .form-group { margin-bottom: 14px; }
+        .form-group label {
+            display: block;
+            font-size: 13px;
+            color: #64748B;
+            margin-bottom: 6px;
+        }
+        .form-input, .form-select {
+            width: 100%;
+            padding: 12px 14px;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            font-size: 14px;
+            background: #F8FAFC;
+            outline: none;
+        }
+        .form-input:focus, .form-select:focus { border-color: #1E6F3F; background: white; }
+
+        .step-bar {
+            display: flex;
+            justify-content: space-between;
+            margin: 16px;
+            padding: 0 8px;
+        }
+        .step-item {
+            flex: 1;
+            text-align: center;
+            position: relative;
+        }
+        .step-dot {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: #e2e8f0;
+            color: #94a3b8;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: 600;
+            margin: 0 auto 6px;
+        }
+        .step-item.active .step-dot { background: #1E6F3F; color: white; }
+        .step-item.done .step-dot { background: #86EFAC; color: #166534; }
+        .step-label { font-size: 10px; color: #94a3b8; }
+        .step-item.active .step-label { color: #1E6F3F; font-weight: 500; }
+
+        .primary-btn {
+            background: linear-gradient(135deg, #1E6F3F, #0F4C2D);
+            color: white;
+            border: none;
+            padding: 14px;
+            border-radius: 14px;
+            font-size: 15px;
+            font-weight: 600;
+            width: calc(100% - 32px);
+            margin: 8px 16px 20px;
+            cursor: pointer;
+        }
+        .primary-btn:active { opacity: 0.85; transform: scale(0.98); }
+        .secondary-btn {
+            background: #F1F5F9;
+            color: #1E6F3F;
+            border: 1px solid #C8E6C9;
+            padding: 12px;
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: 500;
+            width: 100%;
+            cursor: pointer;
+            margin-top: 8px;
+        }
+
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid #f0f2f5;
+            font-size: 13px;
+        }
+        .info-row:last-child { border-bottom: none; }
+        .info-row span:first-child { color: #64748B; }
+        .info-row span:last-child { color: #0f172a; font-weight: 500; }
+
+        .feature-list { list-style: none; }
+        .feature-list li {
+            padding: 10px 0;
+            border-bottom: 1px solid #f0f2f5;
+            font-size: 13px;
+            color: #334155;
+            display: flex;
+            align-items: flex-start;
+            gap: 8px;
+        }
+        .feature-list li:last-child { border-bottom: none; }
+
+        .calc-result-box {
+            background: linear-gradient(135deg, #EFF6FF, #DBEAFE);
+            border-radius: 16px;
+            padding: 20px;
+            text-align: center;
+            margin-top: 12px;
+        }
+        .calc-result-box .amount {
+            font-size: 32px;
+            font-weight: 800;
+            color: #1E6F3F;
+        }
+        .calc-result-box .desc { font-size: 12px; color: #64748B; margin-top: 4px; }
+
+        .seal-item {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 14px;
+            background: #FAFBFC;
+            border-radius: 16px;
+            margin-bottom: 10px;
+            border: 1px dashed #cbd5e1;
+        }
+        .seal-preview {
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            border: 3px solid #DC2626;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 10px;
+            color: #DC2626;
+            font-weight: 700;
+            text-align: center;
+            line-height: 1.2;
+            flex-shrink: 0;
+        }
+
+        .cert-card {
+            background: linear-gradient(135deg, #FFFBEB, #FEF3C7);
+            border: 1px solid #FDE68A;
+            border-radius: 16px;
+            padding: 16px;
+            margin-bottom: 12px;
+        }
+        .cert-status {
+            display: inline-block;
+            padding: 3px 10px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 500;
+        }
+        .cert-valid { background: #DCFCE7; color: #166534; }
+        .cert-expire { background: #FEE2E2; color: #991B1B; }
+
+        .verify-result {
+            text-align: center;
+            padding: 30px 20px;
+        }
+        .verify-result .icon { font-size: 56px; margin-bottom: 12px; }
+        .verify-result h3 { font-size: 18px; margin-bottom: 8px; }
+        .verify-result p { font-size: 13px; color: #64748B; }
+
+        .timeline-item {
+            display: flex;
+            gap: 12px;
+            padding: 12px 0;
+            border-left: 2px solid #e2e8f0;
+            margin-left: 8px;
+            padding-left: 16px;
+            position: relative;
+        }
+        .timeline-item::before {
+            content: "";
+            width: 10px;
+            height: 10px;
+            background: #1E6F3F;
+            border-radius: 50%;
+            position: absolute;
+            left: -6px;
+            top: 16px;
+        }
+        .timeline-time { font-size: 11px; color: #94a3b8; }
+        .timeline-text { font-size: 13px; color: #334155; margin-top: 4px; }
+
+        .chat-area {
+            background: #F8FAFC;
+            border-radius: 16px;
+            padding: 16px;
+            min-height: 200px;
+            margin-bottom: 12px;
+        }
+        .chat-bubble {
+            max-width: 80%;
+            padding: 10px 14px;
+            border-radius: 16px;
+            font-size: 13px;
+            margin-bottom: 10px;
+            line-height: 1.5;
+        }
+        .chat-bot { background: white; border: 1px solid #e2e8f0; border-bottom-left-radius: 4px; }
+        .chat-user { background: #1E6F3F; color: white; margin-left: auto; border-bottom-right-radius: 4px; }
+
+        .tag-row { display: flex; flex-wrap: wrap; gap: 8px; margin: 8px 0; }
+        .tag-chip {
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 12px;
+            background: #F1F5F9;
+            color: #475569;
+            cursor: pointer;
+        }
+        .tag-chip.active { background: #1E6F3F; color: white; }
+
+        .guarantee-card {
+            border-left: 4px solid #1E6F3F;
+            padding: 14px;
+            background: #FAFBFC;
+            border-radius: 0 12px 12px 0;
+            margin-bottom: 10px;
+        }
+        .guarantee-card.warning { border-left-color: #F59E0B; }
+        .guarantee-card h4 { font-size: 14px; color: #0f172a; margin-bottom: 6px; }
+        .guarantee-card p { font-size: 12px; color: #64748B; }
+
+        .news-article { padding: 0 16px 20px; }
+        .news-meta { font-size: 12px; color: #94a3b8; margin-bottom: 12px; }
+        .news-body { font-size: 14px; color: #334155; line-height: 1.8; }
+        .news-body p { margin-bottom: 12px; }
+
+        .stat-grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+        .stat-box {
+            background: #F8FAFC;
+            border-radius: 12px;
+            padding: 14px;
+            text-align: center;
+        }
+        .stat-box .num { font-size: 22px; font-weight: 700; color: #1E6F3F; }
+        .stat-box .lbl { font-size: 11px; color: #64748B; margin-top: 4px; }
+
+        .range-slider { width: 100%; margin: 8px 0; accent-color: #1E6F3F; }
+
+        .invoice-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 0;
+            border-bottom: 1px solid #f0f2f5;
+        }
+        .invoice-item:last-child { border-bottom: none; }
+
+        .advantage-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin: 0 16px 16px;
+        }
+        .advantage-item {
+            background: white;
+            border-radius: 16px;
+            padding: 16px;
+            text-align: center;
+            border: 1px solid #edf2f7;
+        }
+        .advantage-item .ico { font-size: 32px; margin-bottom: 8px; }
+        .advantage-item h4 { font-size: 13px; font-weight: 600; color: #1e293b; }
+        .advantage-item p { font-size: 11px; color: #64748B; margin-top: 4px; }
+
+        .bottom-tab.hidden { display: none; }
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: #94a3b8;
+        }
+        .empty-state .ico { font-size: 48px; margin-bottom: 12px; }
+    </style>
+</head>
+<body>
+<div class="iphone-frame">
+    <!-- 滚动内容区 -->
+    <div class="app-container" id="appContainer">
+        <!-- 固定头部导航 -->
+        <div class="wechat-nav">
+            <div class="nav-bar">
+                <div class="nav-left">🔷 数字电子保函 <span>官方</span></div>
+                <div class="nav-right"><i>🔔</i><i>☰</i></div>
+            </div>
+            <div class="subhead"><span>一体化数字金融超市 · 极速出函</span></div>
+        </div>
+
+        <!-- 动态页面内容区 -->
+        <div id="pageContent"></div>
+    </div>
+    <!-- 底部Tab栏 -->
+    <div class="bottom-tab">
+        <div class="tab-item active" data-tab="home"><div class="tab-icon">🏠</div><div>首页</div></div>
+        <div class="tab-item" data-tab="market"><div class="tab-icon">🏪</div><div>金融超市</div></div>
+        <div class="tab-item" data-tab="project"><div class="tab-icon">📡</div><div>项目动态</div></div>
+        <div class="tab-item" data-tab="profile"><div class="tab-icon">👤</div><div>我的</div></div>
+    </div>
+</div>
+
+<script>
+    function showToast(msg, duration = 1600) {
+        let toast = document.querySelector('.toast-mock');
+        if(toast) toast.remove();
+        let div = document.createElement('div');
+        div.className = 'toast-mock';
+        div.innerText = msg;
+        document.body.appendChild(div);
+        setTimeout(() => div.remove(), duration);
+    }
+
+    const contentDiv = document.getElementById('pageContent');
+    const bottomTab = document.querySelector('.bottom-tab');
+    let currentTab = 'home';
+    const navStack = [];
+
+    function subNav(title) {
+        return `<div class="sub-nav"><div class="back-btn" data-action="back">← 返回</div><div class="sub-nav-title">${title}</div></div>`;
+    }
+
+    function openSubPage(pageId, params = {}) {
+        const html = renderSubPage(pageId, params);
+        if (!html) { showToast('页面加载失败'); return; }
+        navStack.push({ tab: currentTab, pageId, params });
+        contentDiv.innerHTML = html;
+        bottomTab.classList.add('hidden');
+        document.querySelector('.app-container').scrollTop = 0;
+        bindSubPageEvents(pageId, params);
+    }
+
+    function goBack() {
+        navStack.pop();
+        if (navStack.length === 0) {
+            bottomTab.classList.remove('hidden');
+            renderPage(currentTab);
+        } else {
+            const prev = navStack[navStack.length - 1];
+            contentDiv.innerHTML = renderSubPage(prev.pageId, prev.params);
+            bindSubPageEvents(prev.pageId, prev.params);
+            document.querySelector('.app-container').scrollTop = 0;
+        }
+    }
+
+    function funcToPageId(name) {
+        const map = {
+            '投标保函':'product-toubiao','学平险':'product-xueping','履约保函':'product-lvyue',
+            '预付款保函':'product-yufukuan','农民工保函':'product-nongmingong','农民工工资保函':'product-nongmingong',
+            '质量保函':'product-zhiliang','诉讼保函':'product-susong','关税保函':'product-guanshui',
+            '融资性保函':'product-rongzi','保函查验':'verify-guarantee',
+            '工程一切险':'insurance-gongcheng','安全生产责任险':'insurance-anze','安责险':'insurance-anze',
+            '农民工意外险':'insurance-jiangong','建工意外险':'insurance-jiangong','团体意外险':'insurance-tuanyi',
+            '团意险':'insurance-tuanyi','雇主责任险':'insurance-guzhu','雇主险':'insurance-guzhu',
+            '校方责任险':'insurance-xiaofang','公众责任险':'insurance-gongzhong','货物运输险':'insurance-huoyun',
+            '货运险':'insurance-huoyun','财产综合险':'insurance-caichan','机器损坏险':'insurance-jisun',
+            '机损险':'insurance-jisun','投标保证保险':'insurance-toubiao',
+            '中标贷':'loan-zhongbiao','政采贷':'loan-zhengca','农民工工资贷':'loan-nongmingong','工程信用贷':'loan-gongcheng',
+            '新能源项目':'industry-xinnengyuan','新能源':'industry-xinnengyuan','基建交通':'industry-jijian',
+            '水利环保':'industry-shuili','城市更新':'industry-chengshi',
+            '我的保函':'my-guarantees','数字证书':'digital-cert','电子印章':'electronic-seal',
+            '发票管理':'invoice-manage','企业管理':'enterprise-manage','操作日志':'operation-log','我的客服':'my-service',
+            '秒级出函':'advantage-speed','区块链存证':'advantage-blockchain','全程网办':'advantage-online','7x24h客服':'my-service'
+        };
+        return map[name] || null;
+    }
+
+    function renderSubPage(pageId, params = {}) {
+        const pages = {
+            'apply-guarantee': () => subNav('立即申请保函') + `
+                <div class="step-bar">
+                    <div class="step-item active"><div class="step-dot">1</div><div class="step-label">选择类型</div></div>
+                    <div class="step-item"><div class="step-dot">2</div><div class="step-label">填写信息</div></div>
+                    <div class="step-item"><div class="step-dot">3</div><div class="step-label">确认提交</div></div>
+                </div>
+                <div class="page-hero" style="background:linear-gradient(135deg,#1e3c72,#2b4c7c);">
+                    <h2>电子保函申请</h2><p>全程线上办理，最快2小时出函，替代传统保证金</p>
+                    <div class="hero-tag">⚡ 已服务149+企业 · 累计替代保证金1.07亿</div>
+                    <div class="hero-deco">📄</div>
+                </div>
+                <div class="content-card">
+                    <div class="card-title">📋 保函类型</div>
+                    <div class="tag-row" id="applyTypeTags">
+                        <span class="tag-chip active" data-type="投标保函">投标保函</span>
+                        <span class="tag-chip" data-type="履约保函">履约保函</span>
+                        <span class="tag-chip" data-type="预付款保函">预付款</span>
+                        <span class="tag-chip" data-type="质量保函">质量保函</span>
+                    </div>
+                </div>
+                <div class="content-card">
+                    <div class="form-group"><label>项目名称</label><input class="form-input" placeholder="请输入招标项目名称" value="${params.project||''}"></div>
+                    <div class="form-group"><label>保函金额（万元）</label><input class="form-input" type="number" placeholder="如：50" id="applyAmount"></div>
+                    <div class="form-group"><label>招标编号</label><input class="form-input" placeholder="如：ND2024-032"></div>
+                    <div class="form-group"><label>受益人</label><input class="form-input" placeholder="招标人或采购单位名称"></div>
+                    <div class="form-group"><label>保函期限</label><select class="form-select"><option>90天</option><option>120天</option><option>180天</option><option>365天</option></select></div>
+                </div>
+                <button class="primary-btn" data-action="submit-apply">提交申请 · 智能匹配金融机构</button>`,
+
+            'electronic-seal': () => subNav('电子印章') + `
+                <div class="page-hero" style="background:linear-gradient(135deg,#7C2D12,#DC2626);">
+                    <h2>电子印章管理</h2><p>支持公章、合同章、法人章在线签署，符合《电子签名法》</p>
+                    <div class="hero-tag">🔒 国密算法 · 司法认可</div><div class="hero-deco">🖊️</div>
+                </div>
+                <div class="content-card">
+                    <div class="card-title">🏢 企业印章</div>
+                    <div class="seal-item"><div class="seal-preview">公章</div><div><h4 style="font-size:14px;">宁德城建集团有限公司</h4><p style="font-size:12px;color:#64748B;">授权人：张明伟 · 有效期至2026-12-31</p><span class="cert-status cert-valid">正常使用</span></div></div>
+                    <div class="seal-item"><div class="seal-preview" style="border-color:#2563EB;color:#2563EB;">合同</div><div><h4 style="font-size:14px;">合同专用章</h4><p style="font-size:12px;color:#64748B;">仅限保函类合同签署</p><span class="cert-status cert-valid">正常使用</span></div></div>
+                </div>
+                <div class="content-card">
+                    <div class="card-title">📝 最近签署记录</div>
+                    <div class="timeline-item"><div><div class="timeline-time">2025-05-20 14:32</div><div class="timeline-text">签署《投标保函申请书》- 霞浦海上风电项目</div></div></div>
+                    <div class="timeline-item"><div><div class="timeline-time">2025-05-18 09:15</div><div class="timeline-text">签署《履约保函合同》- 福安智慧城市EPC</div></div></div>
+                </div>
+                <button class="primary-btn" data-action="seal-auth">申请印章授权</button>
+                <button class="secondary-btn" style="width:calc(100% - 32px);margin:0 16px 20px;" data-action="seal-sign">发起在线签署</button>`,
+
+            'digital-cert': () => subNav('数字证书') + `
+                <div class="page-hero" style="background:linear-gradient(135deg,#4C1D95,#7C3AED);">
+                    <h2>CA数字证书</h2><p>福建省数字安全证书，支持保函申请、电子签章、身份认证</p>
+                    <div class="hero-tag">🏛️ 福建省CA中心颁发</div><div class="hero-deco">🔐</div>
+                </div>
+                <div class="cert-card">
+                    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
+                        <strong style="font-size:15px;">企业证书 · 宁德城建集团</strong>
+                        <span class="cert-status cert-valid">✓ 有效</span>
+                    </div>
+                    <div class="info-row"><span>证书序列号</span><span>35****8921</span></div>
+                    <div class="info-row"><span>颁发机构</span><span>福建CA</span></div>
+                    <div class="info-row"><span>有效期</span><span>2024-06-01 ~ 2026-05-31</span></div>
+                    <div class="info-row"><span>绑定设备</span><span>本机 · iPhone</span></div>
+                </div>
+                <div class="cert-card" style="background:linear-gradient(135deg,#FEF2F2,#FEE2E2);border-color:#FECACA;">
+                    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
+                        <strong style="font-size:15px;">个人证书 · 张明伟</strong>
+                        <span class="cert-status cert-expire">⚠ 30天后到期</span>
+                    </div>
+                    <div class="info-row"><span>有效期</span><span>2023-06-01 ~ 2025-06-01</span></div>
+                </div>
+                <div class="content-card"><div class="card-title">📌 证书用途</div>
+                    <ul class="feature-list"><li>✅ 保函在线申请身份认证</li><li>✅ 电子印章签署授权</li><li>✅ 投标文件加密解密</li><li>✅ 区块链存证身份绑定</li></ul>
+                </div>
+                <button class="primary-btn" data-action="cert-renew">续期个人证书</button>`,
+
+            'verify-guarantee': () => subNav('保函查验') + `
+                <div class="page-hero" style="background:linear-gradient(135deg,#0F766E,#14B8A6);">
+                    <h2>保函真伪查验</h2><p>输入保函编号或扫描保函二维码，即时核验真伪及有效性</p>
+                    <div class="hero-tag">🔗 对接区块链存证 · 权威可信</div><div class="hero-deco">🔍</div>
+                </div>
+                <div class="content-card">
+                    <div class="card-title">📷 扫码查验</div>
+                    <div style="text-align:center;padding:20px;background:#F8FAFC;border-radius:16px;cursor:pointer;" data-action="scan-qr">
+                        <div style="font-size:48px;margin-bottom:8px;">📷</div>
+                        <div style="font-size:14px;color:#64748B;">点击扫描保函二维码</div>
+                    </div>
+                </div>
+                <div class="content-card">
+                    <div class="card-title">🔢 编号查验</div>
+                    <div class="form-group"><label>保函编号</label><input class="form-input" id="verifyNo" placeholder="如：ND-BH-2025-0048921"></div>
+                    <div class="form-group"><label>验证码（可选）</label><input class="form-input" placeholder="保函右下角6位验证码"></div>
+                    <button class="secondary-btn" data-action="do-verify">立即查验</button>
+                </div>
+                <div id="verifyResultArea"></div>`,
+
+            'fee-calculator': () => subNav('费率计算') + `
+                <div class="page-hero" style="background:linear-gradient(135deg,#B45309,#F59E0B);">
+                    <h2>保函费率计算器</h2><p>输入保函类型和金额，智能预估手续费，支持多家机构比价</p>
+                    <div class="hero-tag">💰 当前最低费率 0.2% 起</div><div class="hero-deco">🧮</div>
+                </div>
+                <div class="content-card">
+                    <div class="form-group"><label>保函类型</label>
+                        <select class="form-select" id="calcType"><option value="0.003">投标保函 (0.3%)</option><option value="0.004">履约保函 (0.4%)</option><option value="0.005">预付款保函 (0.5%)</option><option value="0.0035">质量保函 (0.35%)</option></select>
+                    </div>
+                    <div class="form-group"><label>保函金额：<strong id="calcAmountLabel">50</strong> 万元</label>
+                        <input type="range" class="range-slider" id="calcSlider" min="10" max="500" value="50" step="5">
+                    </div>
+                    <div class="form-group"><label>保函期限</label><select class="form-select" id="calcPeriod"><option value="1">90天</option><option value="1.1">120天 (+10%)</option><option value="1.2">180天 (+20%)</option></select></div>
+                    <div class="calc-result-box"><div class="desc">预估手续费（含平台服务费）</div><div class="amount" id="calcResult">¥1,500</div><div class="desc" id="calcDetail">50万 × 0.3% = 1,500元 · 民生银行专享价</div></div>
+                </div>
+                <div class="content-card"><div class="card-title">🏦 机构比价</div>
+                    <div class="info-row"><span>民生银行</span><span style="color:#1E6F3F;">¥1,500 ⭐最低</span></div>
+                    <div class="info-row"><span>建设银行</span><span>¥1,750</span></div>
+                    <div class="info-row"><span>宁德农信</span><span>¥1,600</span></div>
+                </div>
+                <button class="primary-btn" data-action="calc-apply">按此费率立即申请</button>`,
+
+            'more-products': () => subNav('更多产品') + `
+                <div class="page-hero" style="background:linear-gradient(135deg,#1E3A5F,#2563EB);">
+                    <h2>保函·保险·金融全品类</h2><p>62+在架产品，23家合作金融机构，一站式数字金融超市</p><div class="hero-deco">🏦</div>
+                </div>
+                <div class="section-title" style="margin-top:8px;"><h3>📜 电子保函</h3></div>
+                <div class="grid-menu" style="margin-top:0;"><div class="grid-4col">
+                    ${['投标保函','履约保函','预付款保函','质量保函','农民工保函','诉讼保函','关税保函','融资性保函'].map(n=>`<div class="grid-item" data-page="${funcToPageId(n)||''}"><div class="icon-circle">📄</div><span class="grid-label">${n}</span></div>`).join('')}
+                </div></div>
+                <div class="section-title"><h3>🛡️ 保险专区</h3></div>
+                <div class="grid-menu" style="margin-top:0;"><div class="grid-4col">
+                    ${['学平险','工程一切险','安责险','团意险','雇主险','货运险','财产综合险','机损险'].map(n=>`<div class="grid-item" data-page="${funcToPageId(n)||''}"><div class="icon-circle">🛡️</div><span class="grid-label">${n}</span></div>`).join('')}
+                </div></div>
+                <div class="section-title"><h3>🏧 金融助贷</h3></div>
+                <div class="grid-menu" style="margin-top:0;"><div class="grid-4col">
+                    ${['中标贷','政采贷','农民工工资贷','工程信用贷'].map(n=>`<div class="grid-item" data-page="${funcToPageId(n)||''}"><div class="icon-circle">💰</div><span class="grid-label">${n}</span></div>`).join('')}
+                </div></div>`,
+
+            'product-toubiao': () => productPage('投标保函','📄','linear-gradient(135deg,#1e3c72,#3b82f6)','替代投标保证金，支持电子保函招标认可，最快2小时出函','0.2%','50万~5000万','90~180天',['宁德市公共资源交易中心认可','支持"见证即函"模式','区块链存证不可篡改','到期自动失效无需解保']),
+            'product-xueping': () => productPage('学平险','🎓','linear-gradient(135deg,#059669,#34D399)','学生意外伤害及医疗保障，开学季3.8折特惠','¥100/年起','6~25周岁','1年',['意外身故/伤残最高10万','意外医疗1万免赔100','住院津贴50元/天','支持在线投保即时生效']),
+            'product-lvyue': () => productPage('履约保函','🤝','linear-gradient(135deg,#7C3AED,#A78BFA)','保障合同履约，替代履约保证金，降低企业资金占用','0.35%','100万~1亿','1~3年',['支持EPC/PPP等重大项目','银行/担保/保险多种形式','可分期缴纳保费','信用良好企业享费率优惠']),
+            'product-yufukuan': () => productPage('预付款保函','💰','linear-gradient(135deg,#D97706,#FBBF24)','保障预付款安全，业主放心预付，施工方获得资金','0.5%','按预付款比例','与合同同期',['适用于工程预付款场景','支持比例递减保函','与进度款联动管理','线上变更便捷']),
+            'product-nongmingong': () => productPage('农民工工资保函','👷','linear-gradient(135deg,#EA580C,#FB923C)','保障农民工工资按时足额发放，政策强制要求','0.3%','按工资总额','与工期同期',['符合人社部规定','与实名制系统对接','欠薪先行垫付','政府项目必备']),
+            'product-zhiliang': () => productPage('质量保函','⭐','linear-gradient(135deg,#0891B2,#22D3EE)','保障工程质量缺陷保修责任，替代质量保证金','0.35%','合同价3~5%','1~2年',['缺陷责任期保障','到期自动解除','支持分阶段释放','与竣工验收联动']),
+            'product-susong': () => productPage('诉讼保函','⚖️','linear-gradient(135deg,#4338CA,#818CF8)','诉讼财产保全担保，替代法院要求的保证金','0.8%','按保全金额','与诉讼同期',['法院认可担保形式','48小时内出函','支持财产/行为保全','专业法务团队审核']),
+            'product-guanshui': () => productPage('关税保函','🌍','linear-gradient(135deg,#0D9488,#2DD4BF)','海关通关担保，加速货物清关，减少资金占用','0.5%','按关税税额','1~6个月',['海关总署备案','支持汇总征税','多次通关循环使用','与单一窗口对接']),
+            'product-rongzi': () => productPage('融资性保函','🏦','linear-gradient(135deg,#BE185D,#F472B6)','为企业融资提供担保，增信助力获得银行贷款','1.2%','500万~5亿','1~5年',['银行授信增信','支持银团贷款','与项目收益挂钩','专业风险评估']),
+
+            'advantage-speed': () => advantagePage('秒级出函','⚡','#F59E0B','智能审批引擎，AI风控+大数据征信，最快2小时完成出函','2小时','平均出函时效','98.6%','当日审批通过率',['AI智能风控秒级决策','7×24小时在线审批','与银行系统直连','见证即函即时生效']),
+            'advantage-blockchain': () => advantagePage('区块链存证','🔒','#6366F1','保函全生命周期上链存证，不可篡改，司法认可','100%','存证覆盖率','0','篡改记录',['华为云区块链底层','保函哈希上链存证','查验接口开放对接','司法鉴定报告支持']),
+            'advantage-online': () => advantagePage('全程网办','🌐','#10B981','零纸质材料，线上申请、签署、出函、查验全流程数字化','0','纸质材料','100%','线上办理率',['在线身份认证','电子印章签署','电子保函PDF下载','与交易中心系统对接']),
+
+            'loan-zhongbiao': () => loanPage('中标贷','📊','凭中标通知书或履约保函授信，专项用于项目周转','500万','3.85%','12个月','中标通知书+保函'),
+            'loan-zhengca': () => loanPage('政采贷','📋','政府采购合同融资，凭政府采购合同及发票快速放款','300万','4.15%','24个月','政府采购合同'),
+            'loan-nongmingong': () => loanPage('农民工工资贷','🏗️','专款专用保障农民工工资发放，政策贴息支持','200万','3.65%','6个月','工资专户+保函'),
+            'loan-gongcheng': () => loanPage('工程信用贷','⚡','基于工程业绩和信用评级的纯信用贷款，无需抵押','1000万','4.35%','36个月','AAA信用+业绩'),
+
+            'insurance-gongcheng': () => insurancePage('工程一切险','🏗️','保障建筑工程施工期间的物质损失和第三者责任','按工程造价0.1~0.3%','物质损失+三者责任'),
+            'insurance-anze': () => insurancePage('安责险','⚠️','安全生产责任保险，保障从业人员人身伤亡及第三者损失','按行业风险定价','人身+财产+救援费用'),
+            'insurance-jiangong': () => insurancePage('建工意外险','🦺','建筑施工人员团体意外伤害保险，按人数投保','¥80~200/人/年','意外身故+医疗+住院'),
+            'insurance-tuanyi': () => insurancePage('团意险','👥','团体意外伤害保险，企业为员工统一投保','¥50~150/人/年','意外+医疗+津贴'),
+            'insurance-guzhu': () => insurancePage('雇主责任险','📌','保障雇主对雇员在工作期间的法定赔偿责任','按行业+人数','工伤+职业病+法律费用'),
+            'insurance-xiaofang': () => insurancePage('校方责任险','🏫️','保障学校对学生在校期间的意外事故责任','按学生人数','校方责任+法律费用'),
+            'insurance-gongzhong': () => insurancePage('公众责任险','🏢','保障经营场所对公众造成的人身伤亡和财产损失','按营业面积','公众责任+法律费用'),
+            'insurance-huoyun': () => insurancePage('货运险','🚚','保障货物运输过程中的损失，支持多种运输方式','按货值+路线','全险/水渍/碰损'),
+            'insurance-caichan': () => insurancePage('财产综合险','🏠','保障企业固定资产和流动资产因自然灾害和意外事故的损失','按资产估值','火险+盗抢+水渍'),
+            'insurance-jisun': () => insurancePage('机损险','⚙️','保障机器设备因意外事故或操作失误造成的损失','按设备价值','机器损坏+营业中断'),
+            'insurance-toubiao': () => insurancePage('投标保证保险','📋','保险形式替代投标保证金，费率更低，办理更便捷','0.15%起','投标保证金替代'),
+
+            'news-list': () => subNav('最新动态') + `
+                <div class="list-card" style="margin-top:16px;">
+                    <div class="list-item" data-page="news-detail-1"><div class="item-info"><h4>宁德市一体化电子保函平台全流程数字化升级</h4><p>2025-04-28 · 实现全程网办</p></div><div class="item-status">NEW</div></div>
+                    <div class="list-item" data-page="news-detail-2"><div class="item-info"><h4>关于进一步降低电子保函综合费率的通知</h4><p>2025-04-15 · 手续费低至0.3%</p></div><div class="item-status">政策</div></div>
+                    <div class="list-item" data-page="news-detail-3"><div class="item-info"><h4>宁德市公共资源交易中心推行"信用+保函"试点</h4><p>2025-04-01 · 信用减免保证金</p></div><div class="item-status">利好</div></div>
+                    <div class="list-item" data-page="news-detail-4"><div class="item-info"><h4>平台合作金融机构增至23家</h4><p>2025-03-20 · 产品选择更丰富</p></div><div class="item-status">公告</div></div>
+                </div>`,
+
+            'news-detail-1': () => newsPage('平台全流程数字化升级','2025-04-28','平台升级','宁德市一体化电子保函平台于2025年4月28日完成全流程数字化升级。本次升级实现了从申请、审批、出函到查验的全链路线上化，企业无需再提交任何纸质材料。','升级亮点包括：① 与宁德市公共资源交易中心系统深度对接，实现"见证即函"；② 引入AI智能风控，审批时效从原来的1-2个工作日缩短至最快2小时；③ 全面接入区块链存证，确保保函数据不可篡改。'),
+            'news-detail-2': () => newsPage('降低电子保函综合费率通知','2025-04-15','政策文件','为进一步减轻企业负担，宁德市电子保函平台联合23家合作金融机构，宣布综合费率下调。投标保函最低费率降至0.3%，履约保函0.35%起。','信用等级AAA企业可享额外0.05%费率优惠。本政策自2025年5月1日起执行，有效期一年。'),
+            'news-detail-3': () => newsPage('信用+保函试点方案','2025-04-01','利好政策','宁德市公共资源交易中心联合平台推出"信用+保函"试点，对信用评价优良的企业，可采用信用承诺方式减免或降低保证金比例。','试点范围包括宁德市本级及各县（市、区）公共资源交易项目。首批50家企业已纳入试点名单。'),
+
+            'smart-recommend': () => subNav('智能推荐') + `
+                <div class="page-hero" style="background:linear-gradient(135deg,#6366F1,#818CF8);">
+                    <h2>AI智能推荐</h2><p>基于您的企业资质和历史数据，为您匹配最优保函方案</p><div class="hero-deco">🤖</div>
+                </div>
+                <div class="content-card"><div class="card-title">⭐ 为您推荐</div>
+                    <div class="guarantee-card"><h4>组合方案A · 投标+履约</h4><p>霞浦海上风电 + 福安智慧城市 · 预估总费用 ¥8,600</p><span class="cert-status cert-valid">匹配度 96%</span></div>
+                    <div class="guarantee-card"><h4>组合方案B · 单投标保函</h4><p>宁德污水厂扩建 · 50万投标保函 · 预估 ¥1,000</p><span class="cert-status cert-valid">匹配度 89%</span></div>
+                    <div class="guarantee-card warning"><h4>紧急提醒 · 福安智慧城市EPC</h4><p>履约保函需求 · 剩余1天截止 · 建议立即办理</p></div>
+                </div>
+                <button class="primary-btn" data-action="apply-recommend">一键申请推荐方案</button>`,
+
+            'finance-search': () => subNav('综合金融产品查询') + `
+                <div class="content-card" style="margin-top:16px;">
+                    <div class="form-group"><input class="form-input" id="financeSearchInput" placeholder="🔍 搜索产品名称、类型、机构..."></div>
+                    <div class="tag-row" id="financeFilterTags">
+                        <span class="tag-chip active" data-filter="all">全部</span>
+                        <span class="tag-chip" data-filter="保函">保函</span>
+                        <span class="tag-chip" data-filter="保险">保险</span>
+                        <span class="tag-chip" data-filter="贷款">贷款</span>
+                    </div>
+                </div>
+                <div id="financeSearchResults">
+                    <div class="list-card"><div class="list-item" data-page="product-toubiao"><div class="item-info"><h4>电子投标保函</h4><p>民生银行 · 费率0.2% · 秒级出函</p></div><div class="item-status">保函</div></div>
+                    <div class="list-item" data-page="product-xueping"><div class="item-info"><h4>学平险开学季</h4><p>人保财险 · ¥100/年起 · 3.8折</p></div><div class="item-status">保险</div></div>
+                    <div class="list-item" data-page="loan-zhongbiao"><div class="item-info"><h4>中标贷</h4><p>宁德农信 · 最高500万 · 3.85%</p></div><div class="item-status">贷款</div></div>
+                    <div class="list-item" data-page="product-lvyue"><div class="item-info"><h4>履约保函</h4><p>建设银行 · 费率0.35% · 1-3年</p></div><div class="item-status">保函</div></div></div>
+                </div>`,
+
+            'hot-finance': () => subNav('热门金融产品') + `
+                <div class="stat-grid-2" style="margin:16px;">
+                    <div class="stat-box"><div class="num">62+</div><div class="lbl">在架产品</div></div>
+                    <div class="stat-box"><div class="num">23</div><div class="lbl">合作机构</div></div>
+                </div>
+                <div class="list-card"><div class="list-item" data-page="product-toubiao"><div class="item-info"><h4>🥇 电子投标保函 (民生银行)</h4><p>费率0.2% · 本月申请128单</p></div><div class="item-status">TOP1</div></div>
+                <div class="list-item" data-page="loan-zhongbiao"><div class="item-info"><h4>🥈 中标贷</h4><p>最高500万 · 本月放款86笔</p></div><div class="item-status">TOP2</div></div>
+                <div class="list-item" data-page="product-xueping"><div class="item-info"><h4>🥉 学平险开学季</h4><p>3.8折 · 本月投保342单</p></div><div class="item-status">TOP3</div></div></div>`,
+
+            'quota-calc': () => subNav('额度测算') + `
+                <div class="page-hero" style="background:linear-gradient(135deg,#0369A1,#0EA5E9);">
+                    <h2>授信额度测算</h2><p>输入企业信息，智能评估可获得的保函及贷款额度</p><div class="hero-deco">📊</div>
+                </div>
+                <div class="content-card">
+                    <div class="form-group"><label>企业年营业额（万元）</label><input class="form-input" type="number" id="quotaRevenue" value="5000"></div>
+                    <div class="form-group"><label>信用等级</label><select class="form-select" id="quotaCredit"><option value="1.5">AAA (+50%)</option><option value="1.2">AA (+20%)</option><option value="1">A (标准)</option></select></div>
+                    <div class="calc-result-box"><div class="desc">预估可授信总额度</div><div class="amount" id="quotaResult">¥7,500万</div></div>
+                </div>
+                <button class="primary-btn" data-action="quota-submit">提交测算 · 获取正式额度</button>`,
+
+            'online-insure': () => subNav('在线投保') + `
+                <div class="page-hero" style="background:linear-gradient(135deg,#059669,#10B981);">
+                    <h2>学平险 · 在线投保</h2><p>开学季3.8折优惠，覆盖意外医疗，即时生效</p><div class="hero-tag">🎓 6-25周岁 · ¥100/年起</div><div class="hero-deco">🛡️</div>
+                </div>
+                <div class="content-card">
+                    <div class="form-group"><label>学生姓名</label><input class="form-input" placeholder="请输入学生姓名"></div>
+                    <div class="form-group"><label>身份证号</label><input class="form-input" placeholder="学生身份证号码"></div>
+                    <div class="form-group"><label>就读学校</label><input class="form-input" placeholder="如：宁德第一中学"></div>
+                    <div class="form-group"><label>保障方案</label><select class="form-select"><option>基础版 ¥100/年 (意外10万+医疗1万)</option><option>标准版 ¥180/年 (意外20万+医疗2万)</option><option>尊享版 ¥280/年 (意外30万+医疗3万)</option></select></div>
+                </div>
+                <button class="primary-btn" data-action="insure-submit">确认投保 · ¥100</button>`,
+
+            'subscribe-project': () => subNav('订阅项目推送') + `
+                <div class="page-hero" style="background:linear-gradient(135deg,#2D3E50,#475569);">
+                    <h2>项目推送订阅</h2><p>基于企业资质智能匹配，第一时间推送适合的招标项目</p><div class="hero-deco">📡</div>
+                </div>
+                <div class="content-card"><div class="card-title">🏷️ 关注行业</div>
+                    <div class="tag-row" id="subIndustryTags">
+                        ${['新能源','基建交通','水利环保','城市更新','EPC','PPP'].map(t=>`<span class="tag-chip${t==='新能源'||t==='基建交通'?' active':''}">${t}</span>`).join('')}
+                    </div>
+                </div>
+                <div class="content-card"><div class="card-title">💰 保函金额范围</div>
+                    <div class="form-group"><label>最低（万元）</label><input class="form-input" value="50"></div>
+                    <div class="form-group"><label>最高（万元）</label><input class="form-input" value="5000"></div>
+                </div>
+                <div class="content-card"><div class="card-title">🔔 推送方式</div>
+                    <div class="info-row"><span>微信消息</span><span style="color:#1E6F3F;">✓ 已开启</span></div>
+                    <div class="info-row"><span>短信通知</span><span style="color:#1E6F3F;">✓ 已开启</span></div>
+                    <div class="info-row"><span>推送频率</span><span>每日汇总 + 紧急即时</span></div>
+                </div>
+                <button class="primary-btn" data-action="sub-save">保存订阅设置</button>`,
+
+            'quote-inquiry': () => subNav('保函询价') + `
+                <div class="content-card" style="margin-top:16px;">
+                    <div class="card-title">📊 批量保函询价</div>
+                    <div class="form-group"><label>项目名称</label><input class="form-input" placeholder="输入项目名称"></div>
+                    <div class="form-group"><label>保函类型</label><select class="form-select"><option>投标保函</option><option>履约保函</option><option>预付款保函</option></select></div>
+                    <div class="form-group"><label>保函金额（万元）</label><input class="form-input" type="number" placeholder="如：200"></div>
+                    <div class="form-group"><label>期望费率上限</label><input class="form-input" placeholder="如：0.3%"></div>
+                </div>
+                <div class="content-card"><div class="card-title">🏦 询价机构（可多选）</div>
+                    <div class="tag-row">${['民生银行','建设银行','宁德农信','兴业银行','邮储银行'].map((b,i)=>`<span class="tag-chip${i<3?' active':''}">${b}</span>`).join('')}</div>
+                </div>
+                <button class="primary-btn" data-action="quote-submit">提交询价 · 24h内回复</button>`,
+
+            'project-list': () => subNav('全部项目') + `
+                <div class="content-card" style="margin-top:16px;"><input class="form-input" placeholder="🔍 搜索项目名称、编号..."></div>
+                <div class="list-card">${[
+                    ['宁德时代·储能电池扩产','履约/投标 · 12.3亿 · 剩余18天','查看详情','project-detail-1'],
+                    ['宁德至福州城际铁路F2线','电子保函150万 · 5月30日截止','紧急','project-detail-2'],
+                    ['福鼎工业园区PPP','履约380万+预付款220万','匹配机构','project-detail-3'],
+                    ['北部新城污水管网改造','投标+履约组合 · 2.1亿','一键申请','apply-guarantee'],
+                    ['霞浦海上风电场二期','独立保函 · 300MW','询价','quote-inquiry']
+                ].map(p=>`<div class="list-item" data-page="${p[3]}"><div class="item-info"><h4>${p[0]}</h4><p>${p[1]}</p></div><div class="item-status${p[2]==='紧急'?' status-warning':''}">${p[2]}</div></div>`).join('')}</div>`,
+
+            'project-detail-1': () => projectDetail('宁德时代·储能电池扩产(EPC)','宁德时代新能源科技股份有限公司','12.3亿元','2025-06-15','履约保函/投标保函','剩余18天'),
+            'project-detail-2': () => projectDetail('宁德至福州城际铁路F2线土建三标','福建铁路投资集团','电子保函150万','2025-05-30','投标保函 · 见证即函','剩余5天 · 紧急'),
+            'project-detail-3': () => projectDetail('福鼎工业园区产城融合PPP','福鼎市产城融合建设指挥部','6000万(保函需求)','2025-07-01','履约380万+预付款220万','剩余37天'),
+
+            'industry-xinnengyuan': () => industryPage('新能源','🔋','#059669',['宁德时代储能扩产','霞浦海上风电二期','柘荣抽水蓄能电站']),
+            'industry-jijian': () => industryPage('基建交通','🚄','#2563EB',['宁德至福州城际铁路F2线','沈海高速扩容宁德段','国道228线宁德段']),
+            'industry-shuili': () => industryPage('水利环保','💧','#0891B2',['北部新城污水管网改造','宁德市污水处理厂扩建','霍童溪生态治理']),
+            'industry-chengshi': () => industryPage('城市更新','🏙️','#7C3AED',['福安智慧城市一期EPC','宁德旧改安置房项目','东侨区城市综合体']),
+
+            'match-bank': () => subNav('匹配金融机构') + `
+                <div class="page-hero" style="background:linear-gradient(135deg,#0F3B2C,#1E6F4C);">
+                    <h2>智能匹配金融机构</h2><p>根据项目类型、金额、期限为您推荐最优出函机构</p><div class="hero-deco">🏦</div>
+                </div>
+                <div class="content-card"><div class="card-title">🎯 推荐结果</div>
+                    <div class="guarantee-card"><h4>🥇 民生银行宁德分行</h4><p>费率0.28% · 2小时出函 · 匹配度98%</p><span class="cert-status cert-valid">最优推荐</span></div>
+                    <div class="guarantee-card"><h4>🥈 建设银行宁德分行</h4><p>费率0.32% · 4小时出函 · 匹配度92%</p></div>
+                    <div class="guarantee-card"><h4>🥉 宁德农商银行</h4><p>费率0.30% · 本地优势 · 匹配度88%</p></div>
+                </div>
+                <button class="primary-btn" data-action="match-apply">选择民生银行 · 立即办理</button>`,
+
+            'case-list': () => subNav('成功案例') + `
+                <div class="list-card" style="margin-top:16px;">
+                    <div class="list-item" data-page="case-detail-1"><div class="item-info"><h4>福建鸿源建设 · 宁德锂电小镇</h4><p>履约保函845万 · 1工作日完成</p></div><div class="item-status">案例</div></div>
+                    <div class="list-item" data-page="case-detail-2"><div class="item-info"><h4>宁德市政集团 · 福安大道改造</h4><p>投标保函0.28% · 资金利用率+70%</p></div><div class="item-status">方案</div></div>
+                    <div class="list-item" data-page="case-detail-3"><div class="item-info"><h4>宁德时代供应链 · 储能项目</h4><p>组合保函1200万 · 全程网办</p></div><div class="item-status">案例</div></div>
+                </div>`,
+
+            'case-detail-1': () => casePage('福建鸿源建设','宁德锂电小镇项目','履约保函845万元','1个工作日','通过平台开具电子履约保函，替代传统保证金，释放企业流动资金845万元。平台专属顾问全程跟进，从申请到出函仅用1个工作日。','借鉴：大型EPC项目可优先选择"见证即函"模式，与银行系统直连，大幅缩短出函时间。'),
+            'case-detail-2': () => casePage('宁德市政集团','福安大道改造','投标保函 · 费率0.28%','2小时','采用"数字标书+电子保函"组合方案参与投标，保函费率0.28%，较传统方式节省70%资金占用成本，成功中标。','借鉴：市政类项目建议提前办理投标保函，利用平台信用等级获取费率优惠。'),
+
+            'project-consult': () => subNav('项目顾问咨询') + `
+                <div class="content-card" style="margin-top:16px;">
+                    <div class="card-title">📞 预约专属顾问</div>
+                    <div class="form-group"><label>咨询类型</label><select class="form-select"><option>保函方案定制</option><option>费率优惠申请</option><option>紧急出函加急</option><option>组合保函设计</option></select></div>
+                    <div class="form-group"><label>项目名称</label><input class="form-input" placeholder="请输入相关项目名称"></div>
+                    <div class="form-group"><label>联系电话</label><input class="form-input" value="138****5678"></div>
+                    <div class="form-group"><label>期望联系时间</label><select class="form-select"><option>尽快（30分钟内）</option><option>今日下午</option><option>明日上午</option></select></div>
+                </div>
+                <div class="content-card"><div class="card-title">👨‍💼 您的专属顾问</div>
+                    <div style="display:flex;align-items:center;gap:14px;"><div style="width:50px;height:50px;background:#E8F5E9;border-radius:25px;display:flex;align-items:center;justify-content:center;font-size:24px;">👨‍💼</div><div><h4 style="font-size:14px;">林顾问 · 高级客户经理</h4><p style="font-size:12px;color:#64748B;">5年保函经验 · 服务200+企业 · ⭐4.9</p></div></div>
+                </div>
+                <button class="primary-btn" data-action="consult-submit">提交咨询 · 顾问将主动联系</button>`,
+
+            'my-guarantees': () => subNav('我的保函') + `
+                <div class="stat-grid-2" style="margin:16px;">
+                    <div class="stat-box"><div class="num">12</div><div class="lbl">进行中</div></div>
+                    <div class="stat-box"><div class="num">34</div><div class="lbl">已完成</div></div>
+                </div>
+                <div class="content-card"><div class="guarantee-card"><h4>投标保函 · ND-BH-2025-0048921</h4><p>霞浦海上风电 · 268万 · 2025-03-01 ~ 2025-08-30</p><span class="cert-status cert-valid">生效中</span></div>
+                <div class="guarantee-card"><h4>履约保函 · ND-BH-2025-0032156</h4><p>福安智慧城市EPC · 520万 · 2025-01-15 ~ 2026-01-14</p><span class="cert-status cert-valid">生效中</span></div>
+                <div class="guarantee-card warning"><h4>投标保函 · ND-BH-2025-0051234</h4><p>宁德污水厂扩建 · 50万 · 2025-05-20 ~ 2025-08-20</p><span class="cert-status" style="background:#FEF3C7;color:#92400E;">审批中</span></div></div>
+                <button class="primary-btn" data-action="goto-apply">+ 申请新保函</button>`,
+
+            'invoice-manage': () => subNav('发票管理') + `
+                <div class="content-card" style="margin-top:16px;">
+                    <div class="card-title">🧾 可开票记录</div>
+                    <div class="invoice-item"><div><h4 style="font-size:14px;">投标保函手续费</h4><p style="font-size:12px;color:#64748B;">2025-05-18 · ¥804.00</p></div><button class="secondary-btn" style="width:auto;padding:6px 14px;margin:0;" data-action="invoice-apply">开票</button></div>
+                    <div class="invoice-item"><div><h4 style="font-size:14px;">履约保函手续费</h4><p style="font-size:12px;color:#64748B;">2025-04-22 · ¥1,820.00</p></div><button class="secondary-btn" style="width:auto;padding:6px 14px;margin:0;" data-action="invoice-apply">开票</button></div>
+                </div>
+                <div class="content-card"><div class="card-title">📋 已开发票</div>
+                    <div class="invoice-item"><div><h4 style="font-size:14px;">电子普通发票</h4><p style="font-size:12px;color:#64748B;">2025-03-10 · ¥1,500.00 · 已开具</p></div><span style="color:#1E6F3F;font-size:13px;">下载</span></div>
+                </div>
+                <div class="content-card"><div class="card-title">🏢 开票信息</div>
+                    <div class="info-row"><span>企业名称</span><span>宁德城建集团有限公司</span></div>
+                    <div class="info-row"><span>税号</span><span>91350900MA******</span></div>
+                </div>`,
+
+            'enterprise-manage': () => subNav('企业管理') + `
+                <div class="bind-card" style="margin-top:16px;"><div class="bind-info"><h4>🏢 绑定新企业</h4><p>输入统一社会信用代码申请绑定</p></div><div class="bind-btn" data-action="bind-enterprise">+ 绑定</div></div>
+                <div class="list-card">
+                    <div class="list-item"><div style="display:flex;gap:12px;align-items:center;"><div style="background:#E8F5E9;width:44px;height:44px;border-radius:22px;display:flex;align-items:center;justify-content:center;">🏗️</div><div><h4>宁德城建集团</h4><p style="font-size:12px;color:#64748B;">91350900MA****** · 管理员</p></div></div><div class="item-status">默认</div></div>
+                    <div class="list-item"><div style="display:flex;gap:12px;align-items:center;"><div style="background:#FFF8E1;width:44px;height:44px;border-radius:22px;display:flex;align-items:center;justify-content:center;">⚡</div><div><h4>宁德时代供应链公司</h4><p style="font-size:12px;color:#64748B;">91350900MB****** · 成员</p></div></div><div class="item-status">已绑定</div></div>
+                </div>
+                <div class="content-card"><div class="card-title">👥 成员管理</div>
+                    <div class="info-row"><span>管理员</span><span>张明伟</span></div>
+                    <div class="info-row"><span>普通成员</span><span>3人</span></div>
+                    <div class="info-row"><span>待审核</span><span style="color:#F59E0B;">1人</span></div>
+                </div>`,
+
+            'operation-log': () => subNav('操作日志') + `
+                <div class="content-card" style="margin-top:16px;">
+                    <div class="timeline-item"><div><div class="timeline-time">2025-05-25 10:32</div><div class="timeline-text">登录系统 · iPhone · 宁德</div></div></div>
+                    <div class="timeline-item"><div><div class="timeline-time">2025-05-20 14:32</div><div class="timeline-text">签署《投标保函申请书》· 电子印章</div></div></div>
+                    <div class="timeline-item"><div><div class="timeline-time">2025-05-18 09:15</div><div class="timeline-text">申请投标保函 · 霞浦海上风电 · 268万</div></div></div>
+                    <div class="timeline-item"><div><div class="timeline-time">2025-05-15 16:48</div><div class="timeline-text">保函查验 · ND-BH-2025-0032156 · 验证通过</div></div></div>
+                    <div class="timeline-item"><div><div class="timeline-time">2025-05-10 11:20</div><div class="timeline-text">绑定企业 · 宁德时代供应链公司</div></div></div>
+                </div>`,
+
+            'my-service': () => subNav('我的客服') + `
+                <div class="content-card" style="margin-top:16px;">
+                    <div class="chat-area">
+                        <div class="chat-bubble chat-bot">您好！我是数字电子保函智能客服小宁，7×24小时为您服务。请问有什么可以帮您？</div>
+                        <div class="chat-bubble chat-user">我想咨询投标保函的办理流程</div>
+                        <div class="chat-bubble chat-bot">办理投标保函只需3步：① 在线填写项目信息 ② 选择金融机构 ③ 电子签署并支付。最快2小时出函。需要我为您跳转申请页面吗？</div>
+                    </div>
+                    <div class="tag-row">${['办理流程','费率咨询','加急出函','保函查验','投诉建议'].map(t=>`<span class="tag-chip" data-chat="${t}">${t}</span>`).join('')}</div>
+                    <div class="form-group" style="margin-top:12px;"><input class="form-input" id="chatInput" placeholder="输入您的问题..."></div>
+                    <button class="secondary-btn" data-action="chat-send">发送</button>
+                </div>
+                <div class="content-card"><div class="card-title">📞 人工客服</div>
+                    <div class="info-row"><span>服务热线</span><span style="color:#1E6F3F;">0593-1234567</span></div>
+                    <div class="info-row"><span>服务时间</span><span>7×24小时</span></div>
+                    <button class="secondary-btn" data-action="call-service">一键拨打</button>
+                </div>`,
+
+            'bind-enterprise': () => subNav('绑定企业') + `
+                <div class="content-card" style="margin-top:16px;">
+                    <div class="form-group"><label>统一社会信用代码</label><input class="form-input" placeholder="18位信用代码"></div>
+                    <div class="form-group"><label>企业名称</label><input class="form-input" placeholder="自动识别或手动输入"></div>
+                    <div class="form-group"><label>您的角色</label><select class="form-select"><option>管理员（需审核）</option><option>普通成员</option></select></div>
+                </div>
+                <div class="content-card"><ul class="feature-list"><li>ℹ️ 绑定后可使用企业保函额度</li><li>ℹ️ 可使用企业电子印章签署</li><li>ℹ️ 管理员审核通过后生效</li></ul></div>
+                <button class="primary-btn" data-action="bind-submit">提交绑定申请</button>`,
+
+            'personal-info': () => subNav('个人信息') + `
+                <div class="content-card" style="margin-top:16px;">
+                    <div class="form-group"><label>姓名</label><input class="form-input" value="张明伟" readonly></div>
+                    <div class="form-group"><label>身份证号</label><input class="form-input" value="3509021990****1234" readonly></div>
+                    <div class="form-group"><label>手机号</label><input class="form-input" value="138****5678"></div>
+                    <div class="form-group"><label>邮箱</label><input class="form-input" placeholder="选填"></div>
+                    <div class="info-row"><span>实名认证</span><span style="color:#1E6F3F;">✓ 已认证</span></div>
+                </div>
+                <button class="primary-btn" data-action="save-profile">保存修改</button>`,
+
+            'security-center': () => subNav('安全中心') + `
+                <div class="settings-list" style="margin-top:16px;">
+                    <div class="settings-item" data-action="change-pwd"><div class="setting-left"><i>🔑</i><span>修改登录密码</span></div><div class="setting-right">&gt;</div></div>
+                    <div class="settings-item" data-action="bind-phone"><div class="setting-left"><i>📱</i><span>绑定手机</span></div><div class="setting-right">138****5678 &gt;</div></div>
+                    <div class="settings-item" data-action="login-devices"><div class="setting-left"><i>💻</i><span>登录设备管理</span></div><div class="setting-right">2台设备 &gt;</div></div>
+                </div>
+                <div class="content-card"><div class="card-title">🛡️ 安全等级</div>
+                    <div style="background:#E8F5E9;border-radius:12px;padding:14px;text-align:center;"><div style="font-size:28px;font-weight:700;color:#1E6F3F;">高</div><div style="font-size:12px;color:#64748B;">已开启实名+手机+密码三重验证</div></div>
+                </div>`,
+
+            'privacy-manage': () => subNav('隐私授权管理') + `
+                <div class="content-card" style="margin-top:16px;">
+                    <div class="info-row"><span>个人信息授权</span><span style="color:#1E6F3F;">已授权</span></div>
+                    <div class="info-row"><span>数据共享授权</span><span style="color:#1E6F3F;">已授权</span></div>
+                    <div class="info-row"><span>金融机构查询授权</span><span style="color:#1E6F3F;">已授权</span></div>
+                    <div class="info-row"><span>营销信息推送</span><span style="color:#94a3b8;">未授权</span></div>
+                </div>
+                <button class="secondary-btn" style="width:calc(100% - 32px);margin:0 16px 20px;color:#EF4444;border-color:#FECACA;" data-action="revoke-privacy">撤回全部授权</button>`,
+
+            'about-us': () => subNav('关于我们') + `
+                <div style="text-align:center;padding:30px 20px;">
+                    <div style="font-size:48px;margin-bottom:12px;">🔷</div>
+                    <h3 style="font-size:18px;color:#0A2540;">宁德数字电子保函平台</h3>
+                    <p style="font-size:13px;color:#64748B;margin-top:8px;">版本 2.6.0 · 2025-05-01更新</p>
+                </div>
+                <div class="content-card"><ul class="feature-list"><li>📋 服务协议</li><li>🔒 隐私政策</li><li>📞 联系我们：0593-1234567</li><li>🏢 宁德市公共资源交易中心</li></ul></div>`
+        };
+
+        const fn = pages[pageId];
+        return fn ? (typeof fn === 'function' ? fn() : fn) : null;
+    }
+
+    function productPage(name, icon, gradient, desc, rate, amount, period, features) {
+        return subNav(name) + `
+            <div class="page-hero" style="background:${gradient};">
+                <h2>${icon} ${name}</h2><p>${desc}</p>
+                <div class="hero-tag">费率 ${rate} · 额度 ${amount} · 期限 ${period}</div>
+                <div class="hero-deco">${icon}</div>
+            </div>
+            <div class="content-card"><div class="card-title">✨ 产品特色</div><ul class="feature-list">${features.map(f=>`<li>✅ ${f}</li>`).join('')}</ul></div>
+            <div class="content-card"><div class="card-title">📋 办理材料</div><ul class="feature-list"><li>📄 营业执照</li><li>📄 招标文件/合同</li><li>📄 法人身份证</li><li>📄 近期财务报表（大额）</li></ul></div>
+            <div class="stat-grid-2" style="margin:0 16px 16px;"><div class="stat-box"><div class="num">${rate}</div><div class="lbl">参考费率</div></div><div class="stat-box"><div class="num">2h</div><div class="lbl">最快出函</div></div></div>
+            <button class="primary-btn" data-action="product-apply" data-product="${name}">立即办理${name}</button>
+            <button class="secondary-btn" style="width:calc(100% - 32px);margin:0 16px 20px;" data-action="product-quote">保函询价</button>`;
+    }
+
+    function advantagePage(name, icon, color, desc, stat1, label1, stat2, label2, features) {
+        return subNav(name) + `
+            <div class="page-hero" style="background:linear-gradient(135deg,${color},${color}CC);">
+                <h2>${icon} ${name}</h2><p>${desc}</p><div class="hero-deco">${icon}</div>
+            </div>
+            <div class="stat-grid-2" style="margin:16px;"><div class="stat-box"><div class="num">${stat1}</div><div class="lbl">${label1}</div></div><div class="stat-box"><div class="num">${stat2}</div><div class="lbl">${label2}</div></div></div>
+            <div class="content-card"><div class="card-title">核心能力</div><ul class="feature-list">${features.map(f=>`<li>⚡ ${f}</li>`).join('')}</ul></div>
+            <button class="primary-btn" data-action="advantage-try">立即体验</button>`;
+    }
+
+    function loanPage(name, icon, desc, maxAmount, rate, period, requirement) {
+        return subNav(name) + `
+            <div class="page-hero" style="background:linear-gradient(135deg,#B45309,#D97706);">
+                <h2>${icon} ${name}</h2><p>${desc}</p><div class="hero-tag">最高 ${maxAmount} · 年化 ${rate}</div><div class="hero-deco">${icon}</div>
+            </div>
+            <div class="content-card"><div class="info-row"><span>最高额度</span><span>${maxAmount}</span></div><div class="info-row"><span>参考年化利率</span><span>${rate}</span></div><div class="info-row"><span>贷款期限</span><span>${period}</span></div><div class="info-row"><span>申请条件</span><span>${requirement}</span></div></div>
+            <div class="content-card"><div class="card-title">📝 申请流程</div><div class="step-bar" style="margin:0;"><div class="step-item done"><div class="step-dot">1</div><div class="step-label">提交资料</div></div><div class="step-item done"><div class="step-dot">2</div><div class="step-label">额度审批</div></div><div class="step-item active"><div class="step-dot">3</div><div class="step-label">签约放款</div></div></div></div>
+            <button class="primary-btn" data-action="loan-apply" data-product="${name}">立即申请${name}</button>
+            <button class="secondary-btn" style="width:calc(100% - 32px);margin:0 16px 20px;" data-action="quota-calc">额度测算</button>`;
+    }
+
+    function insurancePage(name, icon, desc, price, coverage) {
+        return subNav(name) + `
+            <div class="page-hero" style="background:linear-gradient(135deg,#047857,#10B981);">
+                <h2>${icon} ${name}</h2><p>${desc}</p><div class="hero-tag">${price} · 保障：${coverage}</div><div class="hero-deco">${icon}</div>
+            </div>
+            <div class="content-card"><div class="card-title">🛡️ 保障范围</div><ul class="feature-list"><li>✅ ${coverage}</li><li>✅ 24小时在线理赔</li><li>✅ 专业风控团队</li><li>✅ 合作主流保险公司</li></ul></div>
+            <div class="content-card"><div class="card-title">🏢 合作保险公司</div><div class="tag-row"><span class="tag-chip active">人保财险</span><span class="tag-chip">太平洋保险</span><span class="tag-chip">平安保险</span></div></div>
+            <button class="primary-btn" data-action="insurance-apply" data-product="${name}">在线投保</button>`;
+    }
+
+    function newsPage(title, date, tag, summary, content) {
+        return subNav('动态详情') + `<div class="news-article"><h2 style="font-size:20px;color:#0A2540;margin-bottom:8px;">${title}</h2><div class="news-meta">${date} · <span style="color:#1E6F3F;">${tag}</span></div><div class="news-body"><p>${summary}</p><p>${content}</p></div></div>
+            <button class="primary-btn" data-action="share-news">分享</button>`;
+    }
+
+    function projectDetail(name, owner, amount, deadline, guaranteeType, remain) {
+        return subNav('项目详情') + `
+            <div class="page-hero" style="background:linear-gradient(135deg,#2D3E50,#475569);">
+                <h2>${name}</h2><p>招标人：${owner}</p><div class="hero-tag">💰 ${amount} · ⏰ ${remain}</div>
+            </div>
+            <div class="content-card"><div class="info-row"><span>招标人</span><span>${owner}</span></div><div class="info-row"><span>项目金额</span><span>${amount}</span></div><div class="info-row"><span>截标日期</span><span>${deadline}</span></div><div class="info-row"><span>保函需求</span><span>${guaranteeType}</span></div><div class="info-row"><span>剩余时间</span><span style="color:${remain.includes('紧急')?'#EF4444':'#1E6F3F'};">${remain}</span></div></div>
+            <div class="content-card"><div class="card-title">📋 保函办理建议</div><ul class="feature-list"><li>✅ 建议使用电子保函替代保证金</li><li>✅ 支持"见证即函"模式</li><li>✅ 平台合作机构可2小时出函</li></ul></div>
+            <button class="primary-btn" data-action="project-apply">立即办理保函</button>
+            <button class="secondary-btn" style="width:calc(100% - 32px);margin:0 16px 20px;" data-page="match-bank">匹配金融机构</button>`;
+    }
+
+    function industryPage(name, icon, color, projects) {
+        return subNav(name + '项目') + `
+            <div class="page-hero" style="background:linear-gradient(135deg,${color},${color}AA);">
+                <h2>${icon} ${name}行业招标</h2><p>聚焦${name}领域重点项目，精准匹配保函需求</p><div class="hero-deco">${icon}</div>
+            </div>
+            <div class="list-card">${projects.map(p=>`<div class="list-item" data-page="apply-guarantee"><div class="item-info"><h4>${p}</h4><p>支持电子保函 · 在线办理</p></div><div class="item-status">申请</div></div>`).join('')}</div>
+            <button class="primary-btn" data-action="sub-industry" data-industry="${name}">订阅${name}项目推送</button>`;
+    }
+
+    function casePage(company, project, amount, time, story, tip) {
+        return subNav('案例详情') + `
+            <div class="page-hero" style="background:linear-gradient(135deg,#1E6F3F,#059669);">
+                <h2>✅ ${company}</h2><p>${project} · ${amount}</p><div class="hero-tag">⏱️ ${time}完成</div>
+            </div>
+            <div class="content-card"><div class="card-title">📖 案例故事</div><p style="font-size:14px;color:#334155;line-height:1.8;">${story}</p></div>
+            <div class="content-card" style="border-left:4px solid #F59E0B;"><div class="card-title">💡 借鉴方案</div><p style="font-size:13px;color:#64748B;line-height:1.7;">${tip}</p></div>
+            <button class="primary-btn" data-action="case-apply">参考此方案办理</button>`;
+    }
+
+    function bindSubPageEvents(pageId, params) {
+        document.querySelector('[data-action="back"]')?.addEventListener('click', goBack);
+        document.querySelectorAll('[data-page]').forEach(el => {
+            el.addEventListener('click', (e) => {
+                e.stopPropagation();
+                openSubPage(el.getAttribute('data-page'));
+            });
+        });
+        document.querySelectorAll('[data-action]').forEach(el => {
+            el.addEventListener('click', (e) => {
+                const action = el.getAttribute('data-action');
+                if(action === 'back') return;
+                handleSubAction(action, el, pageId);
+            });
+        });
+        if(pageId === 'fee-calculator') initFeeCalculator();
+        if(pageId === 'verify-guarantee') initVerifyPage();
+        if(pageId === 'quota-calc') initQuotaCalc();
+        if(pageId === 'finance-search') initFinanceSearch();
+        document.querySelectorAll('#applyTypeTags .tag-chip, #subIndustryTags .tag-chip, #financeFilterTags .tag-chip').forEach(chip => {
+            chip.addEventListener('click', function() {
+                this.parentElement.querySelectorAll('.tag-chip').forEach(c => c.classList.remove('active'));
+                this.classList.add('active');
+            });
+        });
+        document.querySelectorAll('[data-chat]').forEach(chip => {
+            chip.addEventListener('click', function() {
+                showToast(`客服：关于"${this.getAttribute('data-chat')}"，请问还有什么需要了解？`);
+            });
+        });
+    }
+
+    function handleSubAction(action, el, pageId) {
+        const actions = {
+            'submit-apply': () => showToast('✅ 申请已提交，正在匹配金融机构...'),
+            'seal-auth': () => showToast('📝 印章授权申请已提交，1个工作日内审核'),
+            'seal-sign': () => showToast('🖊️ 请选择待签署文件'),
+            'cert-renew': () => showToast('🔐 证书续期申请已提交，请完成人脸验证'),
+            'scan-qr': () => showToast('📷 请对准保函二维码扫描'),
+            'do-verify': () => doVerify(),
+            'calc-apply': () => openSubPage('apply-guarantee'),
+            'product-apply': () => openSubPage('apply-guarantee'),
+            'product-quote': () => openSubPage('quote-inquiry'),
+            'advantage-try': () => openSubPage('apply-guarantee'),
+            'loan-apply': () => showToast(`✅ ${el.getAttribute('data-product')}申请已提交`),
+            'quota-calc': () => openSubPage('quota-calc'),
+            'insurance-apply': () => openSubPage('online-insure'),
+            'insure-submit': () => showToast('✅ 投保成功，保单已发送至您的邮箱'),
+            'sub-save': () => showToast('📡 订阅设置已保存，将为您推送匹配项目'),
+            'quote-submit': () => showToast('📊 询价已提交，24小时内回复'),
+            'match-apply': () => openSubPage('apply-guarantee'),
+            'consult-submit': () => showToast('📞 顾问将在30分钟内联系您'),
+            'goto-apply': () => openSubPage('apply-guarantee'),
+            'invoice-apply': () => showToast('🧾 开票申请已提交，电子发票将发送至邮箱'),
+            'bind-enterprise': () => openSubPage('bind-enterprise'),
+            'bind-submit': () => showToast('🏢 绑定申请已提交，等待管理员审核'),
+            'save-profile': () => showToast('✅ 个人信息已保存'),
+            'change-pwd': () => showToast('🔑 验证码已发送至手机'),
+            'bind-phone': () => showToast('📱 当前手机已绑定'),
+            'login-devices': () => showToast('💻 当前2台设备在线'),
+            'revoke-privacy': () => showToast('⚠️ 撤回授权将影响部分功能使用'),
+            'share-news': () => showToast('📤 已复制分享链接'),
+            'apply-recommend': () => openSubPage('apply-guarantee'),
+            'quota-submit': () => showToast('📊 正式额度评估报告将在1个工作日内出具'),
+            'project-apply': () => openSubPage('apply-guarantee'),
+            'case-apply': () => openSubPage('apply-guarantee'),
+            'sub-industry': () => openSubPage('subscribe-project'),
+            'chat-send': () => { const inp = document.getElementById('chatInput'); if(inp?.value) { showToast('消息已发送'); inp.value=''; } },
+            'call-service': () => showToast('📞 正在拨打 0593-1234567...')
+        };
+        (actions[action] || (() => showToast('操作成功')))();
+    }
+
+    function initFeeCalculator() {
+        const slider = document.getElementById('calcSlider');
+        const type = document.getElementById('calcType');
+        const period = document.getElementById('calcPeriod');
+        function update() {
+            const amount = parseInt(slider?.value || 50);
+            const rate = parseFloat(type?.value || 0.003);
+            const mult = parseFloat(period?.value || 1);
+            const fee = Math.round(amount * 10000 * rate * mult);
+            document.getElementById('calcAmountLabel').innerText = amount;
+            document.getElementById('calcResult').innerText = '¥' + fee.toLocaleString();
+            document.getElementById('calcDetail').innerText = `${amount}万 × ${(rate*100).toFixed(1)}% × ${mult>1?'期限加成':''} = ${fee.toLocaleString()}元`;
+        }
+        slider?.addEventListener('input', update);
+        type?.addEventListener('change', update);
+        period?.addEventListener('change', update);
+        update();
+    }
+
+    function initVerifyPage() {
+        document.querySelector('[data-action="do-verify"]')?.addEventListener('click', doVerify);
+    }
+
+    function doVerify() {
+        const no = document.getElementById('verifyNo')?.value || 'ND-BH-2025-0048921';
+        const area = document.getElementById('verifyResultArea');
+        if(area) area.innerHTML = `<div class="content-card"><div class="verify-result"><div class="icon">✅</div><h3 style="color:#1E6F3F;">查验通过 · 保函真实有效</h3><p>编号：${no}</p><div style="margin-top:16px;text-align:left;"><div class="info-row"><span>保函类型</span><span>投标保函</span></div><div class="info-row"><span>担保金额</span><span>268万元</span></div><div class="info-row"><span>出函机构</span><span>民生银行宁德分行</span></div><div class="info-row"><span>有效期</span><span>2025-03-01 ~ 2025-08-30</span></div><div class="info-row"><span>区块链存证</span><span style="color:#1E6F3F;">✓ 已上链</span></div></div></div></div>`;
+        showToast('🔍 查验完成');
+    }
+
+    function initQuotaCalc() {
+        const rev = document.getElementById('quotaRevenue');
+        const credit = document.getElementById('quotaCredit');
+        function update() {
+            const r = parseFloat(rev?.value || 5000) * parseFloat(credit?.value || 1.5);
+            document.getElementById('quotaResult').innerText = '¥' + Math.round(r).toLocaleString() + '万';
+        }
+        rev?.addEventListener('input', update);
+        credit?.addEventListener('change', update);
+    }
+
+    function initFinanceSearch() {
+        const input = document.getElementById('financeSearchInput');
+        input?.addEventListener('input', function() {
+            showToast(this.value ? `搜索：${this.value}` : '显示全部产品');
+        });
+    }
+
+    // ========== 首页（完全保留原有结构和样式） ==========
+    const homePageHTML = `
+        <div class="stats-card">
+            <div class="stats-row">
+                <div class="stat-item"><div class="stat-label">替代保证金(亿)</div><div class="stat-number">1.07</div></div>
+                <div class="divider-line"></div>
+                <div class="stat-item"><div class="stat-label">保函申请(单)</div><div class="stat-number">149</div></div>
+                <div class="divider-line"></div>
+                <div class="stat-item"><div class="stat-label">服务用户(个)</div><div class="stat-number">1418</div></div>
+            </div>
+            <div class="apply-btn" id="quickApplyBtn">+ 立即申请保函</div>
+        </div>
+
+        <div class="service-quick">
+            <div class="service-quick-item" id="stampService"><div style="font-size:24px;">🖊️</div><div style="font-size:13px;font-weight:500;">电子印章</div><div style="font-size:10px;color:#5b6e8c;">在线签署</div></div>
+            <div class="service-quick-item" id="certService"><div style="font-size:24px;">🔐</div><div style="font-size:13px;font-weight:500;">数字证书</div><div style="font-size:10px;color:#5b6e8c;">CA认证管理</div></div>
+            <div class="service-quick-item" id="verifyService"><div style="font-size:24px;">🔍</div><div style="font-size:13px;font-weight:500;">保函查验</div><div style="font-size:10px;color:#5b6e8c;">真伪核验</div></div>
+            <div class="service-quick-item" id="feeCalcService"><div style="font-size:24px;">🧮</div><div style="font-size:13px;font-weight:500;">费率计算</div><div style="font-size:10px;color:#5b6e8c;">一键预估</div></div>
+        </div>
+
+        <div class="section-title"><h3>🏦 保函·保险专区</h3><a href="#" id="moreServiceLink">更多产品 &gt;</a></div>
+        <div class="grid-menu">
+            <div class="grid-4col">
+                <div class="grid-item" data-func="投标保函"><div class="icon-circle">📄</div><span class="grid-label">投标保函</span></div>
+                <div class="grid-item" data-func="学平险"><div class="icon-circle">🎓</div><span class="grid-label">学平险</span></div>
+                <div class="grid-item" data-func="履约保函"><div class="icon-circle">🤝</div><span class="grid-label">履约保函</span></div>
+                <div class="grid-item" data-func="预付款保函"><div class="icon-circle">💰</div><span class="grid-label">预付款保函</span></div>
+				<div class="grid-item" data-func="农民工保函"><div class="icon-circle">👷</div><span class="grid-label">农民工保函</span></div>
+                <div class="grid-item" data-func="质量保函"><div class="icon-circle">⭐</div><span class="grid-label">质量保函</span></div>
+                <div class="grid-item" data-func="诉讼保函"><div class="icon-circle">⚖️</div><span class="grid-label">诉讼保函</span></div>
+				<div class="grid-item" data-func="关税保函"><div class="icon-circle">🌍</div><span class="grid-label">关税保函</span></div>
+            </div>
+        </div>
+
+		<div class="grid-menu" style="padding: 12px;">
+            <div class="menu-title">✨ 一体化服务优势</div>
+            <div class="grid-4col">
+                <div><div style="font-size:28px;">⚡</div><div style="font-size:12px;">秒级出函</div><div style="font-size:10px;color:#6c7a91;">智能审批</div></div>
+                <div><div style="font-size:28px;">🔒</div><div style="font-size:12px;">区块链存证</div><div style="font-size:10px;color:#6c7a91;">不可篡改</div></div>
+                <div><div style="font-size:28px;">🌐</div><div style="font-size:12px;">全程网办</div><div style="font-size:10px;color:#6c7a91;">零纸质材料</div></div>
+                <div><div style="font-size:28px;">📞</div><div style="font-size:12px;">7x24h客服</div><div style="font-size:10px;color:#6c7a91;">专属顾问</div></div>
+            </div>
+        </div>
+		
+        <div class="mini-banner" id="creditBanner"><div class="banner-text">🎯 “中标贷”最高500万，凭保函授信</div><div class="banner-tag">立即申请</div></div>
+
+        <div class="section-title"><h3>⚡ 快速申请通道</h3><a href="#" id="quickApplyLink">智能推荐</a></div>
+        <div class="list-card">
+            <div class="list-item" data-project="污水项目"><div class="item-info"><h4>宁德市污水处理厂扩建工程</h4><p>招标编号：ND2024-032 · 保证金50万</p></div><div class="item-status">立即申请</div></div>
+            <div class="list-item" data-project="海上风电"><div class="item-info"><h4>霞浦海上风电配套项目</h4><p>保函金额 268万 · 电子保函即时出单</p></div><div class="item-status">快捷办理</div></div>
+            <div class="list-item" data-project="智慧城市"><div class="item-info"><h4>福安智慧城市一期(EPC)</h4><p>履约保函需求 · 剩余1天截止</p></div><div class="item-status status-warning">紧急办理</div></div>
+        </div>
+
+        <div class="section-title"><h3>📢 最新动态</h3><a href="#" id="historyLink">更多动态 &gt;</a></div>
+        <div class="list-card">
+            <div class="list-item"><div class="item-info"><h4>“宁德市一体化电子保函平台”全流程数字化升级</h4><p>2025年4月28日 · 实现全程网办，异地投标无忧</p></div><div class="item-status">NEW</div></div>
+            <div class="list-item"><div class="item-info"><h4>关于进一步降低电子保函综合费率的通知</h4><p>4月新规 · 手续费低至0.3%</p></div><div class="item-status">查看详情</div></div>
+            <div class="list-item"><div class="item-info"><h4>宁德市公共资源交易中心：推行“信用+保函”试点</h4><p>信用良好企业可减免保证金</p></div><div class="item-status">利好政策</div></div>
+        </div>
+    `;
+
+    // ========== 金融超市板块（保持不变） ==========
+    const marketPageHTML = `
+        <div class="stats-card" style="background: linear-gradient(135deg, #0F3B2C, #1E6F4C);">
+            <div class="stats-row">
+                <div class="stat-item"><div class="stat-label">合作金融机构</div><div class="stat-number">23</div></div>
+                <div class="divider-line"></div>
+                <div class="stat-item"><div class="stat-label">在架产品数</div><div class="stat-number">62+</div></div>
+                <div class="divider-line"></div>
+                <div class="stat-item"><div class="stat-label">服务企业</div><div class="stat-number">2,156</div></div>
+            </div>
+            <div class="apply-btn" id="marketInquiryBtn">🔍 综合金融产品查询</div>
+        </div>
+        
+        <div class="grid-menu"><div class="menu-title">📜 电子保函</div><div class="grid-4col">
+            <div class="grid-item" data-func="投标保函"><div class="icon-circle">📑</div><span class="grid-label">投标保函</span></div>
+            <div class="grid-item" data-func="履约保函"><div class="icon-circle">⚖️</div><span class="grid-label">履约保函</span></div>
+            <div class="grid-item" data-func="预付款保函"><div class="icon-circle">💵</div><span class="grid-label">预付款保函</span></div>
+            <div class="grid-item" data-func="质量保函"><div class="icon-circle">🏅</div><span class="grid-label">质量保函</span></div>
+            <div class="grid-item" data-func="农民工工资保函"><div class="icon-circle">👷</div><span class="grid-label">农民工保函</span></div>
+            <div class="grid-item" data-func="关税保函"><div class="icon-circle">🌍</div><span class="grid-label">关税保函</span></div>
+            <div class="grid-item" data-func="融资性保函"><div class="icon-circle">🏦</div><span class="grid-label">融资性保函</span></div>
+            <div class="grid-item" data-func="保函查验"><div class="icon-circle">🔍</div><span class="grid-label">保函查验</span></div>
+        </div></div>
+        
+        <div class="grid-menu"><div class="menu-title">🛡️ 保险专区</div><div class="grid-4col">
+            <div class="grid-item" data-func="学平险"><div class="icon-circle">🎓</div><span class="grid-label">学平险</span></div>
+            <div class="grid-item" data-func="工程一切险"><div class="icon-circle">🏗️</div><span class="grid-label">工程一切险</span></div>
+            <div class="grid-item" data-func="安全生产责任险"><div class="icon-circle">⚠️</div><span class="grid-label">安责险</span></div>
+            <div class="grid-item" data-func="农民工意外险"><div class="icon-circle">🦺</div><span class="grid-label">建工意外险</span></div>
+            <div class="grid-item" data-func="团体意外险"><div class="icon-circle">👥</div><span class="grid-label">团意险</span></div>
+            <div class="grid-item" data-func="雇主责任险"><div class="icon-circle">📌</div><span class="grid-label">雇主险</span></div>
+            <div class="grid-item" data-func="校方责任险"><div class="icon-circle">🏫</div><span class="grid-label">校方责任险</span></div>
+            <div class="grid-item" data-func="公众责任险"><div class="icon-circle">🏢</div><span class="grid-label">公众责任险</span></div>
+            <div class="grid-item" data-func="货物运输险"><div class="icon-circle">🚚</div><span class="grid-label">货运险</span></div>
+            <div class="grid-item" data-func="财产综合险"><div class="icon-circle">🏠</div><span class="grid-label">财产综合险</span></div>
+            <div class="grid-item" data-func="机器损坏险"><div class="icon-circle">⚙️</div><span class="grid-label">机损险</span></div>
+            <div class="grid-item" data-func="投标保证保险"><div class="icon-circle">📋</div><span class="grid-label">投标保证保险</span></div>
+        </div></div>
+        
+        <div class="grid-menu"><div class="menu-title">🏧 金融助贷</div><div class="grid-4col">
+            <div class="grid-item" data-func="中标贷"><div class="icon-circle">📊</div><span class="grid-label">中标贷</span></div>
+            <div class="grid-item" data-func="政采贷"><div class="icon-circle">📋</div><span class="grid-label">政采贷</span></div>
+            <div class="grid-item" data-func="农民工工资贷"><div class="icon-circle">🏗️</div><span class="grid-label">农民工工资贷</span></div>
+            <div class="grid-item" data-func="工程信用贷"><div class="icon-circle">⚡</div><span class="grid-label">工程信用贷</span></div>
+        </div></div>
+        
+        <div class="section-title"><h3>🔥 热门金融产品推荐</h3><a href="#" id="hotFinanceLink">查看全部 →</a></div>
+        <div class="list-card">
+            <div class="list-item"><div class="item-info"><h4>电子投标保函 (民生银行专享)</h4><p>费率低至0.2% · 在线秒出函</p></div><div class="item-status">立即申请</div></div>
+            <div class="list-item"><div class="item-info"><h4>小微企业“税易贷”最高300万</h4><p>宁德农信联合推出，随借随还</p></div><div class="item-status">额度测算</div></div>
+            <div class="list-item"><div class="item-info"><h4>学平险开学季优选</h4><p>覆盖意外医疗，3.8折优惠</p></div><div class="item-status">在线投保</div></div>
+        </div>
+    `;
+
+    // ========== 项目动态板块（全新设计，风格独特，丰富实用） ==========
+    const projectDynamicHTML = `
+        <!-- 与众不同的顶部卡片样式，完全区别于其他板块 -->
+        <div class="dynamic-stats-card">
+            <div class="dynamic-stats-row">
+                <div class="dynamic-stat"><div class="dynamic-stat-number">38</div><div class="dynamic-stat-label">招标中项目</div></div>
+                <div class="dynamic-stat"><div class="dynamic-stat-number">12</div><div class="dynamic-stat-label">即将截标</div></div>
+                <div class="dynamic-stat"><div class="dynamic-stat-number">¥8.6亿</div><div class="dynamic-stat-label">保函关联金额</div></div>
+            </div>
+            <div class="dynamic-btn-group">
+                <div class="dynamic-btn" id="subScribeProjectBtn">🔔 订阅项目推送</div>
+                <div class="dynamic-btn" id="batchQuoteBtn">📊 保函询价</div>
+            </div>
+        </div>
+
+        <div class="section-title"><h3>📢 最新项目公告/动态</h3><a href="#" id="moreProjectLink">查看全部 &gt;</a></div>
+        <div class="list-card">
+            <div class="list-item" data-project="宁德时代储能扩产" data-page="project-detail-1">
+                <div class="item-info"><h4>宁德时代·储能电池扩产项目(EPC)</h4><p>招标单位：宁德时代新能源科技股份有限公司 | 投资额：12.3亿 | 保函类型：履约保函/投标保函 均可</p><p style="font-size:11px;color:#2E7D32;">📅 截标：2025-06-15 | 剩余18天</p></div>
+                <div class="item-status">查看详情</div>
+            </div>
+            <div class="list-item" data-project="宁德至福州城际铁路" data-page="project-detail-2">
+                <div class="item-info"><h4>宁德至福州城际铁路F2线土建三标</h4><p>招标人：福建铁路投资集团 | 保证金形式：电子保函替代150万保证金 | 专项支持“见证即函”</p><p style="font-size:11px;color:#C26B1A;">⚡ 紧急：2025-05-30截止</p></div>
+                <div class="item-status status-warning">立即办理保函</div>
+            </div>
+            <div class="list-item" data-project="福鼎工业园区PPP" data-page="match-bank">
+                <div class="item-info"><h4>福鼎工业园区产城融合PPP项目</h4><p>预计保函需求: 履约保函380万，预付款保函220万 | 线上对接银行直连</p><p style="font-size:11px;">📢 政策扶持：降低担保费率0.1%</p></div>
+                <div class="item-status">匹配金融机构</div>
+            </div>
+        </div>
+
+        <div class="section-title"><h3>🏷️ 分类项目招标热点</h3><a href="#" id="filterProjectLink">按行业筛选</a></div>
+        <div class="grid-menu" style="padding: 12px 8px;">
+            <div class="grid-4col">
+                <div class="grid-item" data-func="新能源项目"><div class="icon-circle">🔋</div><span class="grid-label">新能源</span></div>
+                <div class="grid-item" data-func="基建交通"><div class="icon-circle">🚄</div><span class="grid-label">基建交通</span></div>
+                <div class="grid-item" data-func="水利环保"><div class="icon-circle">💧</div><span class="grid-label">水利环保</span></div>
+                <div class="grid-item" data-func="城市更新"><div class="icon-circle">🏙️</div><span class="grid-label">城市更新</span></div>
+            </div>
+        </div>
+
+        <div class="list-card">
+            <div class="list-item" data-project="宁德市北部新城污水管网改造">
+                <div class="item-info"><h4>宁德市北部新城污水管网改造工程</h4><p>项目总投资2.1亿元，需投标保函+履约保函组合 | 支持电子保函招标认可</p><p style="font-size:11px;">平台特色: 智慧评标系统，最快2小时出函</p></div>
+                <div class="item-status">一键申请保函</div>
+            </div>
+            <div class="list-item" data-project="霞浦海上风电场二期">
+                <div class="item-info"><h4>霞浦海上风电场二期（300MW）</h4><p>招标范围：风机基础施工。保函形式：独立保函，支持在线秒出</p><p style="font-size:11px;">🌊 绿色能源项目享费用折扣0.25%</p></div>
+                <div class="item-status">询价测算</div>
+            </div>
+            <div class="list-item" data-project="周宁县全域旅游基础设施">
+                <div class="item-info"><h4>周宁县全域旅游基础设施提升</h4><p>预付款保函需求260万，已入驻平台优质企业可免授信秒批</p><p style="font-size:11px;">🎫 特色文旅项目·信用+保函试点</p></div>
+                <div class="item-status">申请办理</div>
+            </div>
+        </div>
+
+        <div class="mini-banner" id="projectMatchBanner" style="background: linear-gradient(105deg, #F1F9F0, #E3F0E0);">
+            <div class="banner-text">🤖 智能推荐：据您企业资质，精准匹配3个待投标项目</div>
+            <div class="banner-tag">立即匹配</div>
+        </div>
+
+        <div class="section-title"><h3>📌 中标喜报 & 保函服务案例</h3><a href="#" id="caseLink">查看更多案例</a></div>
+        <div class="list-card">
+            <div class="list-item"><div class="item-info"><h4>✅ 福建鸿源建设中标“宁德锂电小镇”项目</h4><p>通过平台开具电子履约保函845万，仅用1个工作日完成并替代保证金</p><p style="font-size:11px;">点赞+平台专属顾问服务</p></div><div class="item-status">成功案例</div></div>
+            <div class="list-item"><div class="item-info"><h4>🎉 宁德市政集团通过“数字标书+保函”中标福安大道改造</h4><p>平台极速投标保函0.28%费率，资金利用率提升70%</p></div><div class="item-status">借鉴方案</div></div>
+        </div>
+        <div class="apply-btn" style="background:#F1F5F9; margin-bottom:20px;" id="consultProjectBtn">📞 项目顾问咨询 · 定制保函方案</div>
+    `;
+
+    // ========== 我的页面（原封不动保留） ==========
+    const profilePageHTML = `
+        <div class="profile-card-enhanced">
+            <div class="avatar-wrapper"><span class="avatar-emoji">👤</span></div>
+            <div class="profile-info">
+                <h3>张明伟</h3>
+                <div style="display: flex; align-items: center; gap: 6px; flex-wrap: wrap;">
+                    <span style="font-size: 12px; color: #5b6e8c;">ID: 3509021990****1234</span>
+                    <span style="background: #E8F5E9; padding: 2px 8px; border-radius: 20px; font-size: 10px; color: #2E7D32;">已认证</span>
+                </div>
+                <div class="profile-badge-group"><span class="profile-badge">⭐ 信用等级 AAA</span><span class="profile-badge">🏆 保函专享权益</span></div>
+            </div>
+        </div>
+
+        <div class="grid-menu"><div class="menu-title">📊 数据看板</div><div class="stats-row" style="justify-content:space-around;"><div><div class="stat-number" style="font-size:24px; color:#0F2B5E;">12</div><div class="stat-label">进行中</div></div><div><div class="stat-number" style="font-size:24px; color:#0F2B5E;">34</div><div class="stat-label">已完成</div></div><div><div class="stat-number" style="font-size:24px; color:#0F2B5E;">¥1,280w</div><div class="stat-label">累计担保额</div></div></div></div>
+
+		<div class="grid-menu"><div class="menu-title">⚙️ 常用服务</div><div class="grid-4col">
+            <div class="grid-item" data-func="我的保函"><div class="icon-circle">📂</div><span class="grid-label">我的保函</span></div>
+            <div class="grid-item" data-func="数字证书"><div class="icon-circle">🔐</div><span class="grid-label">数字证书</span></div>
+            <div class="grid-item" data-func="电子印章"><div class="icon-circle">🖊️</div><span class="grid-label">电子印章</span></div>
+            <div class="grid-item" data-func="发票管理"><div class="icon-circle">🧾</div><span class="grid-label">发票管理</span></div>
+            <div class="grid-item" data-func="企业管理"><div class="icon-circle">🏢</div><span class="grid-label">企业管理</span></div>
+            <div class="grid-item" data-func="保函查验"><div class="icon-circle">🔍</div><span class="grid-label">保函查验</span></div>
+            <div class="grid-item" data-func="操作日志"><div class="icon-circle">📋</div><span class="grid-label">操作日志</span></div>
+            <div class="grid-item" data-func="我的客服"><div class="icon-circle">💬</div><span class="grid-label">我的客服</span></div>
+        </div></div>
+		
+        <div class="bind-card" id="bindCompanyCard"><div class="bind-info"><h4>🏢 绑定企业机构</h4><p>绑定后可使用企业保函额度及电子印章</p></div><div class="bind-btn" id="bindCompanyBtn">+ 绑定企业</div></div>
+
+        <div class="list-card">
+            <div class="list-item" style="justify-content: flex-start; gap: 12px;"><div style="background:#E8F5E9; width:44px; height:44px; border-radius: 22px; display:flex; align-items:center; justify-content:center;">🏗️</div><div><h4>宁德城建集团</h4><p>统一信用代码: 91350900MA****** · 管理员</p></div><div class="item-status">默认</div></div>
+            <div class="list-item" style="justify-content: flex-start; gap: 12px;"><div style="background:#FFF8E1; width:44px; height:44px; border-radius: 22px; display:flex; align-items:center; justify-content:center;">⚡</div><div><h4>宁德时代供应链公司</h4><p>统一信用代码: 91350900MB****** · 成员</p></div><div class="item-status">已绑定</div></div>
+        </div>
+		
+        <div class="section-title"><h3>⚙️ 账号设置</h3></div>
+        <div class="settings-list">
+            <div class="settings-item" id="personalInfoSetting"><div class="setting-left"><i>👤</i><span>个人信息</span></div><div class="setting-right">实名已认证 &gt;</div></div>
+            <div class="settings-item" id="securitySetting"><div class="setting-left"><i>🔐</i><span>安全中心</span></div><div class="setting-right">登录密码 &gt;</div></div>
+            <div class="settings-item" id="notificationSetting"><div class="setting-left"><i>🔔</i><span>消息通知</span></div><div class="setting-right"><div class="switch-toggle active" id="notifySwitch"></div></div></div>
+            <div class="settings-item" id="faceSetting"><div class="setting-left"><i>😀</i><span>面容/指纹支付</span></div><div class="setting-right"><div class="switch-toggle" id="faceSwitch"></div></div></div>
+            <div class="settings-item" id="privacySetting"><div class="setting-left"><i>🔒</i><span>隐私授权管理</span></div><div class="setting-right">已授权 &gt;</div></div>
+            <div class="settings-item" id="aboutSetting"><div class="setting-left"><i>ℹ️</i><span>关于我们</span></div><div class="setting-right">版本 2.6.0 &gt;</div></div>
+        </div>
+        <div class="apply-btn" style="background:#F1F5F9; color:#EF4444; margin:16px; text-align:center;" id="logoutBtn">安全退出登录</div>
+    `;
+
+    function renderPage(tab) {
+        navStack.length = 0;
+        bottomTab.classList.remove('hidden');
+        currentTab = tab;
+        if(tab === 'home') contentDiv.innerHTML = homePageHTML;
+        else if(tab === 'market') contentDiv.innerHTML = marketPageHTML;
+        else if(tab === 'project') contentDiv.innerHTML = projectDynamicHTML;
+        else if(tab === 'profile') contentDiv.innerHTML = profilePageHTML;
+        attachEvents();
+    }
+
+    function attachEvents() {
+        document.querySelectorAll('.grid-item').forEach(el => {
+            el.onclick = () => {
+                const name = el.getAttribute('data-func') || el.querySelector('.grid-label')?.innerText;
+                const pageId = funcToPageId(name);
+                if(pageId) openSubPage(pageId);
+                else showToast(`⚡ 即将进入「${name}」`);
+            };
+        });
+
+        const clickMap = {
+            'quickApplyBtn': () => openSubPage('apply-guarantee'),
+            'stampService': () => openSubPage('electronic-seal'),
+            'certService': () => openSubPage('digital-cert'),
+            'verifyService': () => openSubPage('verify-guarantee'),
+            'feeCalcService': () => openSubPage('fee-calculator'),
+            'creditBanner': () => openSubPage('loan-zhongbiao'),
+            'moreServiceLink': () => openSubPage('more-products'),
+            'quickApplyLink': () => openSubPage('smart-recommend'),
+            'historyLink': () => openSubPage('news-list'),
+            'marketInquiryBtn': () => openSubPage('finance-search'),
+            'hotFinanceLink': () => openSubPage('hot-finance'),
+            'bindCompanyBtn': () => openSubPage('bind-enterprise'),
+            'personalInfoSetting': () => openSubPage('personal-info'),
+            'securitySetting': () => openSubPage('security-center'),
+            'privacySetting': () => openSubPage('privacy-manage'),
+            'aboutSetting': () => openSubPage('about-us'),
+            'subScribeProjectBtn': () => openSubPage('subscribe-project'),
+            'batchQuoteBtn': () => openSubPage('quote-inquiry'),
+            'projectMatchBanner': () => openSubPage('smart-recommend'),
+            'consultProjectBtn': () => openSubPage('project-consult'),
+            'moreProjectLink': () => openSubPage('project-list'),
+            'filterProjectLink': () => openSubPage('industry-xinnengyuan'),
+            'caseLink': () => openSubPage('case-list'),
+            'bindCompanyCard': () => openSubPage('enterprise-manage')
+        };
+        Object.entries(clickMap).forEach(([id, fn]) => {
+            const el = document.getElementById(id);
+            if(el) el.onclick = (e) => { if(id.includes('Link')) e.preventDefault(); fn(); };
+        });
+
+        document.querySelectorAll('.list-item').forEach(item => {
+            item.onclick = (e) => {
+                e.stopPropagation();
+                const dataPage = item.getAttribute('data-page');
+                if(dataPage) { openSubPage(dataPage); return; }
+                const status = item.querySelector('.item-status')?.innerText?.trim() || '';
+                const title = item.querySelector('.item-info h4')?.innerText || '';
+                const project = item.getAttribute('data-project') || title;
+                if(status.includes('立即申请') || status.includes('一键申请') || status.includes('申请办理')) openSubPage('apply-guarantee', {project});
+                else if(status.includes('快捷办理') || status.includes('紧急') || status.includes('立即办理')) openSubPage('apply-guarantee', {project});
+                else if(status.includes('查看详情')) openSubPage(item.getAttribute('data-page') || 'project-detail-1');
+                else if(status.includes('NEW') || status.includes('利好') || status.includes('政策')) openSubPage(status.includes('NEW') ? 'news-detail-1' : status.includes('利好') ? 'news-detail-3' : 'news-detail-2');
+                else if(status.includes('额度测算')) openSubPage('quota-calc');
+                else if(status.includes('在线投保')) openSubPage('online-insure');
+                else if(status.includes('匹配') || status.includes('金融机构')) openSubPage('match-bank');
+                else if(status.includes('询价')) openSubPage('quote-inquiry');
+                else if(status.includes('成功案例')) openSubPage('case-detail-1');
+                else if(status.includes('借鉴方案')) openSubPage('case-detail-2');
+                else if(status.includes('TOP') || status.includes('申请')) openSubPage('apply-guarantee');
+                else openSubPage('apply-guarantee', {project});
+            };
+        });
+
+        document.querySelectorAll('.service-quick-item').forEach((el, i) => {
+            const pages = ['electronic-seal','digital-cert','verify-guarantee','fee-calculator'];
+            if(!el.id && pages[i]) el.onclick = () => openSubPage(pages[i]);
+        });
+
+        document.querySelectorAll('.grid-menu .grid-4col > div:not(.grid-item)').forEach((el, i) => {
+            const advPages = ['advantage-speed','advantage-blockchain','advantage-online','my-service'];
+            if(advPages[i]) el.style.cursor = 'pointer';
+            if(advPages[i]) el.onclick = () => openSubPage(advPages[i]);
+        });
+
+        const logoutBtn = document.getElementById('logoutBtn');
+        if(logoutBtn) logoutBtn.onclick = () => showToast('已退出登录，返回登录页');
+        const notifySwitch = document.getElementById('notifySwitch');
+        if(notifySwitch) notifySwitch.onclick = (e) => { e.stopPropagation(); notifySwitch.classList.toggle('active'); showToast(notifySwitch.classList.contains('active') ? '消息通知已开启' : '消息通知已关闭'); };
+        const faceSwitch = document.getElementById('faceSwitch');
+        if(faceSwitch) faceSwitch.onclick = (e) => { e.stopPropagation(); faceSwitch.classList.toggle('active'); showToast(faceSwitch.classList.contains('active') ? '面容/指纹支付已开启' : '面容/指纹支付已关闭'); };
+    }
+
+    const tabs = document.querySelectorAll('.bottom-tab .tab-item');
+    function setActiveTab(tabId) {
+        tabs.forEach(tab => { const val = tab.getAttribute('data-tab'); if(val === tabId) tab.classList.add('active'); else tab.classList.remove('active'); });
+    }
+    tabs.forEach(tab => {
+        tab.addEventListener('click', () => {
+            const tabId = tab.getAttribute('data-tab');
+            renderPage(tabId);
+            setActiveTab(tabId);
+            document.querySelector('.app-container').scrollTop = 0;
+        });
+    });
+    renderPage('home');
+    setActiveTab('home');
+</script>
+</body>
+</html>
