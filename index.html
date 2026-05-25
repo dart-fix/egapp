@@ -3,15 +3,71 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>诉讼保 · 小程序</title>
+    <title>诉讼保 · 小程序 V2（原型+功能说明）</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
         body {
             background: linear-gradient(145deg, #EFF3F8 0%, #E2E8F0 100%);
-            display: flex; justify-content: center; align-items: center;
-            min-height: 100vh; font-family: 'Inter', sans-serif; padding: 24px;
+            display: flex; justify-content: center; align-items: flex-start;
+            min-height: 100vh; font-family: 'Inter', sans-serif; padding: 24px; gap: 28px;
+        }
+        .proto-wrap { flex-shrink: 0; }
+        .spec-panel {
+            width: 420px; max-height: calc(100vh - 48px); background: #FFFFFF;
+            border-radius: 20px; box-shadow: 0 20px 40px -12px rgba(0,0,0,0.12);
+            border: 1px solid #E2E8F0; display: flex; flex-direction: column; overflow: hidden;
+            position: sticky; top: 24px;
+        }
+        .spec-panel-header {
+            padding: 18px 20px 14px; background: linear-gradient(135deg, #1A4A6E, #22668D);
+            color: white; flex-shrink: 0;
+        }
+        .spec-panel-header h2 { font-size: 16px; font-weight: 800; margin-bottom: 4px; }
+        .spec-panel-header p { font-size: 11px; opacity: 0.85; line-height: 1.5; }
+        .spec-panel-badge {
+            display: inline-block; background: rgba(255,255,255,0.2); padding: 3px 10px;
+            border-radius: 20px; font-size: 10px; font-weight: 700; margin-top: 8px;
+        }
+        .spec-panel-body { flex: 1; overflow-y: auto; padding: 16px 18px 24px; }
+        .spec-panel-body::-webkit-scrollbar { width: 4px; }
+        .spec-panel-body::-webkit-scrollbar-thumb { background: #CBD5E1; border-radius: 4px; }
+        .spec-section { margin-bottom: 18px; }
+        .spec-section-title {
+            font-size: 11px; font-weight: 800; color: #22668D; text-transform: uppercase;
+            letter-spacing: 0.5px; margin-bottom: 8px; display: flex; align-items: center; gap: 6px;
+        }
+        .spec-section-title::before { content: ''; width: 3px; height: 12px; background: #22668D; border-radius: 2px; }
+        .spec-content { font-size: 12px; color: #334155; line-height: 1.7; }
+        .spec-content ul { padding-left: 16px; margin: 6px 0; }
+        .spec-content li { margin-bottom: 4px; }
+        .spec-table { width: 100%; border-collapse: collapse; font-size: 11px; margin-top: 6px; }
+        .spec-table th, .spec-table td { border: 1px solid #E2E8F0; padding: 6px 8px; text-align: left; vertical-align: top; }
+        .spec-table th { background: #F8FAFC; color: #475569; font-weight: 700; }
+        .spec-tag { display: inline-block; background: #EFF6FF; color: #1D4ED8; padding: 2px 8px; border-radius: 10px; font-size: 10px; font-weight: 600; margin: 2px 4px 2px 0; }
+        .spec-tag.api { background: #F0FDF4; color: #15803D; }
+        .spec-tag.rule { background: #FEF3C7; color: #B45309; }
+        .spec-inline-card {
+            background: #FFFBEB; border: 1px solid #FDE68A; border-radius: 12px; padding: 10px 12px;
+            font-size: 11px; color: #92400E; margin-bottom: 14px; line-height: 1.6;
+        }
+        .v2-subpage-spec {
+            background: linear-gradient(135deg, #FFFBEB, #FEF9C3); border: 1px dashed #F59E0B;
+            border-radius: 16px; padding: 14px; margin-bottom: 16px;
+        }
+        .v2-subpage-spec h4 { font-size: 12px; font-weight: 800; color: #B45309; margin-bottom: 8px; }
+        .v2-subpage-spec p, .v2-subpage-spec li { font-size: 11px; color: #78350F; line-height: 1.65; }
+        .v2-subpage-spec ul { padding-left: 16px; margin-top: 6px; }
+        .spec-nav-tabs { display: flex; gap: 6px; padding: 10px 14px; border-bottom: 1px solid #E2E8F0; flex-shrink: 0; background: #FAFCFE; }
+        .spec-nav-tab {
+            padding: 5px 10px; border-radius: 16px; font-size: 10px; font-weight: 600;
+            cursor: pointer; background: #F1F5F9; color: #64748B; border: none;
+        }
+        .spec-nav-tab.active { background: #22668D; color: white; }
+        @media (max-width: 900px) {
+            body { flex-direction: column; align-items: center; }
+            .spec-panel { width: 360px; max-height: 500px; position: relative; top: 0; }
         }
         .iphone-pro {
             width: 360px; background: #FFFFFF; border-radius: 48px;
@@ -550,6 +606,7 @@
     </style>
 </head>
 <body>
+<div class="proto-wrap">
 <div class="iphone-pro">
     <div class="dynamic-bar">
         <div class="time">9:41</div>
@@ -560,7 +617,7 @@
         <div id="homeContent">
             <!-- 首页内容：保全服务前图标已变更，去掉🏛️改为⚖️风格 -->
             <div class="header-flex">
-                <div class="greeting"><h2>⚖️ 诉讼保</h2><p>一体化数字保函平台</p></div>
+                <div class="greeting"><h2>⚖️ 诉讼保</h2><p>一体化数字保函平台 · V2 原型</p></div>
                 <div class="search-icon-btn"><i class="fas fa-search"></i></div>
             </div>
             <div class="stats-card" style="display:none;">
@@ -647,6 +704,20 @@
         </div>
     </div>
 </div>
+</div>
+<aside class="spec-panel" id="specPanel">
+    <div class="spec-panel-header">
+        <h2 id="specTitle">📋 功能说明 · 开发规格</h2>
+        <p id="specSubtitle">点击原型任意页面/按钮，右侧同步显示对应功能说明</p>
+        <span class="spec-panel-badge">诉讼保小程序 V2 · 原型设计稿</span>
+    </div>
+    <div class="spec-nav-tabs">
+        <button class="spec-nav-tab active" data-spec-tab="detail">当前页面</button>
+        <button class="spec-nav-tab" data-spec-tab="index">功能索引</button>
+        <button class="spec-nav-tab" data-spec-tab="api">接口规范</button>
+    </div>
+    <div class="spec-panel-body" id="specBody"></div>
+</aside>
 <div class="sp-toast" id="spToast"></div>
 <script>
     const scrollContainer = document.getElementById('mainScroll');
@@ -667,6 +738,296 @@
         files: []
     };
 
+    /* ===== V2 功能说明规格（开发可直接参照） ===== */
+    const FUNC_SPECS = {
+        _global: {
+            title: '产品总览',
+            subtitle: '诉讼保小程序 · 一体化数字保函平台',
+            overview: '面向诉讼当事人/律师的微信小程序，提供财产/证据/行为保全、解封、先予执行、继续执行等全流程线上办理，集成语音填表、OCR识别、电子签章、费率测算、保函核验等能力。',
+            modules: [
+                { id: 'home', name: '首页', desc: '品牌入口、智能保全入口、保全服务九宫格、热门产品、范本库、动态资讯' },
+                { id: 'hall', name: '保全大厅', desc: '进行中统计、智能填表、续保/预审、机构比价、极速发起' },
+                { id: 'tools', name: '智能助手', desc: '风险评估、法院直通车、费率/核验/文书/测算等8大工具' },
+                { id: 'profile', name: '我的', desc: '用户信息、订单/工具快捷入口、账号设置' }
+            ],
+            nav: '底部 Tab：首页 | 保全大厅 | 智能助手 | 我的；二级页面以全屏 Overlay 展示，隐藏 TabBar',
+            tech: '前端：微信小程序/uni-app；语音：微信同声传译/第三方ASR；OCR：腾讯云/百度OCR；签章：CA电子签章SDK；区块链：司法链存证API'
+        },
+        home: {
+            title: '首页',
+            route: '/pages/home/index',
+            purpose: '产品主入口，引导用户进入智能保全申请或各保全类型办理',
+            elements: [
+                { name: '搜索按钮', action: '跳转 searchPage', api: 'GET /search/hot' },
+                { name: '智能保全入口', action: '跳转 smartApplyHub', note: '核心转化入口' },
+                { name: '保全服务8宫格', action: '按类型跳转对应子页', mapping: '财产→propertyPreserve 等' },
+                { name: '一体化服务4格', action: '提交案件/费率测算/真伪核验/客服' },
+                { name: '热门保函产品', action: '申请保全/立即申请按钮' },
+                { name: '司法范本库', action: '下载/获取/预览/复制 → templates' },
+                { name: '最新动态', action: '点击条目 → newsAll' },
+                { name: '司法科技保障', action: '点击 → blockchainVerify' }
+            ],
+            rules: ['首页数据区 stats-card 默认隐藏，可按运营配置展示', '产品卡片价格展示「¥500起」为最低价，实际以测算为准']
+        },
+        hall: {
+            title: '保全大厅',
+            route: '/pages/hall/index',
+            purpose: '保全业务集中办理大厅，展示进行中案件统计与合作机构',
+            elements: [
+                { name: '统计条', fields: '进行中保全数、待补充材料数、总保全额', api: 'GET /preserve/stats' },
+                { name: '智能语音填表', action: 'smartApplyHub' },
+                { name: '续保/变更快捷通道', action: 'hallRenew' },
+                { name: 'AI保全预审', action: 'aiPreReview' },
+                { name: '合作机构列表', action: '查看详情/申请保函 → insDetail/applyPreserve', api: 'GET /insurance/list' },
+                { name: '极速发起新保全', action: 'hallNew (=smartApplyHub)' }
+            ],
+            rules: ['机构列表按费率/出函时效/评级排序', '「待补充材料」点击应跳转材料补传页（待开发）']
+        },
+        tools: {
+            title: '智能助手',
+            route: '/pages/tools/index',
+            purpose: 'AI法律工具集，提供费率、核验、文书、测算等增值能力',
+            elements: [
+                { name: '保全增值服务4格', action: 'riskAssessment/courtExpress/guaranteeSpeed/eDelivery' },
+                { name: '区块链核验专区', action: 'blockchainVerify' },
+                { name: '工具8卡片', action: 'rateEstimate/verifyAuth/docGen/preserveCalc/lawyerMatch/blockchainStore/caseSearch/trialAssessment' },
+                { name: 'AI智能法律问答', action: 'customerService' }
+            ]
+        },
+        profile: {
+            title: '我的',
+            route: '/pages/profile/index',
+            purpose: '用户中心，展示认证信息、常用服务与账号设置',
+            elements: [
+                { name: '用户信息卡', fields: '姓名、手机号(脱敏)、VIP等级', api: 'GET /user/profile' },
+                { name: '常用服务8格', action: 'myOrders/profileDocGen/profileVerify/发票(待开发)/法院名录(待开发)/lawyerMatch/profileRate/customerService' },
+                { name: '消息通知开关', action: 'PUT /user/settings {notification: bool}', rule: '本地持久化+服务端同步' },
+                { name: '个人信息/安全中心/隐私政策/关于', action: '对应设置子页（待开发）' }
+            ]
+        },
+        smartApplyHub: {
+            title: '智能保全申请',
+            route: '/pages/preserve/smart-apply',
+            purpose: '核心申请流程：选类型→语音/扫描/手动填表→预览→签章',
+            flow: '选方式 → 智能填表 → 预览 → 签章（4步）',
+            fields: [
+                { field: 'type', label: '保全类型', type: 'enum', required: true, values: 'property|evidence|behavior|unseal' },
+                { field: 'caseNo', label: '案号', type: 'string', required: true, validate: '案号格式（YYYY）XX民初XXXX号' },
+                { field: 'court', label: '受理法院', type: 'string', required: true },
+                { field: 'respondent', label: '被保全人', type: 'string', required: true },
+                { field: 'amount', label: '保全金额', type: 'number', required: '财产/先予/继续执行', unit: '元' },
+                { field: 'propertyClue', label: '财产线索', type: 'string', required: '财产保全' },
+                { field: 'evidenceDesc', label: '证据描述', type: 'string', required: '证据保全' },
+                { field: 'behaviorReq', label: '请求事项', type: 'string', required: '行为保全' },
+                { field: 'phone', label: '联系人手机', type: 'tel', required: true, validate: '11位手机号' }
+            ],
+            inputModes: [
+                { mode: 'voice', desc: 'Web Speech API/微信录音→ASR→NLP解析', api: 'POST /ai/voice-parse', demo: 'parseVoiceText()' },
+                { mode: 'scan', desc: '上传PDF/JPG/PNG/DOC，单文件≤20MB', api: 'POST /ai/ocr-extract', actions: '拍照/批量/AI识别' },
+                { mode: 'manual', desc: '表单手动填写，实时同步FORM_DATA' }
+            ],
+            progress: '按 TYPE_META.fields 计算 filled/total，≥80% 可预览',
+            actions: [
+                { btn: '预览申请书', rule: '必填项完整后弹出 previewModal', next: 'signPage' },
+                { btn: '前往签章', rule: '跳转 signPage' }
+            ],
+            api: 'POST /preserve/draft 保存草稿；POST /preserve/submit 提交申请'
+        },
+        signPage: {
+            title: '电子签章',
+            route: '/pages/preserve/sign',
+            purpose: '申请书签章，支持手写/指纹/人脸三种方式',
+            prereq: '须先完成 previewModal 预览确认',
+            modes: [
+                { mode: 'manual', desc: 'Canvas手写签名，支持清除重签', output: '签名图片Base64' },
+                { mode: 'fingerprint', desc: '设备指纹验证（移动端生物识别API）' },
+                { mode: 'face', desc: '人脸识别活体检测' }
+            ],
+            submit: '确认签章并提交 → POST /preserve/submit {signType, signData} → 返回订单号，预计2h出函',
+            compliance: '符合《电子签名法》，签章数据上链存证'
+        },
+        propertyPreserve: { title: '财产保全', route: '/pages/preserve/property', purpose: '查封冻结银行存款、不动产、股权等', extra: '标的类型单选：银行存款/不动产/股权/其他', fields: 'caseNo,court,amount,respondent,propertyClue', inherit: 'smartApplyHub填表逻辑' },
+        evidencePreserve: { title: '证据保全', route: '/pages/preserve/evidence', purpose: '固定易灭失证据', extra: '证据类型多选：电子数据/视听资料/现场勘验', defaultMode: 'scan' },
+        behaviorPreserve: { title: '行为保全', route: '/pages/preserve/behavior', purpose: '责令/禁止一定行为', extra: '语音描述「责令停止…」自动填入 behaviorReq' },
+        unsealPreserve: { title: '解封保全', route: '/pages/preserve/unseal', purpose: '反担保或案件终结后解除查封', extra: '解封情形：提供反担保/判决生效/保全错误' },
+        advanceExecution: { title: '先予执行', route: '/pages/preserve/advance', purpose: '紧急情况先行给付', extra: '标的下拉：医疗费/劳动报酬/赡养费', metrics: '72h平均裁定、89%支持率（展示用）' },
+        noExecution: { title: '不予执行', route: '/pages/preserve/no-exec', purpose: '对仲裁裁决等提出不予执行', action: '输入执行依据文书号 → AI生成申请书(docGen)' },
+        continueExecution: { title: '继续执行', route: '/pages/preserve/continue', purpose: '案外人异议期间继续执行担保', fields: 'caseNo,court,amount,respondent' },
+        litigationGuarantee: { title: '诉讼担保', route: '/pages/preserve/guarantee', purpose: '广义诉讼担保入口', items: '解封担保→unsealPreserve；先予担保→咨询；继续执行→continueExecution' },
+        fastApply: { title: '极速申请保全', route: '/pages/preserve/fast', purpose: '2小时出函快速通道', flow: '同 smartApplyHub，强调上传起诉状OCR' },
+        preserveGuide: { title: '保全指引', route: '/pages/guide/index', purpose: '四步流程说明：准备材料→在线申请→递交法院→获取裁定', action: '开始极速申请→fastApply' },
+        submitCase: { title: '提交案件', route: '/pages/case/submit', purpose: '上传起诉状/裁定书启动保全', flow: '上传→AI识别→确认信息→匹配产品', fields: 'caseCause(案由), amount(诉讼标的)' },
+        rateCalc: { title: '费率测算', route: '/pages/tools/rate-calc', purpose: '多机构保费比价', inputs: [{ field: 'rateAmount', label: '保全金额', type: 'number' }, { field: 'rateSelect', label: '机构费率‰', type: 'select' }], formula: 'fee = max(480, amount × rate / 1000)', api: 'GET /insurance/rate-quote?amount=&orgId=' },
+        verifyAuth: { title: '真伪核验', route: '/pages/tools/verify', purpose: '扫码或输入保函编号查验真伪', inputs: 'verifyCode 保函编号≥8位', api: 'POST /guarantee/verify {code} → {valid, org, chainHash}', scan: '调用 wx.scanCode 扫保函二维码' },
+        customerService: { title: '7×24h客服', route: '/pages/service/chat', purpose: '智能顾问+人工客服', features: '快捷标签(费率/进度/材料)、文本输入、400-888-2025', api: 'POST /chat/send {message} → 流式回复或转人工' },
+        applyPreserve: { title: '申请保全', route: '/pages/product/apply', purpose: '诉讼财产保全保函产品页', fields: '保全金额、法院名称', action: '确认并极速办理→fastApply' },
+        applyNow: { title: '立即申请', route: '/pages/product/continue-exec', purpose: '继续执行保函专项', fields: '执行案号、担保金额', action: '立即支付并出函→创建订单+支付' },
+        templates: { title: '司法范本库', route: '/pages/templates/index', purpose: '保全文书模板下载/预览/复制', actions: 'download/preview/copy/get → GET /templates/{id}/file', extra: 'AI智能生成→docGen' },
+        newsAll: { title: '最新动态', route: '/pages/news/index', purpose: '政策/技术/数据资讯列表', filter: '全部|新规|技术|数据', api: 'GET /news/list?category=' },
+        riskAssessment: { title: '风险评估', route: '/pages/tools/risk', purpose: 'AI预判保全成功率', inputs: '案由、保全金额、是否有财产线索', output: '综合风险评分0-100，进度条颜色分级', api: 'POST /ai/risk-assess' },
+        courtExpress: { title: '法院直通车', route: '/pages/tools/court', purpose: '已接入法院搜索与收藏/加急', api: 'GET /court/list?keyword=；POST /court/favorite' },
+        guaranteeSpeed: { title: '保函加速', route: '/pages/tools/speed', purpose: 'VIP极速出函通道', rule: '加急费¥200/单，每日名额限制', api: 'POST /order/expedite' },
+        eDelivery: { title: '电子送达', route: '/pages/delivery/index', purpose: '保全裁定书线上签收', states: '待签收|已签收', action: '签收→POST /delivery/sign {caseNo}' },
+        blockchainVerify: { title: '一键核验', route: '/pages/blockchain/verify', purpose: '司法区块链存证查验', display: '链哈希、存证时间、区块高度', api: 'POST /blockchain/verify {hash|qrCode}' },
+        docGen: { title: '文书生成', route: '/pages/tools/doc-gen', purpose: 'AI辅助撰写保全文书', inputs: '文书类型select、案情摘要textarea', api: 'POST /ai/doc-generate → 预览+导出Word/复制' },
+        preserveCalc: { title: '保全测算', route: '/pages/tools/preserve-calc', purpose: '根据诉讼标的建议保全额度', formula: '合同纠纷30%、侵权50%、劳动争议100%', next: 'rateCalc' },
+        lawyerMatch: { title: '律师匹配', route: '/pages/tools/lawyer', purpose: '保全领域专家律师列表与预约', api: 'GET /lawyer/list；POST /lawyer/appointment' },
+        blockchainStore: { title: '区块链存证', route: '/pages/blockchain/store', purpose: '保函出具后上链存证', api: 'POST /blockchain/certificate {guaranteeNo}' },
+        caseSearch: { title: '类案检索', route: '/pages/tools/case-search', purpose: '裁判规则与保全要点检索', api: 'GET /case/search?keyword=' },
+        trialAssessment: { title: '庭审评估', route: '/pages/tools/trial', purpose: '胜诉率与保全支持率预判+风险因素分析', output: '完整评估报告PDF' },
+        hallRenew: { title: '保全续保/变更', route: '/pages/hall/renew', purpose: '原保函续保快捷办理', fields: '原保函编号、续保类型(期限/额度/法院变更)', api: 'POST /preserve/renew' },
+        aiPreReview: { title: 'AI保全预审', route: '/pages/hall/pre-review', purpose: '材料合规智能检测', api: 'POST /ai/material-review → 检测报告(合规/建议修改)' },
+        insDetail: { title: '机构详情', route: '/pages/insurance/detail', purpose: '合作保险机构详情页', display: '费率、评级、出函时效、好评率', action: '申请保函→applyPreserve' },
+        myOrders: { title: '我的订单', route: '/pages/order/list', purpose: '保全保函订单列表', states: '已出函|审核中|待支付', api: 'GET /order/list', action: '核验保函→verifyAuth' },
+        faq: { title: '常见问题', route: '/pages/faq/index', purpose: '保全与保函FAQ静态内容' },
+        searchPage: { title: '搜索', route: '/pages/search/index', purpose: '功能/模板/法院全局搜索', api: 'GET /search?q=' },
+        previewModal: { title: '申请书预览弹窗', purpose: '签章前全文预览', rule: 'formProgress≥80%且必填完整', content: 'buildDocPreviewHtml()动态生成', actions: '确认→signPage；返回修改→关闭' },
+        hallNew: { title: '极速发起新保全', route: '/pages/hall/new', purpose: '保全大厅快捷入口', inherit: 'smartApplyHub 完整流程' },
+        profileDocGen: { title: '文书生成', route: '/pages/profile/doc-gen', purpose: '我的-常用工具入口', inherit: 'docGen 页面逻辑' },
+        profileVerify: { title: '真伪核验', route: '/pages/profile/verify', purpose: '我的-常用工具入口', inherit: 'verifyAuth 页面逻辑' },
+        profileRate: { title: '费率估算', route: '/pages/profile/rate', purpose: '我的-常用工具入口', inherit: 'rateCalc 页面逻辑' },
+        policyRead: { title: '政策解读', route: '/pages/news/policy', purpose: '政策法规专题', inherit: 'newsAll 列表+筛选' },
+        rateEstimate: { title: '费率估算', route: '/pages/tools/rate-estimate', purpose: '智能助手工具入口', inherit: 'rateCalc 页面逻辑' }
+    };
+
+    let currentSpecTab = 'detail';
+    const specBody = document.getElementById('specBody');
+    const specTitleEl = document.getElementById('specTitle');
+    const specSubtitleEl = document.getElementById('specSubtitle');
+
+    function renderSpecFieldTable(fields) {
+        if (!fields || !fields.length) return '';
+        return '<table class="spec-table"><tr><th>字段</th><th>说明</th><th>类型</th><th>必填</th></tr>' +
+            fields.map(f => '<tr><td><code>' + (f.field||f.name) + '</code></td><td>' + (f.label||f.desc||'') + '</td><td>' + (f.type||'-') + '</td><td>' + (f.required===true?'是':(f.required||'-')) + '</td></tr>').join('') + '</table>';
+    }
+
+    function renderSpecElements(elements) {
+        if (!elements) return '';
+        return '<ul>' + elements.map(e => '<li><strong>' + e.name + '</strong>：' + (e.action||e.desc||'') +
+            (e.api ? ' <span class="spec-tag api">' + e.api + '</span>' : '') +
+            (e.rule ? ' <span class="spec-tag rule">' + e.rule + '</span>' : '') + '</li>').join('') + '</ul>';
+    }
+
+    function renderSubpageSpecBlock(pageId) {
+        const s = FUNC_SPECS[pageId];
+        if (!s || pageId === '_global') return '';
+        let html = '<div class="v2-subpage-spec"><h4>📋 本页功能说明（开发规格）</h4>';
+        if (s.purpose) html += '<p><strong>用途：</strong>' + s.purpose + '</p>';
+        if (s.flow) html += '<p><strong>流程：</strong>' + s.flow + '</p>';
+        if (s.route) html += '<p><strong>路由：</strong><code>' + s.route + '</code></p>';
+        if (s.fields && typeof s.fields === 'string') html += '<p><strong>必填字段：</strong>' + s.fields + '</p>';
+        if (s.rules) html += '<p><strong>规则：</strong></p><ul>' + (Array.isArray(s.rules) ? s.rules : [s.rules]).map(r => '<li>' + r + '</li>').join('') + '</ul>';
+        if (s.api) html += '<p><strong>接口：</strong><span class="spec-tag api">' + s.api + '</span></p>';
+        html += '</div>';
+        return html;
+    }
+
+    function renderSpecDetail(pageId) {
+        const s = FUNC_SPECS[pageId] || FUNC_SPECS._global;
+        specTitleEl.textContent = '📋 ' + (s.title || '功能说明');
+        specSubtitleEl.textContent = s.subtitle || s.purpose || s.overview || '';
+        let html = '';
+        if (s.overview) {
+            html += '<div class="spec-section"><div class="spec-section-title">产品概述</div><div class="spec-content">' + s.overview + '</div></div>';
+            if (s.modules) {
+                html += '<div class="spec-section"><div class="spec-section-title">模块划分</div><div class="spec-content"><table class="spec-table"><tr><th>模块</th><th>说明</th></tr>' +
+                    s.modules.map(m => '<tr><td>' + m.name + '</td><td>' + m.desc + '</td></tr>').join('') + '</table></div></div>';
+            }
+            if (s.nav) html += '<div class="spec-section"><div class="spec-section-title">导航结构</div><div class="spec-content">' + s.nav + '</div></div>';
+            if (s.tech) html += '<div class="spec-section"><div class="spec-section-title">技术栈建议</div><div class="spec-content">' + s.tech + '</div></div>';
+            return html;
+        }
+        if (s.route) html += '<div class="spec-inline-card">小程序路由：<code>' + s.route + '</code></div>';
+        if (s.purpose) html += '<div class="spec-section"><div class="spec-section-title">页面用途</div><div class="spec-content">' + s.purpose + '</div></div>';
+        if (s.flow) html += '<div class="spec-section"><div class="spec-section-title">业务流程</div><div class="spec-content">' + s.flow + '</div></div>';
+        if (s.prereq) html += '<div class="spec-section"><div class="spec-section-title">前置条件</div><div class="spec-content">' + s.prereq + '</div></div>';
+        if (s.fields && Array.isArray(s.fields)) html += '<div class="spec-section"><div class="spec-section-title">数据字段</div><div class="spec-content">' + renderSpecFieldTable(s.fields) + '</div></div>';
+        else if (s.fields && typeof s.fields === 'string') html += '<div class="spec-section"><div class="spec-section-title">数据字段</div><div class="spec-content">' + s.fields + '</div></div>';
+        if (s.inputModes) html += '<div class="spec-section"><div class="spec-section-title">录入方式</div><div class="spec-content"><ul>' + s.inputModes.map(m => '<li><strong>' + m.mode + '</strong>：' + m.desc + (m.api ? ' <span class="spec-tag api">' + m.api + '</span>' : '') + '</li>').join('') + '</ul></div></div>';
+        if (s.modes) html += '<div class="spec-section"><div class="spec-section-title">签章方式</div><div class="spec-content"><ul>' + s.modes.map(m => '<li><strong>' + m.mode + '</strong>：' + m.desc + '</li>').join('') + '</ul></div></div>';
+        if (s.elements) html += '<div class="spec-section"><div class="spec-section-title">页面元素与交互</div><div class="spec-content">' + renderSpecElements(s.elements) + '</div></div>';
+        if (s.actions) html += '<div class="spec-section"><div class="spec-section-title">按钮操作</div><div class="spec-content"><ul>' + (Array.isArray(s.actions) ? s.actions : [s.actions]).map(a => typeof a === 'string' ? '<li>' + a + '</li>' : '<li><strong>' + (a.btn||'') + '</strong>：' + (a.rule||a.action||'') + '</li>').join('') + '</ul></div></div>';
+        if (s.formula) html += '<div class="spec-section"><div class="spec-section-title">计算公式</div><div class="spec-content"><code>' + s.formula + '</code></div></div>';
+        if (s.progress) html += '<div class="spec-section"><div class="spec-section-title">进度规则</div><div class="spec-content">' + s.progress + '</div></div>';
+        if (s.api) html += '<div class="spec-section"><div class="spec-section-title">接口规范</div><div class="spec-content"><span class="spec-tag api">' + s.api + '</span></div></div>';
+        if (s.rules) html += '<div class="spec-section"><div class="spec-section-title">业务规则</div><div class="spec-content"><ul>' + (Array.isArray(s.rules) ? s.rules : [s.rules]).map(r => '<li>' + r + '</li>').join('') + '</ul></div></div>';
+        if (s.compliance) html += '<div class="spec-section"><div class="spec-section-title">合规要求</div><div class="spec-content">' + s.compliance + '</div></div>';
+        if (s.inherit) html += '<div class="spec-section"><div class="spec-section-title">继承逻辑</div><div class="spec-content">复用 <code>' + s.inherit + '</code> 的填表/预览/签章流程</div></div>';
+        if (s.extra) html += '<div class="spec-section"><div class="spec-section-title">扩展说明</div><div class="spec-content">' + s.extra + '</div></div>';
+        ['submit','output','display','states','filter','items','metrics','scan','features','content'].forEach(key => {
+            if (s[key]) html += '<div class="spec-section"><div class="spec-section-title">' + key + '</div><div class="spec-content">' + (typeof s[key] === 'string' ? s[key] : JSON.stringify(s[key])) + '</div></div>';
+        });
+        if (s.inputs && Array.isArray(s.inputs)) html += '<div class="spec-section"><div class="spec-section-title">输入项</div><div class="spec-content">' + renderSpecFieldTable(s.inputs) + '</div></div>';
+        else if (s.inputs && typeof s.inputs === 'string') html += '<div class="spec-section"><div class="spec-section-title">输入项</div><div class="spec-content">' + s.inputs + '</div></div>';
+        if (s.rule && !s.rules) html += '<div class="spec-section"><div class="spec-section-title">业务规则</div><div class="spec-content">' + s.rule + '</div></div>';
+        return html || '<div class="spec-content">暂无详细说明，请参考功能索引。</div>';
+    }
+
+    function renderSpecIndex() {
+        specTitleEl.textContent = '📋 功能索引';
+        specSubtitleEl.textContent = '全部页面与模块一览，供开发任务拆分参考';
+        const pages = Object.keys(FUNC_SPECS).filter(k => k !== '_global');
+        let html = '<div class="spec-section"><div class="spec-section-title">Tab 主模块</div><div class="spec-content"><table class="spec-table"><tr><th>ID</th><th>页面</th><th>路由</th></tr>';
+        ['home','hall','tools','profile'].forEach(id => { const s = FUNC_SPECS[id]; html += '<tr style="cursor:pointer" data-goto-spec="' + id + '"><td>' + id + '</td><td>' + s.title + '</td><td>' + (s.route||'-') + '</td></tr>'; });
+        html += '</table></div></div>';
+        html += '<div class="spec-section"><div class="spec-section-title">二级功能页（' + pages.length + '）</div><div class="spec-content"><table class="spec-table"><tr><th>ID</th><th>页面</th><th>路由</th></tr>';
+        pages.filter(id => !['home','hall','tools','profile'].includes(id)).forEach(id => {
+            const s = FUNC_SPECS[id]; html += '<tr style="cursor:pointer" data-goto-spec="' + id + '"><td>' + id + '</td><td>' + s.title + '</td><td>' + (s.route||'-') + '</td></tr>';
+        });
+        html += '</table></div></div>';
+        html += '<div class="spec-section"><div class="spec-section-title">核心申请链路</div><div class="spec-content"><p>首页/大厅 → smartApplyHub → previewModal → signPage → 订单出函</p><p>备选：各类型保全页(propertyPreserve等) → 同上流程</p></div></div>';
+        return html;
+    }
+
+    function renderSpecApi() {
+        specTitleEl.textContent = '📋 接口规范汇总';
+        specSubtitleEl.textContent = 'RESTful API 建议（开发联调参考）';
+        return '<div class="spec-section"><div class="spec-section-title">保全申请</div><div class="spec-content"><table class="spec-table"><tr><th>方法</th><th>路径</th><th>说明</th></tr>' +
+            '<tr><td>POST</td><td>/preserve/draft</td><td>保存填表草稿</td></tr>' +
+            '<tr><td>POST</td><td>/preserve/submit</td><td>签章后提交申请</td></tr>' +
+            '<tr><td>POST</td><td>/preserve/renew</td><td>续保/变更</td></tr>' +
+            '<tr><td>GET</td><td>/preserve/stats</td><td>大厅统计数据</td></tr></table></div></div>' +
+            '<div class="spec-section"><div class="spec-section-title">AI 能力</div><div class="spec-content"><table class="spec-table"><tr><th>方法</th><th>路径</th><th>说明</th></tr>' +
+            '<tr><td>POST</td><td>/ai/voice-parse</td><td>语音转文字+NLP填表</td></tr>' +
+            '<tr><td>POST</td><td>/ai/ocr-extract</td><td>材料OCR识别</td></tr>' +
+            '<tr><td>POST</td><td>/ai/doc-generate</td><td>AI文书生成</td></tr>' +
+            '<tr><td>POST</td><td>/ai/risk-assess</td><td>风险评估</td></tr>' +
+            '<tr><td>POST</td><td>/ai/material-review</td><td>材料预审</td></tr></table></div></div>' +
+            '<div class="spec-section"><div class="spec-section-title">保函与订单</div><div class="spec-content"><table class="spec-table"><tr><th>方法</th><th>路径</th><th>说明</th></tr>' +
+            '<tr><td>GET</td><td>/insurance/list</td><td>合作机构列表</td></tr>' +
+            '<tr><td>GET</td><td>/insurance/rate-quote</td><td>费率报价</td></tr>' +
+            '<tr><td>POST</td><td>/guarantee/verify</td><td>保函真伪核验</td></tr>' +
+            '<tr><td>GET</td><td>/order/list</td><td>我的订单</td></tr>' +
+            '<tr><td>POST</td><td>/order/expedite</td><td>加急出函</td></tr></table></div></div>' +
+            '<div class="spec-section"><div class="spec-section-title">区块链</div><div class="spec-content"><table class="spec-table"><tr><th>方法</th><th>路径</th><th>说明</th></tr>' +
+            '<tr><td>POST</td><td>/blockchain/verify</td><td>链上存证核验</td></tr>' +
+            '<tr><td>POST</td><td>/blockchain/certificate</td><td>申请存证凭证</td></tr></table></div></div>' +
+            '<div class="spec-section"><div class="spec-section-title">通用</div><div class="spec-content"><table class="spec-table"><tr><th>方法</th><th>路径</th><th>说明</th></tr>' +
+            '<tr><td>GET</td><td>/user/profile</td><td>用户信息</td></tr>' +
+            '<tr><td>PUT</td><td>/user/settings</td><td>用户设置</td></tr>' +
+            '<tr><td>GET</td><td>/news/list</td><td>资讯列表</td></tr>' +
+            '<tr><td>GET</td><td>/templates/{id}/file</td><td>模板下载</td></tr>' +
+            '<tr><td>POST</td><td>/chat/send</td><td>客服消息</td></tr></table></div></div>';
+    }
+
+    function updateSpecPanel(pageId) {
+        if (currentSpecTab === 'index') specBody.innerHTML = renderSpecIndex();
+        else if (currentSpecTab === 'api') specBody.innerHTML = renderSpecApi();
+        else specBody.innerHTML = renderSpecDetail(pageId || currentNav);
+        specBody.querySelectorAll('[data-goto-spec]').forEach(row => {
+            row.addEventListener('click', () => { currentSpecTab = 'detail'; document.querySelectorAll('.spec-nav-tab').forEach(t => t.classList.toggle('active', t.dataset.specTab === 'detail')); updateSpecPanel(row.dataset.gotoSpec); });
+        });
+    }
+
+    document.querySelectorAll('.spec-nav-tab').forEach(tab => {
+        tab.addEventListener('click', () => {
+            currentSpecTab = tab.dataset.specTab;
+            document.querySelectorAll('.spec-nav-tab').forEach(t => t.classList.toggle('active', t === tab));
+            updateSpecPanel(subOverlay.classList.contains('active') ? (subTitle.textContent && Object.keys(FUNC_SPECS).find(k => FUNC_SPECS[k].title === subTitle.textContent) || currentNav) : currentNav);
+        });
+    });
+    updateSpecPanel('home');
+
     function showToast(msg) {
         spToast.textContent = msg;
         spToast.classList.add('show');
@@ -679,14 +1040,21 @@
         if (!p) { showToast('功能开发中'); return; }
         subTitle.textContent = p.title;
         subSubtitle.textContent = p.sub || '';
-        subBody.innerHTML = typeof p.render === 'function' ? p.render() : p.html;
+        const content = typeof p.render === 'function' ? p.render() : p.html;
+        subBody.innerHTML = renderSubpageSpecBlock(id) + content;
         subOverlay.classList.add('active');
         document.getElementById('bottomNav').style.display = 'none';
         bindSubPageEvents(id);
+        currentSpecTab = 'detail';
+        document.querySelectorAll('.spec-nav-tab').forEach(t => t.classList.toggle('active', t.dataset.specTab === 'detail'));
+        updateSpecPanel(id);
     }
     function closeSubPage() {
         subOverlay.classList.remove('active');
         document.getElementById('bottomNav').style.display = 'flex';
+        currentSpecTab = 'detail';
+        document.querySelectorAll('.spec-nav-tab').forEach(t => t.classList.toggle('active', t.dataset.specTab === 'detail'));
+        updateSpecPanel(currentNav);
     }
 
     /* ===== V1 智能填表引擎 ===== */
@@ -841,6 +1209,9 @@
         if (!ok) { showToast('请先完善必填信息（进度≥80%）'); return; }
         document.getElementById('previewDocContent').innerHTML = buildDocPreviewHtml();
         document.getElementById('previewModal').classList.add('show');
+        currentSpecTab = 'detail';
+        document.querySelectorAll('.spec-nav-tab').forEach(t => t.classList.toggle('active', t.dataset.specTab === 'detail'));
+        updateSpecPanel('previewModal');
     }
 
     function closePreviewModal() { document.getElementById('previewModal').classList.remove('show'); }
@@ -1504,6 +1875,9 @@
         scrollContainer.scrollTop = 0;
         attachGlobalClicks();
         if (activeId === 'profile') attachSwitchToggle();
+        currentSpecTab = 'detail';
+        document.querySelectorAll('.spec-nav-tab').forEach(t => t.classList.toggle('active', t.dataset.specTab === 'detail'));
+        updateSpecPanel(activeId);
     }
     
     // 修复消息通知开关交互
