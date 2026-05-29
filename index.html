@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>诉讼保 · 小程序</title>
+    <title>诉讼保 · 小程序 PRD 原型</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet">
     <style>
@@ -579,8 +579,18 @@
         .prd-list li::before { content: "✓"; position: absolute; left: 0; color: #2C7A6E; font-weight: 700; font-size: 11px; }
         .prd-api-box { background: #0F172A; color: #E2E8F0; border-radius: 10px; padding: 12px 14px; font-size: 11px; font-family: Consolas, Monaco, monospace; line-height: 1.6; word-break: break-all; }
         .prd-highlight { outline: 2px solid #F59E0B !important; outline-offset: 2px; background-color: rgba(245,158,11,0.08) !important; }
+        .prd-pending { outline: 2px dashed #94A3B8 !important; outline-offset: 2px; background-color: rgba(148,163,184,0.06) !important; animation: prd-pending-pulse 1s ease-in-out infinite; }
+        @keyframes prd-pending-pulse { 0%, 100% { outline-color: #94A3B8; } 50% { outline-color: #64748B; } }
         .prd-tooltip { position: fixed; z-index: 99999; pointer-events: none; background: #1E293B; color: white; font-size: 11px; font-weight: 600; padding: 6px 10px; border-radius: 8px; max-width: 260px; opacity: 0; transition: opacity 0.15s; }
         .prd-tooltip.show { opacity: 1; }
+        .prd-business-text { font-size: 13px; color: #334155; line-height: 1.75; background: #F8FAFC; border: 1px solid #E2E8F0; border-radius: 12px; padding: 12px 14px; }
+        .prd-logic-item { background: #F8FAFC; border: 1px solid #E2E8F0; border-radius: 12px; padding: 12px 14px; margin-bottom: 8px; font-size: 12px; color: #334155; line-height: 1.7; }
+        .prd-logic-item strong { display: block; color: #22668D; font-size: 12px; margin-bottom: 4px; }
+        .prd-logic-sub { margin-top: 8px; padding-left: 14px; border-left: 2px solid #CBD5E1; }
+        .prd-logic-sub li { font-size: 11px; color: #475569; line-height: 1.65; padding: 4px 0; list-style: none; position: relative; }
+        .prd-logic-sub li::before { content: "·"; position: absolute; left: -10px; color: #2C7A6E; font-weight: 700; }
+        .prd-pending-hint { position: fixed; z-index: 99997; background: rgba(30,58,95,0.92); color: white; font-size: 11px; padding: 4px 10px; border-radius: 20px; pointer-events: none; opacity: 0; transition: opacity 0.2s; }
+        .prd-pending-hint.show { opacity: 1; }
         .prd-mode-bar { position: fixed; bottom: 16px; left: 50%; transform: translateX(-50%); background: rgba(30,58,95,0.95); color: white; padding: 8px 20px; border-radius: 30px; font-size: 12px; font-weight: 600; z-index: 99998; }
         @media (max-width: 900px) { body.prd-mode { flex-direction: column; } .prd-workspace { flex-direction: column; align-items: center; } .prd-sidebar { width: 100%; max-width: 420px; position: relative; max-height: 50vh; } }
     </style>
@@ -688,18 +698,19 @@
 </div>
 <aside class="prd-sidebar" id="prdSidebar">
     <div class="prd-sidebar-header">
-        <h1>📋 诉讼保小程序 · PRD-V1 产品需求文档</h1>
-        <p>基于「诉讼保-小程序.V1.html」原型。鼠标悬停任意功能区域，查看完整业务需求说明；每个交互事件均含 mouseenter / mouseleave / click 等说明，开发可直接据此实现业务逻辑与接口。</p>
-        <div class="prd-badge-row"><span class="prd-badge">PRD-V1</span><span class="prd-badge">悬停查看需求</span><span class="prd-badge">全事件覆盖</span><span class="prd-badge">基于 V1 原型</span></div>
+        <h1>📋 诉讼保小程序 · 产品需求文档</h1>
+        <p>鼠标悬停任意功能区域并<strong>停留 1 秒</strong>，右侧将呈现三项产品需求：<strong>①业务需求</strong>、<strong>②功能详细逻辑</strong>、<strong>③验收标准</strong>。</p>
+        <div class="prd-badge-row"><span class="prd-badge">V1.0 PRD</span><span class="prd-badge">悬停 1 秒查看</span><span class="prd-badge">三项标准结构</span></div>
     </div>
     <div class="prd-sidebar-body" id="prdPanelBody">
-        <div class="prd-empty" id="prdEmpty"><i class="fas fa-hand-pointer"></i><p>将鼠标移动到左侧原型页面的任意功能按钮、输入框或可点击区域，此处将显示对应的业务需求文档详解。</p></div>
+        <div class="prd-empty" id="prdEmpty"><i class="fas fa-hand-pointer"></i><p>将鼠标移动到左侧原型页面的任意功能按钮、输入框或可点击区域，<strong>停留 1 秒</strong>后此处将显示：<br>1、业务需求是什么？<br>2、功能详细逻辑<br>3、验收标准</p></div>
         <div id="prdContent" style="display:none;"></div>
     </div>
 </aside>
 </div>
-<div class="prd-mode-bar"><i class="fas fa-info-circle"></i> PRD-V1 预览模式 · 悬停高亮 · 点击可体验 V1 原型交互</div>
+<div class="prd-mode-bar"><i class="fas fa-info-circle"></i> PRD 预览模式 · 悬停停留 1 秒呈现需求 · 点击可体验原型交互</div>
 <div class="prd-tooltip" id="prdTooltip"></div>
+<div class="prd-pending-hint" id="prdPendingHint">停留中… 1 秒后显示需求</div>
 <div class="sp-toast" id="spToast"></div>
 <script>
     const scrollContainer = document.getElementById('mainScroll');
@@ -1621,15 +1632,122 @@
     document.getElementById('previewToSignBtn').addEventListener('click', () => { closePreviewModal(); openSubPage('signPage'); });
     attachGlobalClicks();
     /* PRD_LAYER_START */
-/* 诉讼保小程序 PRD-V1 规格库 — 基于 诉讼保-小程序.V1.html 原型 */
+/* 诉讼保小程序 PRD 规格库 — 注入到 PRD.html */
 (function initPRD() {
     const prdEmpty = document.getElementById('prdEmpty');
     const prdContent = document.getElementById('prdContent');
     const prdTooltip = document.getElementById('prdTooltip');
+    const prdPendingHint = document.getElementById('prdPendingHint');
+    const HOVER_DELAY_MS = 1000;
     let activeEl = null;
+    let hoverTimer = null;
+    let pendingEl = null;
 
-    function S(id, title, module, page, priority, events, requirements, acceptance, api) {
-        return { id, title, module, page, priority: priority || 'P1', events: events || {}, requirements: requirements || [], acceptance: acceptance || [], api: api || '' };
+    function clearHoverPending() {
+        if (hoverTimer) {
+            clearTimeout(hoverTimer);
+            hoverTimer = null;
+        }
+        if (pendingEl) {
+            pendingEl.classList.remove('prd-pending');
+            pendingEl = null;
+        }
+        prdPendingHint.classList.remove('show');
+    }
+
+    function activateHoverSpec(el, spec) {
+        clearHoverPending();
+        if (activeEl && activeEl !== el) activeEl.classList.remove('prd-highlight', 'prd-pending');
+        activeEl = el;
+        el.classList.remove('prd-pending');
+        el.classList.add('prd-highlight');
+        renderPanel(spec);
+        showTooltip(el, spec);
+    }
+
+    function scheduleHoverSpec(el, spec) {
+        clearHoverPending();
+        if (activeEl && activeEl !== el) activeEl.classList.remove('prd-highlight');
+        pendingEl = el;
+        el.classList.add('prd-pending');
+        const rect = el.getBoundingClientRect();
+        prdPendingHint.style.left = Math.min(window.innerWidth - 160, Math.max(8, rect.left)) + 'px';
+        prdPendingHint.style.top = Math.max(8, rect.top - 28) + 'px';
+        prdPendingHint.classList.add('show');
+        hoverTimer = setTimeout(function() {
+            hoverTimer = null;
+            prdPendingHint.classList.remove('show');
+            if (pendingEl !== el) return;
+            pendingEl = null;
+            activateHoverSpec(el, spec);
+        }, HOVER_DELAY_MS);
+    }
+
+    function buildLegacyBusiness(title, module, page, events, requirements) {
+        const parts = [];
+        parts.push('「' + title + '」属于' + module + '模块，在「' + page + '」页面为用户提供保全业务办理能力。');
+        if (requirements && requirements.length) parts.push('核心业务诉求：' + requirements.join('；') + '。');
+        if (events && events.click) parts.push('用户通过点击触发：' + events.click);
+        return parts.join('');
+    }
+
+    function buildLegacyLogic(events, requirements) {
+        const logic = [];
+        const evtLabels = { click: '点击交互', mouseenter: '悬停提示', mouseleave: '移出取消', focus: '聚焦', blur: '失焦校验', input: '输入同步', change: '选项变更' };
+        if (events) Object.keys(events).forEach(function(k) {
+            if (k === 'mouseenter' || k === 'mouseleave') return;
+            logic.push('【' + (evtLabels[k] || k) + '】' + events[k]);
+        });
+        if (requirements) requirements.forEach(function(r) { logic.push(r); });
+        return logic;
+    }
+
+    function S(id, title, module, page, priority, arg6, arg7, arg8, arg9) {
+        var business, logic, acceptance, api;
+        if (typeof arg6 === 'string') {
+            business = arg6;
+            logic = arg7 || [];
+            acceptance = arg8 || [];
+            api = arg9 || '';
+        } else {
+            business = buildLegacyBusiness(title, module, page, arg6, arg7);
+            logic = buildLegacyLogic(arg6, arg7);
+            acceptance = arg8 || [];
+            api = arg9 || '';
+        }
+        return { id: id, title: title, module: module, page: page, priority: priority || 'P1', business: business, logic: logic, acceptance: acceptance || [], api: api || '' };
+    }
+
+    var SMART_FORM_LOGIC = [
+        { title: 'a）语音填表', body: '点击麦克风开始录音，Web Speech API（zh-CN）实时转写；浏览器不支持时降级为演示模式。转写完成后点击「智能解析并填入」，系统通过正则+NLP 提取案号、法院、金额、被保全人、财产线索等字段，高亮填入对应输入框并更新进度环。', subs: [
+            '财产保全示例：案号是2025京0105民初12345号，受理法院北京市朝阳区人民法院，申请财产保全金额850万元，被保全人是北京某某贸易有限公司，财产线索是中国工商银行账户6222021234567890',
+            '证据保全示例：案号（2025）沪0115民初8821号，浦东新区人民法院，被保全人上海某某科技有限公司，需要保全微信聊天记录和网页侵权截图等电子数据证据',
+            '行为保全示例：案号2025粤0305民初5566号，深圳市南山区人民法院，被保全人某某制造公司，请求责令被申请人立即停止生产、销售侵权产品'
+        ]},
+        { title: 'b）扫描上传', body: '支持拖拽或点击上传 PDF/JPG/PNG/DOC/DOCX，单文件≤20MB，可多文件追加至材料包。提供「拍照扫描」调起相机拍摄起诉状首页；「批量打包」将多份材料归为一个申请包；「AI识别」从材料中提取结构化字段自动填入表单。', subs: [
+            '上传成功后展示文件名列表，支持单项删除',
+            'OCR 识别失败时提示用户改用手动填写或重新拍摄'
+        ]},
+        { title: 'c）手动填写', body: '展示案号、受理法院、被保全人、保全金额、财产线索等输入框（字段集随保全类型联动）。input 事件实时 syncFormFromInputs 同步 FORM_DATA，blur 时校验案号格式、金额数值、手机号格式；已识别字段添加 v1-auto-filled 高亮动画。', subs: [
+            '必填项按 TYPE_META.fields 定义，进度≥80% 方可预览签章',
+            '字段 id 规范：fld_caseNo、fld_court、fld_amount、fld_respondent、fld_propertyClue 等'
+        ]}
+    ];
+
+    var PROPERTY_TARGET_LOGIC = [
+        { title: 'a）银行存款', body: '默认选中。表单需填写具体开户行及账号作为财产线索；语音解析优先匹配「XX银行+账户+数字账号」模式；申请书模板使用「冻结银行存款」表述。' },
+        { title: 'b）不动产', body: '需填写坐落位置、权属信息（房产证号）；担保金额通常对应评估价或诉讼请求金额；申请书切换为「查封不动产」表述。' },
+        { title: 'c）股权', body: '需填写目标公司名称、持股比例或股权数量；适用于股东权益冻结场景；财产线索为被保全人持有的股权信息。' },
+        { title: 'd）其他', body: '涵盖机动车、知识产权、应收账款、机器设备等；财产线索为自由文本，用户可语音或手动描述具体财产信息。' }
+    ];
+
+    function logicToHtml(items) {
+        if (!items || !items.length) return '';
+        return items.map(function(item) {
+            if (typeof item === 'string') return '<li>' + item + '</li>';
+            var subHtml = item.subs ? '<ul class="prd-logic-sub">' + item.subs.map(function(s) { return '<li>' + s + '</li>'; }).join('') + '</ul>' : '';
+            return '<div class="prd-logic-item"><strong>' + item.title + '</strong>' + item.body + subHtml + '</div>';
+        }).join('');
     }
 
     const PRD_SPECS = {
@@ -1802,176 +1920,151 @@
         'file-remove': S('file-remove','删除已上传文件','扫描上传','填表', 'P1', { click: 'splice FORM_DATA.files 并 renderFileList。' }, [''], ['列表项移除'], ''),
         'toast-action': S('toast-action','通用操作反馈','通用','全局', 'P2', { click: 'showToast 2.2s 底部提示。' }, ['sp-toast 组件'], ['toast show 类'], ''),
         'generic-link': S('generic-link','文字链接','通用','各页', 'P2', { click: '按文案跳转对应子页或 Tab。' }, ['service-section-title a'], ['resolvePageId'], ''),
-        'generic-btn-primary': S('generic-btn-primary','主按钮','通用','子页面', 'P0', {
-            mouseenter: '悬停高亮主操作按钮，右侧展示该按钮的业务说明。',
-            mouseleave: '移出取消按钮高亮。',
-            click: '主流程提交/下一步，具体见 data-action 或 data-page。'
-        }, ['sp-btn-primary 样式'], [''], ''),
-        'generic-btn-secondary': S('generic-btn-secondary','次按钮','通用','子页面', 'P1', {
-            mouseenter: '悬停高亮辅助操作按钮。',
-            mouseleave: '移出取消按钮高亮。',
-            click: '辅助操作：预览/下载/返回等。'
-        }, ['sp-btn-secondary'], [''], ''),
-        'generic-select': S('generic-select','下拉选择','通用','子页面', 'P1', {
-            mouseenter: '悬停提示可展开选项列表。',
-            mouseleave: '移出取消高亮。',
-            click: '展开 native/select 或自定义 picker。',
-            change: '选项变更触发业务逻辑或仅 UI。'
-        }, ['sp-select 样式'], [''], ''),
-        'generic-textarea': S('generic-textarea','多行文本','文书生成','docGen', 'P1', {
-            mouseenter: '悬停提示此处输入案情摘要，供 AI 文书生成使用。',
-            mouseleave: '移出取消输入区高亮。',
-            focus: '聚焦弹出键盘，占位符消失。',
-            input: '案情摘要输入，供 AI 生成。',
-            blur: '失焦时可选校验最小字数（如≥20字）。'
-        }, ['sp-textarea'], [''], ''),
-        'sign-canvas': S('sign-canvas','手写签章画布','电子签章','signPage', 'P0', {
-            mouseenter: '提示在画布区域按住鼠标/触摸拖动完成手写签名。',
-            mouseleave: '移出画布区域，若正在绘制则结束当前笔划。',
-            mousedown: '按下开始新笔划，隐藏「请在此手写签名」提示。',
-            mousemove: '按住拖动绘制 2.5px 深色笔迹，lineCap=round。',
-            mouseup: '抬起结束当前笔划，保留已绘制内容。',
-            touchstart: '移动端触摸开始，等同 mousedown。',
-            touchmove: '移动端拖动绘制，需 preventDefault 防页面滚动。',
-            touchend: '触摸结束，等同 mouseup。'
-        }, ['canvas 600×280','支持 mouse + touch 双端','签章数据需导出为图片/PDF 嵌入申请书'], ['绘制后 canvas 非空','清除重签可清空'], 'POST /api/sign/handwrite'),
-        'sign-bio-fingerprint': S('sign-bio-fingerprint','开始指纹验证','电子签章','signPage', 'P1', {
-            mouseenter: '提示调用设备指纹模块进行生物识别签章。',
-            mouseleave: '移出取消按钮高亮。',
-            click: '添加 v1-bio-scanning 动画，2.2s 后 Toast「指纹验证通过」，更新 signDoneFlag。'
-        }, ['符合《电子签名法》','Home 键/侧边传感器'], ['disabled 态防重复点击'], ''),
-        'sign-bio-face': S('sign-bio-face','开始人脸识别','电子签章','signPage', 'P1', {
-            mouseenter: '提示调起前置摄像头进行活体检测与人脸比对。',
-            mouseleave: '移出取消按钮高亮。',
-            click: 'face 框扫描动画 2.2s，Toast「人脸识别通过」，更新 signDoneFlag。'
-        }, ['光线充足提示','活体检测防照片攻击'], ['扫描动画结束后恢复按钮'], ''),
-        'nav-to-preview': S('nav-to-preview','前往签章（跳过预览）','智能申请','各保全页', 'P1', {
-            mouseenter: '提示可直接跳转签章页，建议先完成预览。',
-            mouseleave: '移出取消高亮。',
-            click: 'data-page=signPage 打开 signPage，不强制 preview 校验（原型行为）。'
-        }, ['v1-btn-outline 样式','生产环境应校验 preview 已完成'], ['openSubPage signPage'], ''),
-        'home-view-all': S('home-view-all','查看全部产品','首页','热门产品', 'P2', {
-            mouseenter: '提示查看全部保函产品列表。',
-            mouseleave: '移出取消链接高亮。',
-            click: '跳转 products 列表或 Toast「全部产品」（待扩展）。'
-        }, ['链接在 service-section-title a'], [''], ''),
-        'hall-smart-entry': S('hall-smart-entry','大厅智能语音填表','保全大厅','保全大厅', 'P0', {
-            mouseenter: '大厅版智能填表入口，同 smartApplyHub 全流程。',
-            mouseleave: '移出取消入口高亮。',
-            click: '打开 smartApplyHub 子页。'
-        }, ['大厅顶部 v1-smart-entry','语音/扫描/预览/签章 chip'], ['打开 smartApplyHub'], ''),
-        'hall-filter': S('hall-filter','大厅筛选','保全大厅','保全大厅', 'P2', {
-            mouseenter: '提示按条件筛选大厅内容（原型为 sliders 图标占位）。',
-            mouseleave: '移出取消高亮。',
-            click: '打开筛选面板或 Toast「筛选功能开发中」。'
-        }, ['search-icon-btn 变体'], [''], ''),
-        'tools-filter': S('tools-filter','助手筛选/打印','智能助手','智能助手', 'P2', {
-            mouseenter: '提示工具页辅助操作（原型 print 图标）。',
-            mouseleave: '移出取消高亮。',
-            click: 'Toast 或打开打印/筛选（待开发）。'
-        }, [''], [''], ''),
-        'profile-qrcode': S('profile-qrcode','个人二维码','我的','我的', 'P2', {
-            mouseenter: '提示展示用户身份二维码，供线下核验或分享。',
-            mouseleave: '移出取消高亮。',
-            click: '展示小程序码/用户 ID 二维码弹层。'
-        }, ['header search-icon-btn 变体'], [''], ''),
-        'preserve-guide-start': S('preserve-guide-start','开始极速申请','保全指引','preserveGuide', 'P0', {
-            mouseenter: '指引页底部 CTA，进入 fastApply 极速通道。',
-            mouseleave: '移出取消高亮。',
-            click: 'openSubPage fastApply。'
-        }, ['preserveGuide 最后一步转化'], ['打开 fastApply'], ''),
-        'litigation-unseal': S('litigation-unseal','诉讼担保-解封办理','诉讼担保','litigationGuarantee', 'P1', {
-            mouseenter: '提示跳转解封保全专项流程。',
-            mouseleave: '移出取消高亮。',
-            click: 'openSubPage unsealPreserve。'
-        }, ['sp-list-item 解封担保'], ['打开 unsealPreserve'], ''),
-        'litigation-continue': S('litigation-continue','诉讼担保-继续执行','诉讼担保','litigationGuarantee', 'P1', {
-            mouseenter: '提示跳转继续执行担保流程。',
-            mouseleave: '移出取消高亮。',
-            click: 'openSubPage continueExecution。'
-        }, ['sp-list-item 继续执行担保'], ['打开 continueExecution'], ''),
-        'apply-preserve-submit': S('apply-preserve-submit','确认并极速办理','申请保全','applyPreserve', 'P0', {
-            mouseenter: '产品页确认后进入 fastApply 智能填表。',
-            mouseleave: '移出取消高亮。',
-            click: 'openSubPage fastApply，携带已填金额/法院。'
-        }, ['applyPreserve 转化按钮'], ['打开 fastApply'], ''),
-        'apply-now-pay': S('apply-now-pay','立即支付并出函','继续执行保函','applyNow', 'P0', {
-            mouseenter: '提示创建订单并跳转支付。',
-            mouseleave: '移出取消高亮。',
-            click: 'Toast「订单已创建，请完成支付」，后端创建订单+调起微信支付。'
-        }, ['需填写执行案号与担保金额'], ['Toast + 订单号'], 'POST /api/order/create'),
-        'my-order-verify': S('my-order-verify','订单-核验保函','我的订单','myOrders', 'P1', {
-            mouseenter: '从订单直达真伪核验，预填保函编号。',
-            mouseleave: '移出取消高亮。',
-            click: 'openSubPage verifyAuth。'
-        }, ['已出函订单 secondary 按钮'], ['打开 verifyAuth'], ''),
-        'e-delivery-sign': S('e-delivery-sign','裁定书签收','电子送达','eDelivery', 'P1', {
-            mouseenter: '提示对待签收裁定书进行电子送达签收。',
-            mouseleave: '移出取消高亮。',
-            click: 'Toast「裁定书已签收」，更新状态为已签收。'
-        }, ['待签收列表 primary 小按钮'], ['状态变更'], 'POST /api/delivery/sign'),
-        'guarantee-speed': S('guarantee-speed','开启加急通道','保函加速','guaranteeSpeed', 'P2', {
-            mouseenter: '提示 VIP 加急出函，¥200/单，展示剩余名额。',
-            mouseleave: '移出取消高亮。',
-            click: 'Toast「已为您开启加急通道」。'
-        }, ['今日剩余名额 7/20'], ['Toast'], 'POST /api/order/expedite'),
-        'ai-prereview-start': S('ai-prereview-start','AI材料检测','AI预审','aiPreReview', 'P1', {
-            mouseenter: '提示上传材料包进行 AI 合规检测。',
-            mouseleave: '移出取消高亮。',
-            click: 'Toast「检测完成：3项建议修改」，展示检测报告。'
-        }, [''], ['Toast + 报告列表'], 'POST /api/ai/prereview'),
-        'hall-renew-submit': S('hall-renew-submit','提交续保','续保变更','hallRenew', 'P1', {
-            mouseenter: '提示提交续保/变更申请。',
-            mouseleave: '移出取消高亮。',
-            click: 'Toast「续保申请已提交」。'
-        }, ['需原保函号+续保类型'], ['Toast'], 'POST /api/preserve/renew'),
-        'blockchain-verify-submit': S('blockchain-verify-submit','验证链上数据','区块链核验','blockchainVerify', 'P1', {
-            mouseenter: '提示比对链哈希与保函数据一致性。',
-            mouseleave: '移出取消高亮。',
-            click: 'Toast「链上核验通过」。'
-        }, ['展示链哈希/存证时间/区块高度'], ['Toast'], 'GET /api/blockchain/verify'),
-        'ins-detail-apply': S('ins-detail-apply','机构详情-申请保函','机构详情','insDetail', 'P0', {
-            mouseenter: '从机构详情进入 applyPreserve 标准产品页。',
-            mouseleave: '移出取消高亮。',
-            click: 'openSubPage applyPreserve。'
-        }, ['永安等机构详情页'], ['打开 applyPreserve'], ''),
-        'search-hot-tag': S('search-hot-tag','搜索页热门标签','搜索','searchPage', 'P2', {
-            mouseenter: '提示点击热门词快速跳转对应功能页。',
-            mouseleave: '移出取消标签高亮。',
-            click: 'data-page 跳转 propertyPreserve/rateCalc/verifyAuth 等。'
-        }, ['sp-tag data-action=nav'], ['openSubPage'], ''),
-        'property-target-tag': S('property-target-tag','财产标的类型','财产保全','propertyPreserve', 'P1', {
-            mouseenter: '单选标的类型：银行存款/不动产/股权/其他。',
-            mouseleave: '移出取消标签高亮。',
-            click: '同组 sp-tag 互斥 selected，影响表单提示文案。'
-        }, ['propertyPreserve 标的类型行'], ['selected 切换'], ''),
-        'unseal-reason-tag': S('unseal-reason-tag','解封情形','解封保全','unsealPreserve', 'P1', {
-            mouseenter: '单选解封情形：反担保/判决生效/保全错误。',
-            mouseleave: '移出取消标签高亮。',
-            click: '切换 selected，影响申请书模板字段。'
-        }, ['unsealPreserve 解封情形'], ['selected 切换'], ''),
-        'risk-factor-tag': S('risk-factor-tag','财产线索选项','风险评估','riskAssessment', 'P1', {
-            mouseenter: '单选是否有财产线索：有/不确定/无。',
-            mouseleave: '移出取消标签高亮。',
-            click: '影响 AI 风险评分权重。'
-        }, ['riskAssessment 第三项'], ['selected 切换'], ''),
-        'chat-input': S('chat-input','客服输入框','客服','customerService', 'P1', {
-            mouseenter: '提示输入咨询问题，Enter 或点击发送。',
-            mouseleave: '移出取消输入框高亮。',
-            focus: '聚焦键盘弹起。',
-            input: '实时输入用户问题文本。',
-            blur: '失焦保留已输入内容。'
-        }, ['chatInput id'], ['非空才可发送'], ''),
-        'preview-modal-doc': S('preview-modal-doc','申请书预览正文','预览弹窗','预览', 'P1', {
-            mouseenter: '只读展示 buildDocPreviewHtml 生成的申请书全文，可滚动核对。',
-            mouseleave: '移出取消预览区高亮。'
-        }, ['previewDocContent','签章前强制预览'], ['内容与 FORM_DATA 一致'], ''),
-        'preview-modal-handle': S('preview-modal-handle','预览弹窗拖拽条','预览弹窗','预览', 'P2', {
-            mouseenter: '提示底部 sheet 可下滑关闭（可扩展手势）。',
-            mouseleave: '移出取消高亮。',
-            click: '原型无关闭，使用「返回修改」按钮。'
-        }, ['v1-modal-handle 视觉元素'], [''], '')
+        'generic-btn-primary': S('generic-btn-primary','主按钮','通用','子页面', 'P0', { click: '主流程提交/下一步，具体见 data-action 或 data-page。' }, ['sp-btn-primary 样式'], [''], ''),
+        'generic-btn-secondary': S('generic-btn-secondary','次按钮','通用','子页面', 'P1', { click: '辅助操作：预览/下载/返回等。' }, ['sp-btn-secondary'], [''], ''),
+        'generic-select': S('generic-select','下拉选择','通用','子页面', 'P1', { change: '选项变更触发业务逻辑或仅 UI。' }, ['sp-select 样式'], [''], ''),
+        'generic-textarea': S('generic-textarea','多行文本','文书生成','docGen', 'P1', { input: '案情摘要输入，供 AI 生成。' }, ['sp-textarea'], [''], '')
     };
+
+    var PRD_RICH = {
+        'home-service-property': {
+            business: '用户在诉讼前或诉讼中需向法院申请财产保全，冻结、查封被申请人名下财产以防止转移隐匿。本入口是财产保全全流程的数字化办理起点：选择标的类型 → 智能填表 → 预览申请书 → 电子签章 → 提交保函申请，降低律师及企业法务的填表门槛。',
+            logic: [{ title: '保全标的类型（单选互斥）', body: '用户在「保全标的类型」区域四选一，切换后更新 FORM_DATA.targetType 及申请书模板措辞。', subs: PROPERTY_TARGET_LOGIC.map(function(t) { return t.title + '：' + t.body; }) }].concat(SMART_FORM_LOGIC),
+            acceptance: ['点击首页「财产保全」进入 propertyPreserve 子页', '标的类型 tag 单选互斥，默认「银行存款」选中', '三种填表模式 Tab 可切换，默认语音填表', '填表进度≥80% 时「预览申请书」可点击', '预览通过后跳转 signPage 完成签章']
+        },
+        'home-smart-entry': {
+            business: '首页核心转化入口，面向首次来访用户，一站式引导完成「选类型 → 填表 → 预览 → 签章」全流程。解决传统保全申请需线下找模板、手工填表、反复修改的痛点，通过语音/OCR/手动三种方式降低操作成本。',
+            logic: SMART_FORM_LOGIC.concat([{ title: 'd）签章前预览', body: '填表完成后点击「预览申请书」，系统校验必填项，生成 buildDocPreviewHtml 全文预览；用户确认无误后跳转 signPage 进行手写/指纹/人脸签章。' }]),
+            acceptance: ['点击首页智能保全入口打开 smartApplyHub', '默认财产保全 + 语音填表模式', '三种录入方式 chip 均可切换', '进度环实时更新', '签章前必须先完成预览']
+        },
+        'sp-tag-select': {
+            business: '财产保全需明确保全标的类型，不同类型对应不同的财产线索字段、申请书模板措辞及法院审查要点。本组件让用户在四种标的中单选，系统据此联动表单字段与文书生成逻辑。',
+            logic: PROPERTY_TARGET_LOGIC,
+            acceptance: ['同组 sp-tag 互斥，仅一项 selected', '切换标的类型后财产线索 placeholder 联动更新', '选中态视觉区分明显', 'data-select 标记的元素均可绑定 PRD']
+        },
+        'smart-type-tag': {
+            business: '智能申请 hub 需支持财产、证据、行为、解封等多种保全类型切换。不同类型对应不同的必填字段集（TYPE_META.fields）、默认填表模式及示例文案，切换后表单进度重新计算。',
+            logic: [
+                '财产保全：默认选中；字段含 caseNo/court/amount/respondent/propertyClue；默认语音模式',
+                '证据保全：字段含 caseNo/court/respondent/evidenceDesc；默认扫描上传模式',
+                '行为保全：字段含 caseNo/court/respondent/behaviorReq；默认语音模式，侧重提取「责令/禁止/停止」请求事项',
+                '解封保全：字段含 caseNo/court/respondent；默认扫描上传原裁定书'
+            ],
+            acceptance: ['单选 tag 切换，Toast 提示已切换类型', 'FORM_DATA.type 与 TYPE_META 同步', 'updateFormProgress 重新计算进度', '填表模式 Tab 随类型切换默认值']
+        },
+        'smart-mode-voice': {
+            business: '语音填表面向不熟悉法律文书格式的用户，通过自然语言描述案件信息，系统自动解析并填入结构化表单，显著降低填表门槛。适用于财产保全、行为保全等需口述案情信息的场景。',
+            logic: [{ title: '语音填表完整流程', body: '① 点击麦克风开始录音 → ② Web Speech API 实时转写（不支持则演示模式） → ③ 用户确认转写文本 → ④ 点击「智能解析并填入」→ ⑤ parseVoiceText 提取字段高亮填入表单。', subs: SMART_FORM_LOGIC[0].subs }],
+            acceptance: ['panelVoice 面板显示', 'voiceMicBtn 可点击，recording 态显示波形', '转写文本写入 voiceTranscript', '解析后 Toast 显示识别项数', '已填字段 v1-auto-filled 高亮']
+        },
+        'smart-mode-scan': {
+            business: '扫描上传面向已有纸质或电子版起诉状、裁定书的用户，通过 OCR 识别提取结构化信息，避免重复手工录入。适用于证据保全、解封保全等需上传大量材料的场景。',
+            logic: [SMART_FORM_LOGIC[1]],
+            acceptance: ['panelScan 面板显示', 'uploadZone 可点击触发 fileInput', 'accept 限制 .pdf,.jpg,.jpeg,.png,.doc,.docx', '多文件追加 renderFileList', 'AI识别后 applyFormData 填入表单']
+        },
+        'smart-mode-manual': {
+            business: '手动填写面向熟悉保全流程的专业用户（律师、法务），提供完整表单字段直接录入，支持逐项校验与实时进度反馈，确保数据精确可控。',
+            logic: [SMART_FORM_LOGIC[2]],
+            acceptance: ['panelManual 面板显示', '所有 fld_* 输入框可编辑', 'input 事件 syncFormFromInputs', 'blur 校验案号/金额格式', '进度环按 TYPE_META.fields 计算']
+        },
+        'voice-demo-chip': {
+            business: '为新用户提供语音填表示例，降低首次使用门槛。点击示例 chip 即可将标准口述文本填入转写区，用户可在此基础上修改或直接解析，快速体验语音填表全流程。',
+            logic: [
+                { title: 'a）财产保全示例', body: '案号是2025京0105民初12345号，受理法院北京市朝阳区人民法院，申请财产保全金额850万元，被保全人是北京某某贸易有限公司，财产线索是中国工商银行账户6222021234567890。解析后填入：案号、法院、金额8500000、被保全人、工商银行账号。' },
+                { title: 'b）证据保全示例', body: '案号（2025）沪0115民初8821号，浦东新区人民法院，被保全人上海某某科技有限公司，需要保全微信聊天记录和网页侵权截图等电子数据证据。解析后填入：案号、法院、被保全人、证据描述。' },
+                { title: 'c）行为保全示例', body: '案号2025粤0305民初5566号，深圳市南山区人民法院，被保全人某某制造公司，请求责令被申请人立即停止生产、销售侵权产品。解析后填入：案号、法院、被保全人、行为请求事项。' }
+            ],
+            acceptance: ['三个 chip 均可点击', '点击后 transcript 文本更新为对应示例', 'data-voice-demo 属性值为 property/evidence/behavior', '不影响已填表单其他字段（仅更新转写区）']
+        },
+        'voice-mic-btn': {
+            business: '语音填表的核心交互控件，用户通过按住/点击麦克风口述案件信息。需支持真实语音识别与演示降级两种模式，确保各浏览器环境下均可体验完整流程。',
+            logic: [
+                '点击开始：btn 添加 recording 类，显示 voiceWave 波形动画，status 提示「正在聆听…」',
+                'Web Speech API 可用：lang=zh-CN，continuous=false，onresult 实时更新 transcript',
+                '不支持或 onerror：Toast 提示降级，1.8s 后自动填入 VOICE_DEMOS 当前类型示例文本',
+                '再次点击或 onend：stopVoiceRec 移除 recording 态，隐藏波形'
+            ],
+            acceptance: ['recording 态视觉反馈明确', 'wave 元素 display 切换正确', '演示模式 1.8s 后自动填充', 'stopVoiceRec 清理状态']
+        },
+        'voice-parse-btn': {
+            business: '将语音转写文本解析为结构化表单数据，是语音填表的关键环节。需准确提取案号、法院、金额、被保全人、财产线索/证据/行为请求等字段，减少用户手工核对成本。',
+            logic: [
+                'parseVoiceText 正则提取：案号（20XX+法院代字+序号）、法院（XX人民法院）、金额（含「万」单位换算）、被保全人、财产线索/证据/行为请求',
+                'applyFormData 写入 FORM_DATA 并高亮 fld_* 输入框（v1-auto-filled 2.5s）',
+                'updateFormProgress 更新进度环，≥80% 提示可预览',
+                'Toast 显示「已识别 N 项」'
+            ],
+            acceptance: ['三个示例文本均可正确解析核心字段', '高亮动画 2.5s 后消失', '进度环百分比正确', '空 transcript 时 Toast 提示先录音']
+        },
+        'home-service-evidence': {
+            business: '证据保全是固定易灭失、难取得证据的司法措施。本入口面向知产侵权、合同纠纷等需保全电子数据、视听资料的场景，默认引导扫描上传模式批量打包证据材料。',
+            logic: [
+                { title: '证据类型（可多选）', body: '电子数据（微信、邮件、网页）、视听资料（监控、录音）、现场勘验笔录，checkbox 多选保留选中态。' },
+                SMART_FORM_LOGIC[1],
+                SMART_FORM_LOGIC[0]
+            ],
+            acceptance: ['进入 evidencePreserve 子页', '默认扫描上传模式', '证据类型 checkbox 可多选', '预览按钮文案为「预览证据保全申请」']
+        },
+        'home-service-behavior': {
+            business: '行为保全是责令被申请人作出或禁止一定行为的司法措施，常见于知识产权侵权、环境污染等案件。本入口默认语音模式，用户口述「责令停止…」即可自动提取请求事项。',
+            logic: [
+                { title: '行为请求提取', body: '语音解析重点匹配「责令/禁止/停止」开头的请求事项，填入 behaviorReq 字段。' },
+                SMART_FORM_LOGIC[0]
+            ],
+            acceptance: ['进入 behaviorPreserve 子页', '默认语音填表模式', '行为保全示例 chip 可填充', '预览+签章双按钮布局']
+        },
+        'scan-upload-zone': {
+            business: '材料上传是扫描填表的核心入口，用户将起诉状、裁定书、证据材料上传至系统，为后续 OCR 识别和材料归档提供数据源。',
+            logic: [SMART_FORM_LOGIC[1]],
+            acceptance: ['点击 uploadZone 触发 fileInput', '多文件追加 FORM_DATA.files', 'renderFileList 展示列表', 'Toast 提示已添加 N 个文件']
+        },
+        'scan-ocr': {
+            business: 'AI/OCR 识别将非结构化材料（PDF/图片）转为结构化表单数据，是扫描填表的核心价值点，需支持从起诉状首页提取案号、当事人、诉讼请求等关键字段。',
+            logic: [
+                'runOcrDemo 模拟 OCR：从已上传材料提取 caseNo/court/amount/respondent 等',
+                'applyFormData 高亮填入，Toast「AI已识别」',
+                '正式环境：POST /api/ocr/extract，返回 JSON 字段映射'
+            ],
+            acceptance: ['OCR 后表单字段更新', '高亮动画正常', '无文件时 Toast 提示先上传', '识别失败可改手动填写']
+        },
+        'form-field-input': {
+            business: '手动填表的字段级交互，每个输入框承载特定业务数据（案号、法院、金额等），需实时同步、格式校验并与进度环联动，确保数据质量满足法院立案要求。',
+            logic: [SMART_FORM_LOGIC[2]],
+            acceptance: ['focus 时键盘弹起', 'input 同步 FORM_DATA', 'blur 校验格式', '进度≥80% 预览按钮可用']
+        },
+        'form-progress': {
+            business: '填表进度环向用户直观展示表单完成度，驱动用户补全必填项。≥80% 时提示可进行预览签章，是转化漏斗的关键节点指标。',
+            logic: [
+                '按 TYPE_META[currentPreserveType].fields 计算 filled/total',
+                '百分比更新 formProgressPct 文本与环形进度',
+                '≥80% 时 sticky 区域预览按钮高亮可用'
+            ],
+            acceptance: ['进度百分比实时更新', '切换保全类型后重新计算', '80% 阈值提示正确']
+        },
+        'preview-doc-btn': {
+            business: '签章前必须预览完整申请书，让用户核对案号、当事人、请求事项等关键信息，避免错误提交导致法院退件或保函浪费。',
+            logic: [
+                'syncFormFromInputs → 校验必填项完整性',
+                '未填完整：Toast 提示缺少字段',
+                '已完整：buildDocPreviewHtml 生成全文，openPreviewModal 展示',
+                '预览弹窗提供「返回修改」和「确认无误·前往签章」'
+            ],
+            acceptance: ['必填未填时 Toast 拦截', 'previewModal 正确展示', '确认后跳转 signPage', '已填数据不丢失']
+        },
+        'sign-submit': {
+            business: '电子签章是保全申请的法定形式要件，用户完成手写/指纹/人脸任一签章方式后提交，系统创建保函订单并进入出函流程。',
+            logic: [
+                '校验 signDoneFlag 或 canvas 非空',
+                'POST /api/preserve/submit 创建订单，关联 preview 已确认数据',
+                'Toast「签章完成，保函申请已提交，预计2h出函」'
+            ],
+            acceptance: ['未完成签章时拦截提交', '提交后 Toast 反馈', '订单创建 API 调用', '关联 FORM_DATA 完整数据']
+        }
+    };
+
+    Object.keys(PRD_RICH).forEach(function(k) {
+        if (PRD_SPECS[k]) Object.assign(PRD_SPECS[k], PRD_RICH[k]);
+    });
 
     const PAGE_TITLES = {};
     Object.keys(typeof PAGES !== 'undefined' ? PAGES : {}).forEach(k => { PAGE_TITLES[k] = PAGES[k].title; });
@@ -1979,8 +2072,7 @@
     function mergeSpec(base, extra) {
         if (!extra) return base;
         return Object.assign({}, base, extra, {
-            events: Object.assign({}, base.events, extra.events || {}),
-            requirements: (base.requirements || []).concat(extra.requirements || []),
+            logic: (base.logic || []).concat(extra.logic || []),
             acceptance: (base.acceptance || []).concat(extra.acceptance || [])
         });
     }
@@ -1996,23 +2088,8 @@
         if (el.id === 'clearSignBtn') return 'sign-clear';
         if (el.id === 'uploadZone') return 'scan-upload-zone';
         if (el.id === 'notificationSwitch' || el.closest('#notificationSettingItem')) return 'profile-notify';
-        if (el.id === 'bioAuthBtn') return 'sign-bio-fingerprint';
-        if (el.closest('.v1-bio-auth-btn')) return 'sign-bio-face';
-        if (el.id === 'signCanvas' || el.closest('#signCanvas')) return 'sign-canvas';
-        if (el.id === 'previewDocContent' || el.closest('#previewDocContent')) return 'preview-modal-doc';
-        if (el.closest('.v1-modal-handle')) return 'preview-modal-handle';
-        if (el.id === 'chatInput') return 'chat-input';
-        const mainHtml = el.closest('.main-scroll')?.innerHTML || '';
-        if (el.closest('.v1-smart-entry')) {
-            if (mainHtml.includes('保全大厅')) return 'hall-smart-entry';
-            return 'home-smart-entry';
-        }
-        if (el.closest('.search-icon-btn')) {
-            if (mainHtml.includes('保全大厅')) return 'hall-filter';
-            if (mainHtml.includes('智能助手')) return 'tools-filter';
-            if (mainHtml.includes('我的')) return 'profile-qrcode';
-            return 'home-search';
-        }
+        if (el.closest('.v1-smart-entry')) return 'home-smart-entry';
+        if (el.closest('.search-icon-btn')) return 'home-search';
         if (el.closest('.tech-footer')) return 'home-tech-footer';
         if (el.closest('.new-feature-row')) {
             const t = el.closest('.new-feature-row').textContent || '';
@@ -2064,7 +2141,6 @@
         const link = el.closest('.service-section-title a, .menu-header a');
         if (link) {
             const t = link.textContent || '';
-            if (t.includes('查看全部')) return 'home-view-all';
             if (t.includes('保全大厅')) return 'home-hall-link';
             if (t.includes('常见问题')) return 'home-faq-link';
             if (t.includes('政策') || (t.includes('全部') && t.includes('动态'))) return 'home-policy-link';
@@ -2088,11 +2164,6 @@
         if (el.closest('.v1-quick-chip')) return 'voice-demo-chip';
         if (el.closest('[data-rm-file]')) return 'file-remove';
         if (el.closest('.v1-progress-ring')) return 'form-progress';
-        if (el.closest('.v1-btn-outline') && el.closest('[data-action="nav"]')) return 'nav-to-preview';
-        if (el.closest('.sp-tag[data-select]') && el.closest('.sp-card')?.textContent?.includes('标的类型')) return 'property-target-tag';
-        if (el.closest('.sp-tag[data-select]') && el.closest('.sp-card')?.textContent?.includes('解封情形')) return 'unseal-reason-tag';
-        if (el.closest('.sp-tag[data-select]') && el.closest('.sp-card')?.textContent?.includes('财产线索')) return 'risk-factor-tag';
-        if (el.closest('.sp-tag[data-action="nav"]')) return 'search-hot-tag';
         if (el.closest('.sp-input') || el.closest('.sp-select') || el.closest('.sp-textarea') || (el.id && el.id.startsWith('fld_'))) {
             if (el.id === 'rateAmount' || el.closest('#rateAmount')) return mergeSpec(PRD_SPECS['form-field-input'], { title: '保全金额输入', page: 'rateCalc' });
             if (el.id === 'verifyCode') return mergeSpec(PRD_SPECS['form-field-input'], { title: '保函编号输入', page: 'verifyAuth' });
@@ -2112,16 +2183,7 @@
         if (act === 'chat-send') return 'chat-send';
         if (act === 'risk') return 'risk-assess-btn';
         if (act === 'calc-preserve') return 'preserve-calc-btn';
-        if (act === 'toast') {
-            const msg = el.getAttribute('data-msg') || el.closest('[data-msg]')?.getAttribute('data-msg') || '';
-            if (msg.includes('续保')) return 'hall-renew-submit';
-            if (msg.includes('加急')) return 'guarantee-speed';
-            if (msg.includes('检测完成')) return 'ai-prereview-start';
-            if (msg.includes('链上核验')) return 'blockchain-verify-submit';
-            if (msg.includes('订单已创建')) return 'apply-now-pay';
-            if (msg.includes('裁定书已签收')) return 'e-delivery-sign';
-            return 'toast-action';
-        }
+        if (act === 'toast') return 'toast-action';
         if (act === 'nav') {
             const pg = el.getAttribute('data-page') || el.closest('[data-page]')?.getAttribute('data-page');
             if (pg === 'signPage') return 'nav-to-sign';
@@ -2137,24 +2199,9 @@
             if (t.includes('扫一扫') || t.includes('相机')) return 'verify-scan';
             if (t.includes('生成')) return 'docgen-ai';
             if (t.includes('评估')) return 'risk-assess-btn';
-            if (t.includes('极速办理') || t.includes('确认并极速')) return 'apply-preserve-submit';
-            if (t.includes('支付')) return 'apply-now-pay';
-            if (t.includes('开始极速申请')) return 'preserve-guide-start';
-            if (t.includes('申请保函') && el.closest('.sp-card')) return 'ins-detail-apply';
-            if (t.includes('办理') && el.closest('.sp-list-item')?.textContent?.includes('解封')) return 'litigation-unseal';
-            if (t.includes('续保') || t.includes('提交续保')) return 'hall-renew-submit';
-            if (t.includes('验证链上')) return 'blockchain-verify-submit';
-            if (t.includes('检测')) return 'ai-prereview-start';
-            if (t.includes('加急')) return 'guarantee-speed';
             return 'generic-btn-primary';
         }
-        if (el.classList?.contains('sp-btn-secondary') || el.closest('.sp-btn-secondary')) {
-            const btn = el.classList?.contains('sp-btn-secondary') ? el : el.closest('.sp-btn-secondary');
-            const t = btn?.textContent || '';
-            if (t.includes('核验保函')) return 'my-order-verify';
-            if (t.includes('办理') && el.closest('.sp-list-item')?.textContent?.includes('继续执行')) return 'litigation-continue';
-            return 'generic-btn-secondary';
-        }
+        if (el.classList?.contains('sp-btn-secondary') || el.closest('.sp-btn-secondary')) return 'generic-btn-secondary';
         if (el.classList?.contains('sp-select') || el.tagName === 'SELECT') return 'generic-select';
         if (el.classList?.contains('sp-textarea') || el.tagName === 'TEXTAREA') return 'generic-textarea';
         if (el.closest('.sp-tag') && el.getAttribute('data-action') === 'toast') return 'chat-quick-tag';
@@ -2171,25 +2218,17 @@
 
     function renderPanel(spec) {
         if (!spec) return;
-        spec = Object.assign({}, spec, { events: Object.assign({}, spec.events) });
-        if (!spec.events.mouseenter) spec.events.mouseenter = '鼠标移入时高亮该功能区域，右侧展示「' + spec.title + '」的完整业务需求、验收标准与接口说明。';
-        if (!spec.events.mouseleave) spec.events.mouseleave = '鼠标移出时取消高亮边框与顶部浮动提示，右侧保留最后一次悬停的需求内容。';
-        if (!spec.events.click && spec.requirements && spec.requirements.length) spec.events.click = '点击触发「' + spec.title + '」对应的原型交互流程，具体行为见业务需求列表。';
-        const eventLabels = {
-            mouseenter:'鼠标移入 (mouseenter)', mouseleave:'鼠标移出 (mouseleave)', mouseover:'鼠标悬停 (mouseover)',
-            mouseout:'鼠标离开 (mouseout)', mousedown:'鼠标按下 (mousedown)', mouseup:'鼠标抬起 (mouseup)',
-            mousemove:'鼠标移动 (mousemove)', click:'点击 (click)', dblclick:'双击 (dblclick)',
-            focus:'聚焦 (focus)', blur:'失焦 (blur)', input:'输入 (input)', change:'变更 (change)',
-            touchstart:'触摸开始 (touchstart)', touchmove:'触摸移动 (touchmove)', touchend:'触摸结束 (touchend)'
-        };
+        spec = Object.assign({}, spec);
+        if (!spec.business) spec.business = '「' + spec.title + '」功能，详见功能详细逻辑与验收标准。';
         prdEmpty.style.display = 'none';
         prdContent.style.display = 'block';
-        const evKeys = Object.keys(spec.events || {});
-        const evHtml = evKeys.map(k => {
-            return '<div class="prd-event-item"><strong>' + (eventLabels[k] || k) + '</strong><p>' + spec.events[k] + '</p></div>';
-        }).join('');
-        const reqHtml = (spec.requirements || []).map(r => '<li>' + r + '</li>').join('');
-        const accHtml = (spec.acceptance || []).map(a => '<li>' + a + '</li>').join('');
+        var logicItems = spec.logic || [];
+        var logicHtml = logicToHtml(logicItems);
+        if (!logicHtml && logicItems.length) {
+            logicHtml = logicItems.map(function(r) { return '<li>' + r + '</li>'; }).join('');
+            logicHtml = '<ul class="prd-list">' + logicHtml + '</ul>';
+        }
+        var accHtml = (spec.acceptance || []).map(function(a) { return '<li>' + a + '</li>'; }).join('');
         prdContent.innerHTML =
             '<div class="prd-title">' + spec.title + '</div>' +
             '<div class="prd-meta">' +
@@ -2197,9 +2236,9 @@
             '<span class="prd-meta-tag prd-meta-page">' + spec.page + '</span>' +
             '<span class="prd-meta-tag prd-meta-' + (spec.priority || 'p1').toLowerCase() + '">' + spec.priority + '</span>' +
             '</div>' +
-            (evHtml ? '<div class="prd-section"><div class="prd-section-title">交互事件说明</div><div class="prd-event-list">' + evHtml + '</div></div>' : '') +
-            (reqHtml ? '<div class="prd-section"><div class="prd-section-title">业务需求</div><ul class="prd-list">' + reqHtml + '</ul></div>' : '') +
-            (accHtml ? '<div class="prd-section"><div class="prd-section-title">验收标准</div><ul class="prd-list">' + accHtml + '</ul></div>' : '') +
+            '<div class="prd-section"><div class="prd-section-title">1、业务需求是什么？</div><div class="prd-business-text">' + spec.business + '</div></div>' +
+            (logicHtml ? '<div class="prd-section"><div class="prd-section-title">2、功能详细逻辑</div>' + (logicHtml.indexOf('prd-logic-item') >= 0 ? logicHtml : '<ul class="prd-list">' + logicHtml + '</ul>') + '</div>' : '') +
+            (accHtml ? '<div class="prd-section"><div class="prd-section-title">3、验收标准</div><ul class="prd-list">' + accHtml + '</ul></div>' : '') +
             (spec.api ? '<div class="prd-section"><div class="prd-section-title">接口参考</div><div class="prd-api-box">' + spec.api + '</div></div>' : '');
     }
 
@@ -2220,36 +2259,33 @@
         if (!spec) return;
         el._prdBound = true;
         el.setAttribute('data-prd-id', spec.id || 'spec');
-        el.addEventListener('mouseenter', function(e) {
-            if (activeEl) activeEl.classList.remove('prd-highlight');
-            activeEl = el;
-            el.classList.add('prd-highlight');
-            renderPanel(spec);
-            showTooltip(el, spec);
+        el.addEventListener('mouseenter', function() {
+            scheduleHoverSpec(el, spec);
         });
         el.addEventListener('mouseleave', function() {
-            el.classList.remove('prd-highlight');
+            if (pendingEl === el) clearHoverPending();
+            el.classList.remove('prd-highlight', 'prd-pending');
             hideTooltip();
-            renderPanel(Object.assign({}, spec, { events: Object.assign({}, spec.events, { mouseleave: spec.events.mouseleave || '鼠标移出时取消高亮边框与顶部浮动提示。' }) }));
         });
-        ['focus', 'click', 'mousedown', 'mouseup', 'mousemove', 'dblclick'].forEach(evt => {
-            el.addEventListener(evt, function() { renderPanel(spec); }, true);
+        ['focus', 'click'].forEach(evt => {
+            el.addEventListener(evt, function() {
+                clearHoverPending();
+                if (activeEl && activeEl !== el) activeEl.classList.remove('prd-highlight', 'prd-pending');
+                activeEl = el;
+                el.classList.remove('prd-pending');
+                el.classList.add('prd-highlight');
+                renderPanel(spec);
+            }, true);
         });
         if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA' || el.tagName === 'SELECT') {
             el.addEventListener('input', function() { renderPanel(spec); });
             el.addEventListener('change', function() { renderPanel(spec); });
-            el.addEventListener('blur', function() { renderPanel(spec); });
-        }
-        if (el.id === 'signCanvas' || el.tagName === 'CANVAS') {
-            ['touchstart', 'touchmove', 'touchend'].forEach(evt => {
-                el.addEventListener(evt, function() { renderPanel(spec); }, true);
-            });
         }
     }
 
     function scanPrd(root) {
         root = root || document;
-        const sel = 'button, a, input, select, textarea, canvas, .nav-item, .service-card-item, .tool-card, .grid-item, .v1-smart-entry, .search-icon-btn, .new-feature-row, .primary-apply-btn, .guarantee-card, .ins-card, .news-item, .tech-footer, .template-row, .tool-item-extend, .settings-item, .v1-mode-tab, .v1-sign-tab, .v1-quick-chip, .progress-badge, .btn-outline-sm, .apply-btn, .stat-block, .v1-progress-ring, .v1-upload-zone, .v1-btn-outline, .v1-modal-handle, .v1-doc-preview, .sp-tag, .sp-check-row, [data-action], [data-page], #subpageBack, #voiceMicBtn, #clearSignBtn, #uploadZone, #notificationSwitch, #signCanvas, #bioAuthBtn, .v1-bio-auth-btn, .subpage-back';
+        const sel = 'button, a, input, select, textarea, .nav-item, .service-card-item, .tool-card, .grid-item, .v1-smart-entry, .search-icon-btn, .new-feature-row, .primary-apply-btn, .guarantee-card, .ins-card, .news-item, .tech-footer, .template-row, .tool-item-extend, .settings-item, .v1-mode-tab, .v1-sign-tab, .v1-quick-chip, .progress-badge, .btn-outline-sm, .apply-btn, .stat-block, .v1-progress-ring, .v1-upload-zone, .sp-tag, .sp-check-row, [data-action], [data-page], #subpageBack, #voiceMicBtn, #clearSignBtn, #uploadZone, #notificationSwitch, .subpage-back';
         root.querySelectorAll(sel).forEach(el => {
             bindPrdEl(el);
             if (el.querySelector && !el.matches('input,select,textarea')) {
