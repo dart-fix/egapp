@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>诉讼保 · 机构端小程序 PRD 原型</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body.prd-mode{background:#0F172A;display:flex;justify-content:center;align-items:flex-start;padding:16px;min-height:100vh;font-family:'Inter',sans-serif}
+.prd-workspace{display:flex;gap:20px;margin:0 auto;align-items:flex-start;justify-content:center;width:auto;max-width:100%}
+.prd-phone-wrap{flex-shrink:0;padding:8px 0}
+.iphone-pro{width:360px;background:#FFF;border-radius:48px;box-shadow:0 30px 50px -20px rgba(0,0,0,.3),0 0 0 8px #E8ECF0,0 0 0 12px #1E293B;overflow:hidden;position:relative;height:800px;display:flex;flex-direction:column}
+.dynamic-bar{padding:12px 20px 6px;display:flex;justify-content:space-between;align-items:center;background:#fff}
+.time{font-weight:600;font-size:15px;color:#1E293B}
+.dynamic-notch{background:#111;width:108px;height:28px;border-radius:24px}
+.right-icons{display:flex;gap:6px;color:#334155;font-size:12px}
+.main-scroll{flex:1;overflow-y:auto;padding:8px 20px 24px}
+.header-flex{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;margin-top:4px}
+.greeting h2{font-size:24px;font-weight:800;background:linear-gradient(135deg,#0F4C5C,#1A6B7C);background-clip:text;-webkit-background-clip:text;color:transparent}
+.greeting p{font-size:13px;color:#5E6F8D;font-weight:500;margin-top:4px}
+.icon-btn{background:#F1F5F9;width:44px;height:44px;display:flex;align-items:center;justify-content:center;border-radius:30px;color:#1A6B7C;font-size:18px;cursor:pointer}
+.stats-dashboard{margin-bottom:20px}
+.stats-dashboard-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
+.stats-dashboard-title{font-size:15px;font-weight:700;color:#1C2E36}
+.stats-dashboard-date{font-size:11px;color:#94A3B8;font-weight:500}
+.stats-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.stat-item{display:flex;align-items:center;gap:10px;padding:14px 12px;border-radius:18px;cursor:pointer;border:1px solid transparent;transition:transform .15s}
+.stat-item:active{transform:scale(.98)}
+.stat-item-icon{width:40px;height:40px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0}
+.stat-item-body{min-width:0;flex:1}
+.stat-item .stat-number{font-size:22px;font-weight:800;line-height:1.1}
+.stat-item .stat-label{font-size:10px;margin-top:3px;font-weight:600}
+.stat-pending{background:#FFFBEB;border-color:#FEF3C7}
+.stat-pending .stat-item-icon{background:#FEF3C7;color:#B45309}
+.stat-pending .stat-number{color:#B45309}
+.stat-pending .stat-label{color:#92400E}
+.stat-issue{background:#EEF2FF;border-color:#E0E7FF}
+.stat-issue .stat-item-icon{background:#E0E7FF;color:#4338CA}
+.stat-issue .stat-number{color:#4338CA}
+.stat-issue .stat-label{color:#3730A3}
+.stat-supplement{background:#FFF7ED;border-color:#FFEDD5}
+.stat-supplement .stat-item-icon{background:#FFEDD5;color:#C2410C}
+.stat-supplement .stat-number{color:#C2410C}
+.stat-supplement .stat-label{color:#9A3412}
+.stat-monthly{background:#ECFDF5;border-color:#D4EDE8}
+.stat-monthly .stat-item-icon{background:#D4EDE8;color:#1D7A6E}
+.stat-monthly .stat-number{color:#1D7A6E}
+.stat-monthly .stat-label{color:#065F46}
+.section-title{font-size:18px;font-weight:700;color:#1C2E36;margin:16px 0 12px;display:flex;justify-content:space-between;align-items:center}
+.section-title a{font-size:12px;color:#1A6B7C;text-decoration:none;font-weight:500}
+.order-card{background:#fff;border-radius:20px;padding:14px;margin-bottom:12px;border:1px solid #EDF2F9;cursor:pointer}
+.order-card .tag{display:inline-block;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:700}
+.tag-pending{background:#FEF3C7;color:#B45309}.tag-review{background:#DBEAFE;color:#1D4ED8}
+.tag-issue{background:#E0E7FF;color:#4338CA}.tag-done{background:#D4EDE8;color:#1D7A6E}
+.tag-reject{background:#FEE2E2;color:#B91C1C}.tag-supplement{background:#FFEDD5;color:#C2410C}
+.quick-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px 8px;margin-bottom:24px}
+.quick-item{text-align:center;cursor:pointer}
+.quick-icon{width:52px;height:52px;margin:0 auto 8px;border-radius:26px;display:flex;align-items:center;justify-content:center;font-size:22px;background:#F0F9FB;color:#1A6B7C}
+.quick-item span{font-size:11px;font-weight:600;color:#2D4059}
+.alert-banner{background:#FFF7ED;border-left:4px solid #F59E0B;border-radius:16px;padding:14px 10px;margin-bottom:16px;display:flex;justify-content:space-between;align-items:center;cursor:pointer}
+.alert-badge{background:#F59E0B;color:#fff;padding:4px 12px;border-radius:20px;font-size:11px;font-weight:700}
+.bottom-nav{background:rgba(255,255,255,.96);border-top:.5px solid #EDF2F7;padding:10px 24px 14px;display:flex}
+.nav-item{text-align:center;color:#94A3B8;font-size:11px;cursor:pointer;flex:1}
+.nav-item i{font-size:24px;display:block;margin-bottom:4px}
+.nav-item.active{color:#1A6B7C;font-weight:500}
+.subpage-overlay{position:absolute;inset:0;background:#F4F7FB;z-index:100;display:none;flex-direction:column;border-radius:48px;overflow:hidden}
+.subpage-overlay.active{display:flex}
+.subpage-bar{padding:10px 16px 8px;display:flex;align-items:center;gap:12px;background:#fff;border-bottom:1px solid #EDF2F7}
+.subpage-back{width:36px;height:36px;border-radius:20px;background:#F1F5F9;display:flex;align-items:center;justify-content:center;color:#1A6B7C;cursor:pointer}
+.subpage-title-wrap h1{font-size:17px;font-weight:700;color:#1C2E36}
+.subpage-title-wrap p{font-size:11px;color:#6F8FAA;margin-top:2px}
+.subpage-body{flex:1;overflow-y:auto;padding:16px 18px 28px}
+.sp-card{background:#fff;border-radius:20px;padding:16px;margin-bottom:12px;border:1px solid #EDF2F9}
+.sp-card-title{font-size:14px;font-weight:700;color:#1C2E36;margin-bottom:10px}
+.sp-label{font-size:12px;color:#5E6F8D;font-weight:600;margin-bottom:6px;display:block}
+.sp-input,.sp-select,.sp-textarea{width:100%;border:1px solid #E2E8F0;border-radius:14px;padding:12px 14px;font-size:14px;margin-bottom:10px;background:#FAFCFE;font-family:inherit}
+.sp-textarea{min-height:80px;resize:vertical}
+.sp-btn-primary{width:100%;background:linear-gradient(95deg,#0F4C5C,#1A6B7C);color:#fff;border:none;border-radius:40px;padding:14px;font-size:15px;font-weight:700;cursor:pointer;margin-top:8px}
+.sp-btn-secondary{background:#F1F5F9;color:#1A6B7C;border:none;border-radius:30px;padding:8px 16px;font-size:13px;font-weight:600;cursor:pointer}
+.sp-btn-danger{background:#FEE2E2;color:#B91C1C;border:none;border-radius:30px;padding:8px 16px;font-size:13px;font-weight:600;cursor:pointer}
+.sp-steps{display:flex;gap:6px;margin-bottom:16px}
+.sp-step{flex:1;text-align:center;padding:8px 4px;border-radius:14px;font-size:11px;font-weight:600;background:#EEF4F8;color:#6F8FAA}
+.sp-step.active{background:#1A6B7C;color:#fff}.sp-step.done{background:#D4EDE8;color:#1D7A6E}
+.sp-tag-row{display:flex;flex-wrap:wrap;gap:8px;margin:8px 0}
+.sp-tag{padding:6px 12px;border-radius:20px;font-size:12px;font-weight:500;background:#F0F9FB;color:#1A6B7C;cursor:pointer}
+.sp-tag.selected{background:#1A6B7C;color:#fff}
+.sp-timeline{border-left:2px solid #D4E4F0;margin-left:8px;padding-left:16px}
+.sp-timeline-item{margin-bottom:16px;position:relative;font-size:12px;color:#5E6F8D}
+.sp-timeline-item::before{content:"";width:10px;height:10px;background:#1A6B7C;border-radius:50%;position:absolute;left:-21px;top:4px}
+.sp-grid-2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.flex-between{display:flex;justify-content:space-between;align-items:center}
+.filter-tabs{display:flex;gap:8px;margin-bottom:14px;overflow-x:auto}
+.filter-tabs button{flex-shrink:0;border:none;padding:8px 14px;border-radius:20px;font-size:12px;font-weight:600;cursor:pointer;background:#F1F5F9;color:#5E6F8D}
+.filter-tabs button.on{background:#1A6B7C;color:#fff}
+.settings-list{background:#fff;border-radius:28px;border:1px solid #EDF2F9;overflow:hidden;margin-top:12px}
+.settings-item{display:flex;justify-content:space-between;align-items:center;padding:16px 20px;border-bottom:1px solid #F0F2F8;cursor:pointer}
+.settings-item:last-child{border-bottom:none}
+.setting-left i{width:28px;color:#1A6B7C;font-size:18px}
+.setting-left span{font-size:15px;font-weight:500;color:#1C2E36;margin-left:8px}
+.profile-card{background:linear-gradient(115deg,#EFF5FC,#FFF);border-radius:28px;padding:20px;margin-bottom:20px;border:1px solid #E8F0F8}
+.profile-avatar{width:64px;height:64px;border-radius:32px;background:linear-gradient(145deg,#1A6B7C,#0F4C5C);display:flex;align-items:center;justify-content:center;color:#fff;font-size:28px}
+.switch-toggle{width:46px;height:24px;background:#CBD5E1;border-radius:40px;position:relative;cursor:pointer}
+.switch-toggle::after{content:"";width:20px;height:20px;background:#fff;border-radius:20px;position:absolute;top:2px;left:3px;transition:.2s}
+.switch-toggle.active{background:#1A6B7C}.switch-toggle.active::after{left:23px}
+.sp-result-box{background:linear-gradient(135deg,#EFF8FC,#FFF);border:1px dashed #B8D4E8;border-radius:20px;padding:16px;text-align:center;margin-top:12px}
+.sp-metric{text-align:center;padding:12px;background:#F8FAFE;border-radius:16px}
+.sp-metric strong{display:block;font-size:20px;color:#0F4C5C}
+.sp-metric span{font-size:11px;color:#6F8FAA}
+.prd-sidebar{width:420px;min-width:360px;max-height:calc(100vh - 32px);background:#FFF;border-radius:16px;box-shadow:0 20px 60px rgba(0,0,0,.35);display:flex;flex-direction:column;overflow:hidden;position:sticky;top:16px;flex-shrink:0}
+.prd-sidebar-header{background:linear-gradient(135deg,#0F4C5C,#1A6B7C);color:#fff;padding:16px 18px}
+.prd-sidebar-header h1{font-size:16px;font-weight:800;margin-bottom:4px}
+.prd-sidebar-header p{font-size:11px;opacity:.85;line-height:1.5}
+.prd-badge-row{display:flex;gap:6px;margin-top:10px;flex-wrap:wrap}
+.prd-badge{font-size:10px;font-weight:700;padding:3px 8px;border-radius:20px;background:rgba(255,255,255,.2)}
+.prd-sidebar-body{flex:1;overflow-y:auto;padding:16px 18px 24px}
+.prd-empty{text-align:center;padding:40px 20px;color:#94A3B8}
+.prd-empty i{font-size:36px;margin-bottom:12px;display:block;color:#CBD5E1}
+.prd-empty p{font-size:13px;line-height:1.7}
+.prd-section{margin-bottom:16px}
+.prd-section-title{font-size:11px;font-weight:700;color:#64748B;text-transform:uppercase;margin-bottom:8px;display:flex;align-items:center;gap:6px}
+.prd-section-title::before{content:"";width:3px;height:12px;background:#1A6B7C;border-radius:2px}
+.prd-title{font-size:18px;font-weight:800;color:#0F172A;margin-bottom:6px}
+.prd-meta{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}
+.prd-meta-tag{font-size:11px;font-weight:600;padding:4px 10px;border-radius:20px}
+.prd-meta-module{background:#EFF6FF;color:#1D4ED8}.prd-meta-p0{background:#FEE2E2;color:#B91C1C}
+.prd-meta-p1{background:#FEF3C7;color:#B45309}.prd-meta-page{background:#F1F5F9;color:#475569}
+.prd-business-text,.prd-logic-item{font-size:12px;color:#334155;line-height:1.7;background:#F8FAFC;border:1px solid #E2E8F0;border-radius:12px;padding:12px 14px;margin-bottom:8px}
+.prd-logic-item strong{display:block;color:#1A6B7C;margin-bottom:4px}
+.prd-list{list-style:none}.prd-list li{font-size:12px;color:#334155;line-height:1.65;padding:6px 0 6px 18px;position:relative;border-bottom:1px solid #F1F5F9}
+.prd-list li::before{content:"✓";position:absolute;left:0;color:#1A6B7C;font-weight:700}
+.prd-api-box{background:#0F172A;color:#E2E8F0;border-radius:10px;padding:12px;font-size:11px;font-family:Consolas,monospace}
+.prd-highlight{outline:2px solid #F59E0B!important;outline-offset:2px;background:rgba(245,158,11,.08)!important}
+.prd-pending{outline:2px dashed #94A3B8!important;animation:prd-pulse 1s infinite}
+@keyframes prd-pulse{0%,100%{outline-color:#94A3B8}50%{outline-color:#64748B}}
+.prd-tooltip{position:fixed;z-index:99999;pointer-events:none;background:#1E293B;color:#fff;font-size:11px;padding:6px 10px;border-radius:8px;opacity:0;transition:opacity .15s}
+.prd-tooltip.show{opacity:1}
+.prd-pending-hint{position:fixed;z-index:99997;background:rgba(15,76,92,.92);color:#fff;font-size:11px;padding:4px 10px;border-radius:20px;opacity:0}
+.prd-pending-hint.show{opacity:1}
+.prd-mode-bar{position:fixed;bottom:16px;left:50%;transform:translateX(-50%);background:rgba(15,76,92,.95);color:#fff;padding:8px 20px;border-radius:30px;font-size:12px;font-weight:600;z-index:99998}
+.sp-toast{position:fixed;bottom:100px;left:50%;transform:translateX(-50%);background:rgba(30,50,70,.92);color:#fff;padding:10px 20px;border-radius:30px;font-size:13px;z-index:200;display:none}
+.sp-toast.show{display:block}
+@media(max-width:900px){body.prd-mode{flex-direction:column}.prd-workspace{flex-direction:column;align-items:center}.prd-sidebar{width:100%;max-width:420px;position:relative;max-height:50vh}}
+</style>
+</head>
+<body class="prd-mode">
+<div class="prd-workspace">
+<div class="prd-phone-wrap">
+<div class="iphone-pro">
+<div class="dynamic-bar"><div class="time">9:41</div><div class="dynamic-notch"></div><div class="right-icons"><i class="fas fa-signal"></i><i class="fas fa-battery-full"></i></div></div>
+<div class="main-scroll" id="mainScroll"><div id="tabContent"></div></div>
+<div class="bottom-nav" id="bottomNav">
+<div class="nav-item active" data-nav="workbench"><i class="fas fa-th-large"></i><span>工作台</span></div>
+<div class="nav-item" data-nav="orders"><i class="fas fa-file-invoice"></i><span>订单</span></div>
+<div class="nav-item" data-nav="business"><i class="fas fa-briefcase"></i><span>业务</span></div>
+<div class="nav-item" data-nav="profile"><i class="fas fa-user-circle"></i><span>我的</span></div>
+</div>
+<div class="subpage-overlay" id="subpageOverlay">
+<div class="subpage-bar"><div class="subpage-back" id="subpageBack"><i class="fas fa-chevron-left"></i></div><div class="subpage-title-wrap"><h1 id="subpageTitle">功能页</h1><p id="subpageSubtitle"></p></div></div>
+<div class="subpage-body" id="subpageBody"></div>
+</div>
+</div>
+</div>
+<aside class="prd-sidebar"><div class="prd-sidebar-header"><h1>🏢 诉讼保机构端小程序 · 产品需求文档</h1><p>面向<strong>保险机构/担保公司</strong>业务人员：订单审核、核保出函、客户管理、费率配置。悬停功能区域<strong>停留 1 秒</strong>查看需求。</p><div class="prd-badge-row"><span class="prd-badge">机构端 V1.0</span><span class="prd-badge">闭环交互</span></div></div><div class="prd-sidebar-body" id="prdPanelBody"><div class="prd-empty" id="prdEmpty"><i class="fas fa-hand-pointer"></i><p>悬停左侧原型功能区域 1 秒，查看业务需求、功能逻辑与验收标准。</p></div><div id="prdContent" style="display:none"></div></div></aside>
+</div>
+<div class="prd-mode-bar"><i class="fas fa-info-circle"></i> 机构端 PRD 预览 · 悬停 1 秒呈现需求 · 点击体验闭环交互</div>
+<div class="prd-tooltip" id="prdTooltip"></div>
+<div class="prd-pending-hint" id="prdPendingHint">停留中… 1 秒后显示需求</div>
+<div class="sp-toast" id="spToast"></div>
+<script>
+(function(){
+const scroll=document.getElementById('mainScroll'),tabContent=document.getElementById('tabContent'),subOverlay=document.getElementById('subpageOverlay'),subBody=document.getElementById('subpageBody'),subTitle=document.getElementById('subpageTitle'),subSubtitle=document.getElementById('subpageSubtitle'),spToast=document.getElementById('spToast');
+let currentNav='workbench',currentOrderFilter='all',ORDER_STATE={id:'SS20250529001',status:'review',amount:4250000,premium:4250,applicant:'张正源',respondent:'北京某某贸易有限公司',caseNo:'（2025）京0105民初12345号',court:'北京市朝阳区人民法院',type:'财产保全'};
+
+function showToast(msg){spToast.textContent=msg;spToast.classList.add('show');clearTimeout(showToast._t);showToast._t=setTimeout(()=>spToast.classList.remove('show'),2200)}
+function openSubPage(id){const p=PAGES[id];if(!p){showToast('功能开发中');return}subTitle.textContent=p.title;subSubtitle.textContent=p.sub||'';subBody.innerHTML=typeof p.render==='function'?p.render():p.html;subOverlay.classList.add('active');document.getElementById('bottomNav').style.display='none';bindSubEvents(id)}
+function closeSubPage(){subOverlay.classList.remove('active');document.getElementById('bottomNav').style.display='flex'}
+
+const WORKBENCH=`<div class="header-flex"><div class="greeting"><h2>🏢 工作台</h2><p>永安保险 · 诉讼保全业务</p></div><div class="icon-btn" data-page="messageCenter"><i class="fas fa-bell"></i></div></div>
+<div class="stats-dashboard">
+<div class="stats-dashboard-head"><span class="stats-dashboard-title">📊 数据看板</span><span class="stats-dashboard-date">2025年5月</span></div>
+<div class="stats-grid">
+<div class="stat-item stat-pending" data-page="orderList" data-filter="pending"><div class="stat-item-icon"><i class="fas fa-clipboard-check"></i></div><div class="stat-item-body"><div class="stat-number">12</div><div class="stat-label">待审核</div></div></div>
+<div class="stat-item stat-issue" data-page="orderList" data-filter="issue"><div class="stat-item-icon"><i class="fas fa-file-signature"></i></div><div class="stat-item-body"><div class="stat-number">5</div><div class="stat-label">待出函</div></div></div>
+<div class="stat-item stat-supplement" data-page="orderList" data-filter="supplement"><div class="stat-item-icon"><i class="fas fa-folder-open"></i></div><div class="stat-item-body"><div class="stat-number">3</div><div class="stat-label">待补材料</div></div></div>
+<div class="stat-item stat-monthly" data-page="statsReport"><div class="stat-item-icon"><i class="fas fa-chart-line"></i></div><div class="stat-item-body"><div class="stat-number">86</div><div class="stat-label">本月出函</div></div></div>
+</div></div>
+<div class="alert-banner" data-page="orderList" data-filter="pending"><strong style="font-size:15px;"><i class="fas fa-exclamation-circle"></i> 12 笔订单待审核，请尽快处理</strong><span class="alert-badge">去处理</span></div>
+<div class="section-title"><span>⚡ 快捷操作</span></div>
+<div class="quick-grid">
+<div class="quick-item" data-page="orderReview"><div class="quick-icon"><i class="fas fa-clipboard-check"></i></div><span>订单审核</span></div>
+<div class="quick-item" data-page="issueGuarantee"><div class="quick-icon"><i class="fas fa-file-signature"></i></div><span>出函办理</span></div>
+<div class="quick-item" data-page="customerList"><div class="quick-icon"><i class="fas fa-users"></i></div><span>客户管理</span></div>
+<div class="quick-item" data-page="rateConfig"><div class="quick-icon"><i class="fas fa-percent"></i></div><span>费率配置</span></div>
+<div class="quick-item" data-page="blockchainUpload"><div class="quick-icon"><i class="fas fa-link"></i></div><span>链上存证</span></div>
+<div class="quick-item" data-page="statsReport"><div class="quick-icon"><i class="fas fa-chart-bar"></i></div><span>业务报表</span></div>
+<div class="quick-item" data-page="courtCoverage"><div class="quick-icon"><i class="fas fa-landmark"></i></div><span>法院覆盖</span></div>
+<div class="quick-item" data-page="trainingHelp"><div class="quick-icon"><i class="fas fa-graduation-cap"></i></div><span>操作培训</span></div>
+</div>
+<div class="section-title"><span>📋 待办订单</span><a href="#" data-page="orderList">全部订单 →</a></div>
+<div class="order-card" data-page="orderDetail"><div class="flex-between"><strong style="font-size:14px">财产保全保函</strong><span class="tag tag-review">待审核</span></div><p style="font-size:12px;color:#6F8FAA;margin:8px 0">SS20250529001 · ¥4,250 · 张正源</p><p style="font-size:11px;color:#94A3B8">（2025）京0105民初12345号</p></div>
+<div class="order-card" data-page="orderDetail"><div class="flex-between"><strong style="font-size:14px">继续执行保函</strong><span class="tag tag-issue">待出函</span></div><p style="font-size:12px;color:#6F8FAA;margin:8px 0">SS20250528008 · ¥3,680 · 李法务</p></div>
+<div class="order-card" data-page="orderDetail"><div class="flex-between"><strong style="font-size:14px">证据保全保函</strong><span class="tag tag-supplement">待补材料</span></div><p style="font-size:12px;color:#6F8FAA;margin:8px 0">SS20250527015 · 需补充起诉状</p></div>`;
+
+const ORDERS=`<div class="header-flex"><div class="greeting"><h2>📂 订单中心</h2><p>保全保函全流程管理</p></div><div class="icon-btn" data-page="searchPage"><i class="fas fa-search"></i></div></div>
+<div class="filter-tabs" id="orderFilters"><button class="on" data-filter="all">全部</button><button data-filter="pending">待审核</button><button data-filter="review">审核中</button><button data-filter="issue">待出函</button><button data-filter="done">已出函</button><button data-filter="reject">已驳回</button></div>
+<div id="orderListArea">
+<div class="order-card" data-status="pending" data-page="orderDetail"><div class="flex-between"><strong>财产保全保函</strong><span class="tag tag-pending">待审核</span></div><p style="font-size:12px;color:#6F8FAA;margin:8px 0">SS20250529001 · ¥4,250</p></div>
+<div class="order-card" data-status="issue" data-page="orderDetail"><div class="flex-between"><strong>继续执行保函</strong><span class="tag tag-issue">待出函</span></div><p style="font-size:12px;color:#6F8FAA;margin:8px 0">SS20250528008 · ¥3,680</p></div>
+<div class="order-card" data-status="supplement" data-page="orderDetail"><div class="flex-between"><strong>证据保全保函</strong><span class="tag tag-supplement">待补材料</span></div><p style="font-size:12px;color:#6F8FAA;margin:8px 0">SS20250527015</p></div>
+<div class="order-card" data-status="done" data-page="orderDetail"><div class="flex-between"><strong>财产保全保函</strong><span class="tag tag-done">已出函</span></div><p style="font-size:12px;color:#6F8FAA;margin:8px 0">SS20250518001 · YASS20250518001</p></div>
+<div class="order-card" data-status="reject" data-page="orderDetail"><div class="flex-between"><strong>行为保全保函</strong><span class="tag tag-reject">已驳回</span></div><p style="font-size:12px;color:#6F8FAA;margin:8px 0">SS20250512003 · 材料不全</p></div>
+</div>`;
+
+const BUSINESS=`<div class="header-flex"><div class="greeting"><h2>💼 业务管理</h2><p>产品 · 费率 · 法院 · 团队</p></div></div>
+<div class="quick-grid">
+<div class="quick-item" data-page="productList"><div class="quick-icon"><i class="fas fa-box"></i></div><span>产品管理</span></div>
+<div class="quick-item" data-page="rateConfig"><div class="quick-icon"><i class="fas fa-percent"></i></div><span>费率配置</span></div>
+<div class="quick-item" data-page="courtCoverage"><div class="quick-icon"><i class="fas fa-landmark"></i></div><span>法院覆盖</span></div>
+<div class="quick-item" data-page="staffManage"><div class="quick-icon"><i class="fas fa-user-shield"></i></div><span>团队管理</span></div>
+</div>
+<div class="section-title"><span>📦 在售产品</span><a href="#" data-page="productList">管理 →</a></div>
+<div class="sp-card"><div class="flex-between"><strong>诉讼财产保全保函</strong><span style="color:#1A6B7C;font-weight:700">0.85‰</span></div><p style="font-size:12px;color:#6F8FAA;margin-top:6px">最低¥480 · 最高5000万 · 2h出函</p></div>
+<div class="sp-card"><div class="flex-between"><strong>继续执行保函</strong><span style="color:#1A6B7C;font-weight:700">1.2‰</span></div><p style="font-size:12px;color:#6F8FAA;margin-top:6px">最低¥800 · 专项担保</p></div>
+<div class="section-title"><span>🏛️ 法院接入</span><a href="#" data-page="courtCoverage">328家 →</a></div>
+<div class="sp-card"><p style="font-size:13px;color:#3e5a7a">已接入全国328家法院电子保全系统，朝阳区/浦东新区等支持当日出函。</p></div>`;
+
+const PROFILE=`<div class="header-flex"><div class="greeting"><h2>👤 我的</h2><p>机构账号 · 业务权限</p></div><div class="icon-btn" data-page="messageCenter"><i class="fas fa-bell"></i></div></div>
+<div class="profile-card"><div style="display:flex;gap:16px;align-items:center"><div class="profile-avatar"><i class="fas fa-user-tie"></i></div><div><h3 style="font-size:20px;font-weight:800;color:#102A3C">王审核员</h3><p style="font-size:13px;color:#54708F">永安保险 · 核保专员</p><p style="font-size:11px;color:#1A6B7C;margin-top:4px"><i class="fas fa-shield-alt"></i> 已认证机构账号</p></div></div></div>
+<div class="quick-grid">
+<div class="quick-item" data-page="statsReport"><div class="quick-icon"><i class="fas fa-chart-line"></i></div><span>业务报表</span></div>
+<div class="quick-item" data-page="messageCenter"><div class="quick-icon"><i class="fas fa-envelope"></i></div><span>消息中心</span></div>
+<div class="quick-item" data-page="staffManage"><div class="quick-icon"><i class="fas fa-users-cog"></i></div><span>团队管理</span></div>
+<div class="quick-item" data-page="trainingHelp"><div class="quick-icon"><i class="fas fa-book"></i></div><span>帮助中心</span></div>
+</div>
+<div class="section-title">⚙️ 账号设置</div>
+<div class="settings-list">
+<div class="settings-item" data-page="profileInfo"><div class="setting-left"><i class="fas fa-user-edit"></i><span>个人信息</span></div><div class="setting-right">已认证 ></div></div>
+<div class="settings-item" data-page="securityCenter"><div class="setting-left"><i class="fas fa-lock"></i><span>安全中心</span></div><div class="setting-right">></div></div>
+<div class="settings-item" id="notifyItem"><div class="setting-left"><i class="fas fa-bell"></i><span>消息通知</span></div><div class="setting-right"><div class="switch-toggle active" id="notifySwitch"></div></div></div>
+<div class="settings-item" data-page="aboutInst"><div class="setting-left"><i class="fas fa-info-circle"></i><span>关于机构端</span></div><div class="setting-right">v1.0.0 ></div></div>
+</div>`;
+
+const TABS={workbench:WORKBENCH,orders:ORDERS,business:BUSINESS,profile:PROFILE};
+
+const PAGES={
+orderList:{title:'全部订单',sub:'筛选 · 搜索 · 批量处理',render:()=>ORDERS.replace('id="orderFilters"','id="orderFiltersSub"')},
+orderDetail:{title:'订单详情',sub:ORDER_STATE.id,render:()=>`
+<div class="sp-steps"><div class="sp-step done">提交</div><div class="sp-step active">审核</div><div class="sp-step">出函</div><div class="sp-step">完成</div></div>
+<div class="sp-card"><div class="flex-between"><strong>${ORDER_STATE.type}保函</strong><span class="tag tag-review">待审核</span></div>
+<p style="font-size:12px;color:#6F8FAA;margin:8px 0">订单号 ${ORDER_STATE.id} · 保费 ¥${ORDER_STATE.premium.toLocaleString()}</p></div>
+<div class="sp-card"><div class="sp-card-title">案件信息</div>
+<p style="font-size:13px;line-height:1.8;color:#334155">案号：${ORDER_STATE.caseNo}<br>法院：${ORDER_STATE.court}<br>申请人：${ORDER_STATE.applicant}<br>被保全人：${ORDER_STATE.respondent}<br>保全金额：¥${ORDER_STATE.amount.toLocaleString()}</p></div>
+<div class="sp-card"><div class="sp-card-title">申请材料</div>
+<div class="sp-list-item"><i class="fas fa-file-pdf" style="color:#E53E3E"></i><span style="flex:1;font-size:13px">起诉状.pdf</span><button class="sp-btn-secondary" data-action="toast" data-msg="预览已打开">预览</button></div>
+<div class="sp-list-item"><i class="fas fa-file-alt" style="color:#2B6CB0"></i><span style="flex:1;font-size:13px">保全申请书.pdf</span><button class="sp-btn-secondary" data-action="toast" data-msg="预览已打开">预览</button></div></div>
+<div class="sp-card"><div class="sp-card-title">审核记录</div><div class="sp-timeline">
+<div class="sp-timeline-item"><strong>用户提交</strong><br>2025-05-29 09:15</div>
+<div class="sp-timeline-item"><strong>AI预审通过</strong><br>2025-05-29 09:16 · 3项建议</div></div></div>
+<div class="sp-grid-2"><button class="sp-btn-danger" data-page="supplementRequest">要求补材料</button><button class="sp-btn-primary" data-page="orderReview">进入审核</button></div>`},
+orderReview:{title:'订单审核',sub:'核保 · 风险评估 · 审批',render:()=>`
+<div class="sp-steps"><div class="sp-step done">材料核验</div><div class="sp-step active">核保评估</div><div class="sp-step">审批</div><div class="sp-step">出函</div></div>
+<div class="sp-card"><div class="sp-card-title">核保评估</div>
+<span class="sp-label">风险等级</span><div class="sp-tag-row"><span class="sp-tag selected" data-select>低风险</span><span class="sp-tag" data-select>中风险</span><span class="sp-tag" data-select>高风险</span></div>
+<span class="sp-label">审核意见</span><textarea class="sp-textarea" id="reviewComment" placeholder="填写审核意见…">材料齐全，保全金额合理，建议通过。</textarea>
+<span class="sp-label">担保费率（‰）</span><input class="sp-input" id="reviewRate" type="number" value="0.85" step="0.01"></div>
+<div class="sp-result-box"><p style="font-size:12px;color:#6F8FAA">预估保费</p><strong style="font-size:24px;color:#0F4C5C">¥${ORDER_STATE.premium.toLocaleString()}</strong></div>
+<div class="sp-grid-2"><button class="sp-btn-danger" data-action="reject-order">驳回</button><button class="sp-btn-primary" data-action="approve-order">审核通过</button></div>`},
+issueGuarantee:{title:'出函办理',sub:'电子保函生成 · 链上存证',render:()=>`
+<div class="sp-steps"><div class="sp-step done">审核通过</div><div class="sp-step active">生成保函</div><div class="sp-step">链上存证</div><div class="sp-step">通知用户</div></div>
+<div class="sp-card"><div class="sp-card-title">待出函订单</div>
+<div class="sp-list-item"><div style="flex:1"><strong>SS20250528008</strong><p style="font-size:11px;color:#6F8FAA">继续执行 · ¥3,680</p></div><span class="sp-tag selected">选中</span></div></div>
+<div class="sp-card"><span class="sp-label">保函编号（自动生成）</span><input class="sp-input" value="YASS20250529001234" readonly>
+<span class="sp-label">出函模板</span><select class="sp-select"><option>标准诉讼财产保全保函</option><option>继续执行专项保函</option></select>
+<div class="sp-check-row" style="display:flex;align-items:center;gap:8px;padding:8px 0"><input type="checkbox" checked id="chainCheck"> <label for="chainCheck" style="font-size:13px">同步司法区块链存证</label></div></div>
+<button class="sp-btn-primary" data-action="issue-letter">确认出函</button>`},
+supplementRequest:{title:'要求补材料',sub:'通知申请人补充',render:()=>`
+<div class="sp-card"><span class="sp-label">需补充材料（可多选）</span>
+<div class="sp-check-row" style="display:flex;gap:8px;padding:8px 0"><input type="checkbox" checked> 起诉状原件扫描件</div>
+<div class="sp-check-row" style="display:flex;gap:8px;padding:8px 0"><input type="checkbox"> 财产线索证明</div>
+<div class="sp-check-row" style="display:flex;gap:8px;padding:8px 0"><input type="checkbox"> 企业营业执照</div>
+<span class="sp-label">补充说明</span><textarea class="sp-textarea">请补充起诉状首页及最后一页清晰扫描件。</textarea></div>
+<button class="sp-btn-primary" data-action="send-supplement">发送补材料通知</button>`},
+customerList:{title:'客户管理',sub:'申请人 · 企业客户',render:()=>`
+<input class="sp-input" placeholder="搜索客户姓名/企业名称…">
+<div class="sp-card" data-page="customerDetail"><div class="flex-between"><strong>张正源</strong><span style="font-size:12px;color:#1D7A6E">3笔订单</span></div><p style="font-size:12px;color:#6F8FAA;margin-top:6px">131****2025 · 个人客户</p></div>
+<div class="sp-card" data-page="customerDetail"><div class="flex-between"><strong>北京某某贸易有限公司</strong><span style="font-size:12px;color:#1D7A6E">12笔订单</span></div><p style="font-size:12px;color:#6F8FAA;margin-top:6px">企业客户 · AAA</p></div>`},
+customerDetail:{title:'客户详情',sub:'张正源',render:()=>`
+<div class="sp-card"><p style="font-size:13px;line-height:1.8">姓名：张正源<br>手机：131****2025<br>认证：已实名<br>累计订单：3笔 · 累计保费 ¥12,680</p></div>
+<div class="section-title" style="font-size:16px">历史订单</div>
+<div class="order-card" data-page="orderDetail"><div class="flex-between"><strong>财产保全</strong><span class="tag tag-done">已出函</span></div><p style="font-size:12px;color:#6F8FAA;margin-top:6px">SS20250518001 · ¥4,250</p></div>`},
+rateConfig:{title:'费率配置',sub:'产品费率 · 需平台审批',render:()=>`
+<div class="sp-card"><div class="sp-card-title">诉讼财产保全保函</div>
+<span class="sp-label">基础费率（‰）</span><input class="sp-input" type="number" value="0.85" step="0.01">
+<span class="sp-label">最低保费（元）</span><input class="sp-input" type="number" value="480">
+<span class="sp-label">最高担保额度（万）</span><input class="sp-input" type="number" value="5000"></div>
+<div class="sp-card"><p style="font-size:12px;color:#B45309"><i class="fas fa-info-circle"></i> 费率变更需提交平台审批，审批通过后生效。</p></div>
+<button class="sp-btn-primary" data-action="toast" data-msg="费率变更申请已提交平台审批">提交审批</button>`},
+productList:{title:'产品管理',sub:'保函产品上下架',render:()=>`
+<div class="sp-card"><div class="flex-between"><div><strong>诉讼财产保全保函</strong><p style="font-size:11px;color:#1D7A6E;margin-top:4px">● 已上架</p></div><button class="sp-btn-secondary" data-action="toast" data-msg="编辑产品">编辑</button></div></div>
+<div class="sp-card"><div class="flex-between"><div><strong>继续执行保函</strong><p style="font-size:11px;color:#1D7A6E;margin-top:4px">● 已上架</p></div><button class="sp-btn-secondary">编辑</button></div></div>
+<div class="sp-card"><div class="flex-between"><div><strong>证据保全保函</strong><p style="font-size:11px;color:#94A3B8;margin-top:4px">○ 已下架</p></div><button class="sp-btn-primary" style="width:auto;padding:8px 16px;margin:0" data-action="toast" data-msg="产品已上架">上架</button></div></div>`},
+courtCoverage:{title:'法院覆盖',sub:'已接入法院列表',render:()=>`
+<input class="sp-input" placeholder="搜索法院名称…">
+<div class="sp-card"><div class="flex-between"><div><strong>北京市朝阳区人民法院</strong><p style="font-size:11px;color:#1D7A6E">● 电子保函已接入 · 2h裁定</p></div><span style="font-size:12px;color:#1A6B7C">已开通</span></div></div>
+<div class="sp-card"><div class="flex-between"><div><strong>上海市浦东新区人民法院</strong><p style="font-size:11px;color:#1D7A6E">● 绿色通道</p></div><span style="font-size:12px;color:#1A6B7C">已开通</span></div></div>
+<div class="sp-card"><div class="flex-between"><div><strong>深圳市南山区人民法院</strong><p style="font-size:11px;color:#B45309">○ 申请接入中</p></div><button class="sp-btn-secondary" data-action="toast" data-msg="接入申请已提交">申请接入</button></div></div>`},
+statsReport:{title:'业务报表',sub:'出函量 · 保费 · 趋势',render:()=>`
+<div class="sp-grid-2" style="margin-bottom:14px"><div class="sp-metric"><strong>86</strong><span>本月出函</span></div><div class="sp-metric"><strong>¥36.8万</strong><span>本月保费</span></div><div class="sp-metric"><strong>98.2%</strong><span>审核通过率</span></div><div class="sp-metric"><strong>1.8h</strong><span>平均出函</span></div></div>
+<div class="sp-card"><div class="sp-card-title">近7日出函趋势</div><div style="height:80px;background:linear-gradient(180deg,#D4EDE8 0%,transparent 100%);border-radius:12px;display:flex;align-items:flex-end;justify-content:space-around;padding:0 8px"><div style="width:20px;height:40%;background:#1A6B7C;border-radius:4px 4px 0 0"></div><div style="width:20px;height:65%;background:#1A6B7C;border-radius:4px 4px 0 0"></div><div style="width:20px;height:50%;background:#1A6B7C;border-radius:4px 4px 0 0"></div><div style="width:20px;height:80%;background:#1A6B7C;border-radius:4px 4px 0 0"></div><div style="width:20px;height:70%;background:#1A6B7C;border-radius:4px 4px 0 0"></div></div></div>
+<button class="sp-btn-secondary" style="width:100%" data-action="toast" data-msg="报表已导出至邮箱">导出 Excel 报表</button>`},
+blockchainUpload:{title:'链上存证',sub:'保函司法区块链存证',render:()=>`
+<div class="sp-card"><p style="font-size:13px;line-height:1.7;color:#3e5a7a">保函出函后自动上链，生成不可篡改存证凭证，支持法官端一键核验。</p></div>
+<div class="sp-card"><span class="sp-label">保函编号</span><input class="sp-input" value="YASS20250518001234">
+<button class="sp-btn-primary" data-action="toast" data-msg="存证成功 · 链哈希 0x7f3a…9c2e">提交存证</button></div>
+<div class="sp-result-box"><i class="fas fa-shield-alt" style="font-size:32px;color:#1A6B7C"></i><p style="font-size:12px;margin-top:8px;color:#5E6F8D">已接入国家级司法链</p></div>`},
+messageCenter:{title:'消息中心',sub:'审核提醒 · 系统通知',render:()=>`
+<div class="sp-card"><div class="flex-between"><strong style="font-size:14px">新订单待审核</strong><span style="font-size:11px;color:#94A3B8">10分钟前</span></div><p style="font-size:12px;color:#6F8FAA;margin-top:6px">SS20250529001 财产保全保函待您审核</p></div>
+<div class="sp-card"><div class="flex-between"><strong style="font-size:14px">费率变更已通过</strong><span style="font-size:11px;color:#94A3B8">昨天</span></div><p style="font-size:12px;color:#6F8FAA;margin-top:6px">平台已批准费率 0.85‰ 变更申请</p></div>
+<div class="sp-card"><div class="flex-between"><strong style="font-size:14px">补材料已提交</strong><span style="font-size:11px;color:#94A3B8">2天前</span></div><p style="font-size:12px;color:#6F8FAA;margin-top:6px">SS20250527015 用户已补充材料</p></div>`},
+staffManage:{title:'团队管理',sub:'机构业务员 · 权限分配',render:()=>`
+<div class="sp-card"><div class="flex-between"><div><strong>王审核员</strong><p style="font-size:11px;color:#6F8FAA">核保专员 · 管理员</p></div><span style="font-size:12px;color:#1D7A6E">在线</span></div></div>
+<div class="sp-card"><div class="flex-between"><div><strong>李业务员</strong><p style="font-size:11px;color:#6F8FAA">业务员 · 订单审核</p></div><span style="font-size:12px;color:#94A3B8">离线</span></div></div>
+<button class="sp-btn-primary" data-action="toast" data-msg="邀请链接已生成">邀请新成员</button>`},
+trainingHelp:{title:'操作培训',sub:'机构端使用指南',render:()=>`
+<div class="sp-card"><strong>订单审核流程</strong><p style="font-size:12px;color:#6F8FAA;margin-top:6px;line-height:1.6">1. 接收用户申请 → 2. 材料核验 → 3. 核保评估 → 4. 审批通过 → 5. 出函上链</p></div>
+<div class="sp-card"><strong>出函时效要求</strong><p style="font-size:12px;color:#6F8FAA;margin-top:6px;line-height:1.6">标准通道4-8小时，极速通道2小时内完成出函。</p></div>
+<button class="sp-btn-secondary" style="width:100%" data-action="toast" data-msg="培训视频已打开">观看培训视频</button>`},
+searchPage:{title:'搜索',sub:'订单 · 客户 · 保函号',render:()=>`<input class="sp-input" placeholder="输入订单号/客户名/保函号…"><div class="sp-card"><p style="font-size:12px;color:#94A3B8;margin-bottom:8px">最近搜索</p><div class="sp-tag-row"><span class="sp-tag" data-page="orderDetail">SS20250529001</span><span class="sp-tag" data-page="customerDetail">张正源</span></div></div>`},
+profileInfo:{title:'个人信息',sub:'机构账号信息',render:()=>`<div class="sp-card"><span class="sp-label">姓名</span><input class="sp-input" value="王审核员"><span class="sp-label">所属机构</span><input class="sp-input" value="永安保险" readonly><span class="sp-label">角色</span><input class="sp-input" value="核保专员" readonly><button class="sp-btn-primary" data-action="toast" data-msg="信息已保存">保存</button></div>`},
+securityCenter:{title:'安全中心',sub:'密码 · 登录设备',render:()=>`<div class="settings-list"><div class="settings-item" data-action="toast" data-msg="修改密码页"><div class="setting-left"><i class="fas fa-key"></i><span>修改密码</span></div><div class="setting-right">></div></div><div class="settings-item"><div class="setting-left"><i class="fas fa-mobile-alt"></i><span>登录设备</span></div><div class="setting-right">2台 ></div></div></div>`},
+aboutInst:{title:'关于机构端',sub:'版本与备案',render:()=>`<div class="sp-card" style="text-align:center;padding:32px"><i class="fas fa-building" style="font-size:48px;color:#1A6B7C"></i><h3 style="margin:12px 0 6px">诉讼保 · 机构端</h3><p style="font-size:13px;color:#6F8FAA">版本 1.0.0 · 电子保函机构业务系统</p></div>`}
+};
+
+function setActiveNav(id){
+currentNav=id;
+document.querySelectorAll('.nav-item').forEach(n=>{n.classList.toggle('active',n.dataset.nav===id)});
+tabContent.innerHTML=TABS[id]||'';
+scroll.scrollTop=0;
+bindTabClicks();
+if(id==='profile')bindNotifySwitch();
+}
+
+function bindTabClicks(){
+document.querySelectorAll('[data-page]').forEach(el=>{
+if(el._bound)return;el._bound=true;el.style.cursor='pointer';
+el.addEventListener('click',e=>{
+e.stopPropagation();
+const pg=el.dataset.page,flt=el.dataset.filter;
+if(flt)currentOrderFilter=flt;
+if(pg)openSubPage(pg);
+});
+});
+document.querySelectorAll('.stat-item[data-page],.stat-block[data-page]').forEach(el=>{
+if(el._bound)return;el._bound=true;el.addEventListener('click',()=>{if(el.dataset.filter)currentOrderFilter=el.dataset.filter;openSubPage(el.dataset.page||'orderList')});
+});
+document.querySelectorAll('.order-card[data-page]').forEach(el=>{
+if(el._bound)return;el._bound=true;el.addEventListener('click',()=>openSubPage('orderDetail'));
+});
+const filters=document.getElementById('orderFilters');
+if(filters&&!filters._bound){
+filters._bound=true;
+filters.querySelectorAll('button').forEach(btn=>{
+btn.addEventListener('click',()=>{
+filters.querySelectorAll('button').forEach(b=>b.classList.remove('on'));
+btn.classList.add('on');
+const f=btn.dataset.filter;
+document.querySelectorAll('#orderListArea .order-card').forEach(card=>{
+card.style.display=(f==='all'||card.dataset.status===f)?'':'none';
+});
+});
+});
+}
+}
+
+function bindNotifySwitch(){
+const sw=document.getElementById('notifySwitch');
+if(sw&&!sw._bound){sw._bound=true;sw.addEventListener('click',e=>{e.stopPropagation();sw.classList.toggle('active')})}
+}
+
+function bindSubEvents(id){
+subBody.querySelectorAll('[data-page]').forEach(el=>{
+el.addEventListener('click',e=>{e.stopPropagation();openSubPage(el.dataset.page)});
+});
+subBody.querySelectorAll('[data-action]').forEach(btn=>{
+btn.addEventListener('click',()=>{
+const act=btn.dataset.action,msg=btn.dataset.msg;
+if(act==='toast'&&msg)showToast(msg);
+if(act==='approve-order'){showToast('审核通过，订单进入待出函');setTimeout(()=>openSubPage('issueGuarantee'),800)}
+if(act==='reject-order'){showToast('订单已驳回，已通知申请人');setTimeout(closeSubPage,800)}
+if(act==='issue-letter'){showToast('保函已出具并上链存证');ORDER_STATE.status='done';setTimeout(closeSubPage,1000)}
+if(act==='send-supplement'){showToast('补材料通知已发送');setTimeout(closeSubPage,800)}
+});
+});
+subBody.querySelectorAll('.sp-tag[data-select]').forEach(tag=>{
+tag.addEventListener('click',()=>{tag.parentElement.querySelectorAll('.sp-tag').forEach(t=>t.classList.remove('selected'));tag.classList.add('selected')});
+});
+const filtersSub=document.getElementById('orderFiltersSub');
+if(filtersSub){
+filtersSub.querySelectorAll('button').forEach(btn=>{
+btn.addEventListener('click',()=>{
+filtersSub.querySelectorAll('button').forEach(b=>b.classList.remove('on'));
+btn.classList.add('on');
+const f=btn.dataset.filter;
+document.querySelectorAll('#orderListArea .order-card').forEach(card=>{
+card.style.display=(f==='all'||card.dataset.status===f)?'':'none';
+});
+});
+});
+}
+}
+
+document.querySelectorAll('.nav-item').forEach(nav=>{
+nav.addEventListener('click',()=>{closeSubPage();setActiveNav(nav.dataset.nav)});
+});
+document.getElementById('subpageBack').addEventListener('click',closeSubPage);
+
+const PRD_SPECS={
+'nav-workbench':{title:'工作台 Tab',module:'全局导航',page:'TabBar',priority:'P0',business:'机构端默认 landing 页，展示待办统计、快捷操作入口及最新待办订单，帮助核保人员快速进入高频业务。',logic:['展示待审核/待出函/待补材料/本月出函四项核心指标','点击统计卡片可跳转对应筛选订单列表','待办订单卡片点击进入订单详情'],acceptance:['Tab 切换后工作台内容完整渲染','统计数字可点击跳转','待办 alert 可点击'],api:'GET /api/inst/dashboard'},
+'nav-orders':{title:'订单 Tab',module:'全局导航',page:'TabBar',priority:'P0',business:'机构端订单中心，集中管理用户提交的保全保函申请，支持状态筛选与搜索。',logic:['filter-tabs 六种状态筛选','order-card 点击进入 orderDetail','搜索 icon 跳转 searchPage'],acceptance:['六种筛选互斥','筛选后列表正确过滤'],api:'GET /api/inst/orders'},
+'stat-pending':{title:'待审核统计',module:'工作台',page:'工作台',priority:'P0',business:'实时展示待机构审核的订单数量，点击直达待审核列表。',logic:['数据 T+0 或近实时更新','点击跳转 orderList filter=pending'],acceptance:['数字与列表待审核数一致'],api:'GET /api/inst/stats/pending'},
+'quick-review':{title:'订单审核快捷入口',module:'工作台',page:'工作台',priority:'P0',business:'核保人员一键进入审核流程，缩短操作路径。',logic:['跳转 orderReview 子页','展示核保评估表单'],acceptance:['点击打开 orderReview','风险等级 tag 单选'],api:'POST /api/inst/order/review'},
+'quick-issue':{title:'出函办理',module:'工作台',page:'工作台',priority:'P0',business:'审核通过后生成电子保函并可选链上存证，完成机构侧核心产出。',logic:['选择待出函订单','自动生成保函编号','勾选司法链存证','确认出函通知用户'],acceptance:['出函后 Toast 成功','状态变为已出函'],api:'POST /api/inst/guarantee/issue'},
+'order-detail':{title:'订单详情',module:'订单',page:'orderDetail',priority:'P0',business:'展示完整案件信息、申请材料、审核记录，是审核决策的信息基础。',logic:['步骤条展示当前阶段','材料列表支持预览','底部操作：补材料/进入审核'],acceptance:['案件信息与用户端一致','时间线完整'],api:'GET /api/inst/order/{id}'},
+'order-review':{title:'订单审核',module:'订单',page:'orderReview',priority:'P0',business:'机构核保核心环节：评估风险、填写意见、确定费率，通过或驳回。',logic:['风险等级三选一','审核意见 textarea','费率 input 联动保费计算','通过→issueGuarantee 驳回→通知用户'],acceptance:['审核通过跳转出函','驳回 Toast 并通知'],api:'POST /api/inst/order/{id}/approve'},
+'issue-guarantee':{title:'出函办理',module:'订单',page:'issueGuarantee',priority:'P0',business:'生成电子保函、同步区块链、推送用户通知，完成业务闭环。',logic:['保函编号自动生成','模板下拉选择','chainCheck 默认勾选','出函后订单状态=已出函'],acceptance:['出函成功 Toast','链上存证可选'],api:'POST /api/inst/guarantee/issue'},
+'supplement-request':{title:'要求补材料',module:'订单',page:'supplementRequest',priority:'P1',business:'审核中发现材料不全时，通知用户补充指定材料。',logic:['材料多选 checkbox','补充说明 textarea','发送 push+短信'],acceptance:['发送后订单状态=待补材料'],api:'POST /api/inst/order/{id}/supplement'},
+'rate-config':{title:'费率配置',module:'业务',page:'rateConfig',priority:'P1',business:'机构配置产品费率，变更需平台审批后生效。',logic:['基础费率/最低保费/最高额度','提交审批 workflow'],acceptance:['提交后 Toast 已提交审批'],api:'POST /api/inst/rate/apply'},
+'customer-list':{title:'客户管理',module:'业务',page:'customerList',priority:'P1',business:'查看申请人/企业客户历史订单与信用概况。',logic:['搜索客户','卡片展示订单数','点击进入 customerDetail'],acceptance:['客户列表可搜索'],api:'GET /api/inst/customers'},
+'stats-report':{title:'业务报表',module:'业务',page:'statsReport',priority:'P1',business:'机构维度出函量、保费、通过率、时效统计。',logic:['四指标卡片','7日趋势图','导出 Excel'],acceptance:['指标数据准确','导出 Toast'],api:'GET /api/inst/report'},
+'blockchain-upload':{title:'链上存证',module:'业务',page:'blockchainUpload',priority:'P1',business:'保函出具后上司法区块链，支持法官核验。',logic:['输入保函编号','提交存证返回链哈希'],acceptance:['存证成功 Toast'],api:'POST /api/inst/blockchain/store'},
+'staff-manage':{title:'团队管理',module:'我的',page:'staffManage',priority:'P2',business:'机构管理员管理业务员账号与权限。',logic:['成员列表','邀请新成员生成链接'],acceptance:['邀请 Toast'],api:'GET /api/inst/staff'},
+'message-center':{title:'消息中心',module:'我的',page:'messageCenter',priority:'P1',business:'审核提醒、费率审批、补材料等系统通知。',logic:['按时间倒序','未读标记'],acceptance:['消息列表完整'],api:'GET /api/inst/messages'},
+'product-list':{title:'产品管理',module:'业务',page:'productList',priority:'P1',business:'机构保函产品上下架与编辑。',logic:['已上架/已下架状态','编辑/上架按钮'],acceptance:['上下架 Toast'],api:'GET /api/inst/products'},
+'court-coverage':{title:'法院覆盖',module:'业务',page:'courtCoverage',priority:'P2',business:'展示机构已接入法院及申请新法院接入。',logic:['搜索法院','已开通/申请中状态'],acceptance:['申请接入 Toast'],api:'GET /api/inst/courts'}
+};
+
+const ELEMENT_MAP=[
+{sel:'.nav-item[data-nav="workbench"]',id:'nav-workbench'},{sel:'.nav-item[data-nav="orders"]',id:'nav-orders'},
+{sel:'.stat-item[data-filter="pending"]',id:'stat-pending'},{sel:'.quick-item[data-page="orderReview"]',id:'quick-review'},
+{sel:'.quick-item[data-page="issueGuarantee"]',id:'quick-issue'},{sel:'.order-card',id:'order-detail'},
+{sel:'.quick-item[data-page="rateConfig"]',id:'rate-config'},{sel:'.quick-item[data-page="customerList"]',id:'customer-list'},
+{sel:'.quick-item[data-page="statsReport"]',id:'stats-report'},{sel:'.quick-item[data-page="blockchainUpload"]',id:'blockchain-upload'},
+{sel:'.quick-item[data-page="staffManage"]',id:'staff-manage'},{sel:'.icon-btn[data-page="messageCenter"]',id:'message-center'},
+{sel:'.quick-item[data-page="productList"]',id:'product-list'},{sel:'.quick-item[data-page="courtCoverage"]',id:'court-coverage'}
+];
+
+function initPRD(){
+const prdEmpty=document.getElementById('prdEmpty'),prdContent=document.getElementById('prdContent'),prdTooltip=document.getElementById('prdTooltip'),prdPendingHint=document.getElementById('prdPendingHint');
+let activeEl=null,hoverTimer=null,pendingEl=null;
+function renderPanel(spec){
+prdEmpty.style.display='none';prdContent.style.display='block';
+prdContent.innerHTML=`<div class="prd-section"><div class="prd-title">${spec.title}</div><div class="prd-meta"><span class="prd-meta-tag prd-meta-module">${spec.module}</span><span class="prd-meta-tag prd-meta-p0">${spec.priority}</span><span class="prd-meta-tag prd-meta-page">${spec.page}</span></div></div>
+<div class="prd-section"><div class="prd-section-title">① 业务需求</div><div class="prd-business-text">${spec.business}</div></div>
+<div class="prd-section"><div class="prd-section-title">② 功能详细逻辑</div>${(spec.logic||[]).map(l=>`<div class="prd-logic-item">${l}</div>`).join('')}</div>
+<div class="prd-section"><div class="prd-section-title">③ 验收标准</div><ul class="prd-list">${(spec.acceptance||[]).map(a=>`<li>${a}</li>`).join('')}</ul></div>
+${spec.api?`<div class="prd-section"><div class="prd-section-title">接口</div><div class="prd-api-box">${spec.api}</div></div>`:''}`;
+}
+function bindSpecs(){
+document.querySelectorAll('button,.nav-item,.stat-item,.stat-block,.quick-item,.order-card,.alert-banner,.icon-btn,.settings-item,.sp-btn-primary,.sp-btn-secondary,.sp-btn-danger,[data-page]').forEach(el=>{
+if(el._prdBound)return;el._prdBound=true;
+let specId=null;
+ELEMENT_MAP.forEach(m=>{if(el.matches(m.sel)||el.closest(m.sel))specId=m.id});
+if(!specId&&el.dataset&&el.dataset.page)specId=el.dataset.page.replace(/([A-Z])/g,'-$1').toLowerCase().replace(/^-/,'');
+const spec=specId&&PRD_SPECS[specId];
+if(!spec)return;
+el.addEventListener('mouseenter',()=>{
+if(hoverTimer)clearTimeout(hoverTimer);
+if(pendingEl)pendingEl.classList.remove('prd-pending');
+pendingEl=el;el.classList.add('prd-pending');
+hoverTimer=setTimeout(()=>{el.classList.remove('prd-pending');if(activeEl&&activeEl!==el)activeEl.classList.remove('prd-highlight');activeEl=el;el.classList.add('prd-highlight');renderPanel(spec);prdTooltip.textContent=spec.title;prdTooltip.classList.add('show')},1000);
+});
+el.addEventListener('mouseleave',()=>{if(hoverTimer)clearTimeout(hoverTimer);if(pendingEl===el){el.classList.remove('prd-pending');pendingEl=null}prdTooltip.classList.remove('show')});
+});
+}
+const obs=new MutationObserver(()=>bindSpecs());
+obs.observe(document.body,{childList:true,subtree:true});
+bindSpecs();
+}
+setActiveNav('workbench');
+initPRD();
+})();
+</script>
+</body>
+</html>
