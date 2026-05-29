@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>诉讼保 · 平台管理端 PC PRD 原型</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body.prd-mode{background:#0F172A;font-family:'Inter',sans-serif;min-height:100vh;justify-content:center;align-items:flex-start}
+.prd-workspace{display:flex;gap:20px;margin:0 auto;align-items:flex-start;justify-content:center;width:auto;max-width:100%}
+.admin-shell{flex:1;min-width:0;background:#F1F5F9;overflow:hidden;box-shadow:0 30px 60px rgba(0,0,0,.4);display:flex;height:calc(100vh - 0px);}
+.admin-sidebar{width:220px;background:#F1F5F9;color:#334155;display:flex;flex-direction:column;flex-shrink:0;border-right:1px solid #E2E8F0}
+.admin-logo{padding:20px 18px;border-bottom:1px solid #E2E8F0}
+.admin-logo h2{font-size:16px;font-weight:800;color:#1C2E36}
+.admin-logo p{font-size:10px;color:#6F8FAA;margin-top:4px}
+.admin-nav{flex:1;padding:12px 10px;overflow-y:auto}
+.nav-group{font-size:10px;color:#94A3B8;text-transform:uppercase;padding:12px 12px 6px;font-weight:700;letter-spacing:.5px}
+.nav-link{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:10px;font-size:13px;font-weight:500;color:#475569;cursor:pointer;margin-bottom:2px;transition:.15s}
+.nav-link i{width:18px;text-align:center;font-size:14px}
+.nav-link:hover{background:#E2E8F0;color:#1C2E36}
+.nav-link.active{background:linear-gradient(95deg,#22668D,#1A6B7C);color:#fff;font-weight:600}
+.admin-main{flex:1;display:flex;flex-direction:column;min-width:0}
+.admin-topbar{background:#fff;padding:14px 24px;border-bottom:1px solid #E2E8F0;display:flex;justify-content:space-between;align-items:center}
+.admin-topbar h1{font-size:18px;font-weight:700;color:#1C2E36}
+.admin-topbar p{font-size:12px;color:#6F8FAA;margin-top:2px}
+.topbar-actions{display:flex;gap:10px;align-items:center}
+.topbar-btn{background:#F1F5F9;border:none;padding:8px 14px;border-radius:8px;font-size:12px;font-weight:600;color:#475569;cursor:pointer}
+.topbar-btn.primary{background:linear-gradient(95deg,#1A4A6E,#22668D);color:#fff}
+.admin-content{flex:1;overflow-y:auto;padding:20px 24px}
+.stat-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:24px}
+.stat-card{background:#fff;border-radius:14px;padding:18px;border:1px solid #E2E8F0;cursor:pointer;transition:.15s}
+.stat-card:hover{box-shadow:0 4px 12px rgba(0,0,0,.06)}
+.stat-card .num{font-size:28px;font-weight:800;color:#1A4A6E;line-height:1}
+.stat-card .lbl{font-size:12px;color:#6F8FAA;margin-top:6px}
+.stat-card .trend{font-size:11px;color:#1D7A6E;margin-top:8px;font-weight:600}
+.panel{background:#fff;border-radius:14px;border:1px solid #E2E8F0;margin-bottom:20px;overflow:hidden}
+.panel-head{padding:16px 20px;border-bottom:1px solid #F1F5F9;display:flex;justify-content:space-between;align-items:center}
+.panel-head h3{font-size:15px;font-weight:700;color:#1C2E36}
+.panel-head a{font-size:12px;color:#22668D;text-decoration:none;font-weight:600;cursor:pointer}
+.panel-body{padding:16px 20px}
+.data-table{width:100%;border-collapse:collapse;font-size:13px}
+.data-table th{text-align:left;padding:10px 12px;background:#F8FAFC;color:#64748B;font-weight:600;font-size:11px;text-transform:uppercase;border-bottom:1px solid #E2E8F0}
+.data-table td{padding:12px;border-bottom:1px solid #F1F5F9;color:#334155}
+.data-table tr{cursor:pointer}.data-table tr:hover td{background:#F8FAFE}
+.badge{display:inline-block;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:700}
+.badge-green{background:#D4EDE8;color:#1D7A6E}.badge-yellow{background:#FEF3C7;color:#B45309}
+.badge-blue{background:#DBEAFE;color:#1D4ED8}.badge-red{background:#FEE2E2;color:#B91C1C}
+.badge-gray{background:#F1F5F9;color:#64748B}
+.btn-sm{padding:6px 12px;border-radius:8px;font-size:12px;font-weight:600;border:none;cursor:pointer}
+.btn-primary{background:#22668D;color:#fff}.btn-secondary{background:#F1F5F9;color:#475569}
+.btn-danger{background:#FEE2E2;color:#B91C1C}
+.filter-bar{display:flex;gap:10px;margin-bottom:16px;flex-wrap:wrap;align-items:center}
+.filter-bar input,.filter-bar select{padding:8px 12px;border:1px solid #E2E8F0;border-radius:8px;font-size:13px;background:#fff;font-family:inherit}
+.filter-bar input{min-width:200px}
+.chart-placeholder{height:200px;background:linear-gradient(180deg,#EFF6FF 0%,#fff 100%);border-radius:12px;display:flex;align-items:flex-end;justify-content:space-around;padding:0 20px 20px}
+.chart-bar{width:32px;background:linear-gradient(180deg,#22668D,#1A4A6E);border-radius:6px 6px 0 0}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.form-group{margin-bottom:14px}
+.form-group label{display:block;font-size:12px;font-weight:600;color:#64748B;margin-bottom:6px}
+.form-group input,.form-group select,.form-group textarea{width:100%;padding:10px 12px;border:1px solid #E2E8F0;border-radius:8px;font-size:13px;font-family:inherit}
+.form-group textarea{min-height:80px;resize:vertical}
+.modal-overlay{position:fixed;inset:0;background:rgba(15,23,42,.5);z-index:500;display:none;align-items:center;justify-content:center}
+.modal-overlay.show{display:flex}
+.modal-box{background:#fff;border-radius:16px;width:520px;max-width:90vw;max-height:85vh;overflow-y:auto;box-shadow:0 25px 50px rgba(0,0,0,.25)}
+.modal-head{padding:18px 22px;border-bottom:1px solid #F1F5F9;display:flex;justify-content:space-between;align-items:center}
+.modal-head h2{font-size:17px;font-weight:700}
+.modal-close{width:32px;height:32px;border-radius:8px;background:#F1F5F9;border:none;cursor:pointer;font-size:16px;color:#64748B}
+.modal-body{padding:20px 22px 24px}
+.modal-foot{padding:14px 22px;border-top:1px solid #F1F5F9;display:flex;gap:10px;justify-content:flex-end}
+.tabs{display:flex;gap:4px;margin-bottom:16px;border-bottom:1px solid #E2E8F0;padding-bottom:0}
+.tab-btn{padding:10px 16px;border:none;background:none;font-size:13px;font-weight:600;color:#64748B;cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-1px}
+.tab-btn.on{color:#22668D;border-bottom-color:#22668D}
+.prd-sidebar{width:400px;min-width:340px;max-height:calc(100vh - 32px);background:#FFF;border-radius:16px;box-shadow:0 20px 60px rgba(0,0,0,.35);display:none;flex-direction:column;overflow:hidden;position:sticky;top:16px;flex-shrink:0}
+.prd-sidebar-header{background:linear-gradient(135deg,#1E3A5F,#22668D);color:#fff;padding:16px 18px}
+.prd-sidebar-header h1{font-size:15px;font-weight:800;margin-bottom:4px}
+.prd-sidebar-header p{font-size:11px;opacity:.85;line-height:1.5}
+.prd-badge-row{display:flex;gap:6px;margin-top:10px;flex-wrap:wrap}
+.prd-badge{font-size:10px;font-weight:700;padding:3px 8px;border-radius:20px;background:rgba(255,255,255,.2)}
+.prd-sidebar-body{flex:1;overflow-y:auto;padding:16px 18px 24px}
+.prd-empty{text-align:center;padding:40px 16px;color:#94A3B8}
+.prd-empty i{font-size:32px;margin-bottom:10px;display:block;color:#CBD5E1}
+.prd-empty p{font-size:12px;line-height:1.7}
+.prd-section{margin-bottom:14px}
+.prd-section-title{font-size:11px;font-weight:700;color:#64748B;text-transform:uppercase;margin-bottom:6px;display:flex;align-items:center;gap:6px}
+.prd-section-title::before{content:"";width:3px;height:12px;background:#22668D;border-radius:2px}
+.prd-title{font-size:17px;font-weight:800;color:#0F172A;margin-bottom:6px}
+.prd-meta{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px}
+.prd-meta-tag{font-size:10px;font-weight:600;padding:3px 8px;border-radius:20px}
+.prd-meta-module{background:#EFF6FF;color:#1D4ED8}.prd-meta-p0{background:#FEE2E2;color:#B91C1C}
+.prd-meta-p1{background:#FEF3C7;color:#B45309}.prd-meta-page{background:#F1F5F9;color:#475569}
+.prd-business-text,.prd-logic-item{font-size:12px;color:#334155;line-height:1.7;background:#F8FAFC;border:1px solid #E2E8F0;border-radius:10px;padding:10px 12px;margin-bottom:6px}
+.prd-logic-item strong{display:block;color:#22668D;margin-bottom:3px;font-size:11px}
+.prd-list{list-style:none}.prd-list li{font-size:11px;color:#334155;line-height:1.6;padding:5px 0 5px 16px;position:relative;border-bottom:1px solid #F1F5F9}
+.prd-list li::before{content:"✓";position:absolute;left:0;color:#22668D;font-weight:700;font-size:10px}
+.prd-api-box{background:#0F172A;color:#E2E8F0;border-radius:8px;padding:10px;font-size:10px;font-family:Consolas,monospace}
+.prd-highlight{outline:2px solid #F59E0B!important;outline-offset:2px;background:rgba(245,158,11,.08)!important}
+.prd-pending{outline:2px dashed #94A3B8!important;animation:prd-pulse 1s infinite}
+@keyframes prd-pulse{0%,100%{outline-color:#94A3B8}50%{outline-color:#64748B}}
+.prd-tooltip{position:fixed;z-index:99999;pointer-events:none;background:#1E293B;color:#fff;font-size:11px;padding:6px 10px;border-radius:8px;opacity:0;transition:opacity .15s}
+.prd-tooltip.show{opacity:1}
+.prd-mode-bar{position:fixed;bottom:16px;left:50%;transform:translateX(-50%);background:rgba(30,58,95,.95);color:#fff;padding:8px 20px;border-radius:30px;font-size:12px;font-weight:600;z-index:99998}
+.sp-toast{position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:rgba(30,50,70,.92);color:#fff;padding:10px 20px;border-radius:30px;font-size:13px;z-index:600;display:none}
+.sp-toast.show{display:block}
+@media(max-width:1200px){.stat-grid{grid-template-columns:repeat(2,1fr)}.form-grid{grid-template-columns:1fr}}
+@media(max-width:900px){body.prd-mode{flex-direction:column}.prd-workspace{flex-direction:column;align-items:center}.admin-shell{height:auto;min-height:600px;max-width:100%}.prd-sidebar{width:100%;max-width:100%;position:relative;max-height:40vh}}
+</style>
+</head>
+<body class="prd-mode">
+<div class="prd-workspace">
+<div class="admin-shell">
+<aside class="admin-sidebar">
+<div class="admin-logo"><h2>⚖️ 诉讼保</h2><p>平台管理后台</p></div>
+<nav class="admin-nav" id="adminNav">
+<div class="nav-group">概览</div>
+<div class="nav-link active" data-module="dashboard"><i class="fas fa-chart-pie"></i>数据概览</div>
+<div class="nav-group">业务管理</div>
+<div class="nav-link" data-module="institutions"><i class="fas fa-building"></i>机构管理</div>
+<div class="nav-link" data-module="orders"><i class="fas fa-file-invoice"></i>订单监控</div>
+<div class="nav-link" data-module="users"><i class="fas fa-users"></i>用户管理</div>
+<div class="nav-link" data-module="products"><i class="fas fa-box"></i>产品管理</div>
+<div class="nav-group">资源管理</div>
+<div class="nav-link" data-module="courts"><i class="fas fa-landmark"></i>法院接入</div>
+<div class="nav-link" data-module="templates"><i class="fas fa-file-alt"></i>范本库</div>
+<div class="nav-link" data-module="content"><i class="fas fa-newspaper"></i>内容运营</div>
+<div class="nav-group">财务与系统</div>
+<div class="nav-link" data-module="finance"><i class="fas fa-yen-sign"></i>财务对账</div>
+<div class="nav-link" data-module="blockchain"><i class="fas fa-link"></i>区块链存证</div>
+<div class="nav-link" data-module="system"><i class="fas fa-cog"></i>系统设置</div>
+</nav>
+</aside>
+<div class="admin-main">
+<div class="admin-topbar"><div><h1 id="pageTitle">数据概览</h1><p id="pageSubtitle">平台运营核心指标</p></div><div class="topbar-actions"><button class="topbar-btn" id="exportBtn"><i class="fas fa-download"></i> 导出</button><button class="topbar-btn primary" id="quickActionBtn"><i class="fas fa-plus"></i> 快捷操作</button></div></div>
+<div class="admin-content" id="adminContent"></div>
+</div>
+</div>
+<aside class="prd-sidebar"><div class="prd-sidebar-header"><h1>🖥️ 诉讼保平台管理端 · 产品需求文档</h1><p>面向<strong>平台运营管理员</strong>：机构入驻、订单监控、用户管理、财务对账、系统配置。悬停功能区域<strong>停留 1 秒</strong>查看需求。</p><div class="prd-badge-row"><span class="prd-badge">管理端 V1.0</span><span class="prd-badge">PC 闭环交互</span></div></div><div class="prd-sidebar-body" id="prdPanelBody"><div class="prd-empty" id="prdEmpty"><i class="fas fa-hand-pointer"></i><p>悬停左侧管理后台功能区域 1 秒，查看业务需求、功能逻辑与验收标准。</p></div><div id="prdContent" style="display:none"></div></div></aside>
+</div>
+<div class="modal-overlay" id="modalOverlay"><div class="modal-box"><div class="modal-head"><h2 id="modalTitle">弹窗</h2><button class="modal-close" id="modalClose">&times;</button></div><div class="modal-body" id="modalBody"></div><div class="modal-foot" id="modalFoot"></div></div></div>
+<div class="prd-mode-bar"><i class="fas fa-info-circle"></i> 平台管理端 PRD 预览 · 悬停 1 秒呈现需求 · 点击体验闭环交互</div>
+<div class="prd-tooltip" id="prdTooltip"></div>
+<div class="sp-toast" id="spToast"></div>
+<script>
+(function(){
+const adminContent=document.getElementById('adminContent'),pageTitle=document.getElementById('pageTitle'),pageSubtitle=document.getElementById('pageSubtitle'),modalOverlay=document.getElementById('modalOverlay'),modalTitle=document.getElementById('modalTitle'),modalBody=document.getElementById('modalBody'),modalFoot=document.getElementById('modalFoot'),spToast=document.getElementById('spToast');
+let currentModule='dashboard';
+
+function showToast(msg){spToast.textContent=msg;spToast.classList.add('show');clearTimeout(showToast._t);showToast._t=setTimeout(()=>spToast.classList.remove('show'),2200)}
+function openModal(title,body,foot){modalTitle.textContent=title;modalBody.innerHTML=body;modalFoot.innerHTML=foot||'';modalOverlay.classList.add('show');bindModalEvents()}
+function closeModal(){modalOverlay.classList.remove('show')}
+
+const MODULES={
+dashboard:{title:'数据概览',subtitle:'平台运营核心指标',render:()=>`
+<div class="stat-grid">
+<div class="stat-card" data-action="nav-institutions"><div class="num">28</div><div class="lbl">合作机构</div><div class="trend">↑ 2 本月新增</div></div>
+<div class="stat-card" data-action="nav-orders"><div class="num">3,842</div><div class="lbl">累计订单</div><div class="trend">↑ 156 本周</div></div>
+<div class="stat-card"><div class="num">1.92亿</div><div class="lbl">累计保额</div><div class="trend">↑ 12.3%</div></div>
+<div class="stat-card" data-action="nav-users"><div class="num">12,680</div><div class="lbl">注册用户</div><div class="trend">↑ 328 本月</div></div>
+</div>
+<div style="display:grid;grid-template-columns:2fr 1fr;gap:20px">
+<div class="panel"><div class="panel-head"><h3>📈 近30日订单趋势</h3><a data-action="nav-orders">查看详情 →</a></div><div class="panel-body"><div class="chart-placeholder">${[40,55,45,70,60,85,75].map(h=>`<div class="chart-bar" style="height:${h}%"></div>`).join('')}</div></div></div>
+<div class="panel"><div class="panel-head"><h3>⚡ 待办事项</h3></div><div class="panel-body">
+<div style="padding:10px 0;border-bottom:1px solid #F1F5F9;cursor:pointer" data-action="open-rate-approval"><strong style="font-size:13px">5 笔费率变更待审批</strong><p style="font-size:11px;color:#6F8FAA;margin-top:4px">永安保险等 3 家机构</p></div>
+<div style="padding:10px 0;border-bottom:1px solid #F1F5F9;cursor:pointer" data-action="nav-institutions"><strong style="font-size:13px">2 家机构入驻待审核</strong><p style="font-size:11px;color:#6F8FAA;margin-top:4px">阳光担保、大地保险</p></div>
+<div style="padding:10px 0;cursor:pointer" data-action="nav-orders"><strong style="font-size:13px">8 笔异常订单</strong><p style="font-size:11px;color:#6F8FAA;margin-top:4px">超时未出函</p></div>
+</div></div></div>
+<div class="panel"><div class="panel-head"><h3>🏢 机构出函排行 TOP5</h3><a data-action="nav-institutions">全部机构 →</a></div><div class="panel-body"><table class="data-table"><thead><tr><th>机构</th><th>本月出函</th><th>保费</th><th>状态</th></tr></thead><tbody>
+<tr data-action="inst-detail"><td>永安保险</td><td>286</td><td>¥128.6万</td><td><span class="badge badge-green">正常</span></td></tr>
+<tr data-action="inst-detail"><td>太平洋保险</td><td>245</td><td>¥112.3万</td><td><span class="badge badge-green">正常</span></td></tr>
+<tr data-action="inst-detail"><td>阳光保险</td><td>198</td><td>¥86.5万</td><td><span class="badge badge-green">正常</span></td></tr>
+</tbody></table></div></div>`},
+
+institutions:{title:'机构管理',subtitle:'入驻审核 · 费率审批 · 状态管理',render:()=>`
+<div class="filter-bar"><input placeholder="搜索机构名称…"><select><option>全部状态</option><option>正常</option><option>待审核</option><option>已停用</option></select><button class="btn-sm btn-primary" data-action="add-institution"><i class="fas fa-plus"></i> 新增机构</button></div>
+<div class="panel"><div class="panel-body" style="padding:0"><table class="data-table"><thead><tr><th>机构名称</th><th>费率</th><th>本月出函</th><th>评级</th><th>状态</th><th>操作</th></tr></thead><tbody>
+<tr><td><strong>永安保险</strong></td><td>0.85‰</td><td>286</td><td>AAA</td><td><span class="badge badge-green">正常</span></td><td><button class="btn-sm btn-secondary" data-action="inst-detail">详情</button> <button class="btn-sm btn-secondary" data-action="inst-edit">编辑</button></td></tr>
+<tr><td><strong>太平洋保险</strong></td><td>0.75‰</td><td>245</td><td>AAA</td><td><span class="badge badge-green">正常</span></td><td><button class="btn-sm btn-secondary" data-action="inst-detail">详情</button> <button class="btn-sm btn-secondary" data-action="inst-edit">编辑</button></td></tr>
+<tr><td><strong>阳光担保</strong></td><td>—</td><td>—</td><td>—</td><td><span class="badge badge-yellow">待审核</span></td><td><button class="btn-sm btn-primary" data-action="inst-approve">审核</button></td></tr>
+<tr><td><strong>大地保险</strong></td><td>0.92‰</td><td>0</td><td>AA</td><td><span class="badge badge-red">已停用</span></td><td><button class="btn-sm btn-secondary" data-action="inst-enable">启用</button></td></tr>
+</tbody></table></div></div>
+<div class="panel"><div class="panel-head"><h3>📋 费率变更审批</h3></div><div class="panel-body"><table class="data-table"><thead><tr><th>机构</th><th>产品</th><th>原费率</th><th>新费率</th><th>申请时间</th><th>操作</th></tr></thead><tbody>
+<tr><td>永安保险</td><td>财产保全保函</td><td>0.88‰</td><td>0.85‰</td><td>2025-05-28</td><td><button class="btn-sm btn-primary" data-action="rate-approve">批准</button> <button class="btn-sm btn-danger" data-action="rate-reject">驳回</button></td></tr>
+</tbody></table></div></div>`},
+
+orders:{title:'订单监控',subtitle:'全平台保全保函订单',render:()=>`
+<div class="filter-bar"><input placeholder="订单号/案号/客户名…"><select><option>全部状态</option><option>待审核</option><option>待出函</option><option>已出函</option><option>已驳回</option></select><select><option>全部机构</option><option>永安保险</option><option>太平洋保险</option></select><button class="btn-sm btn-primary" data-action="search-orders">搜索</button></div>
+<div class="panel"><div class="panel-body" style="padding:0"><table class="data-table"><thead><tr><th>订单号</th><th>类型</th><th>申请人</th><th>机构</th><th>保费</th><th>状态</th><th>操作</th></tr></thead><tbody>
+<tr data-action="order-detail"><td>SS20250529001</td><td>财产保全</td><td>张正源</td><td>永安保险</td><td>¥4,250</td><td><span class="badge badge-blue">待审核</span></td><td><button class="btn-sm btn-secondary" data-action="order-detail">详情</button></td></tr>
+<tr data-action="order-detail"><td>SS20250528008</td><td>继续执行</td><td>李法务</td><td>永安保险</td><td>¥3,680</td><td><span class="badge badge-yellow">待出函</span></td><td><button class="btn-sm btn-secondary" data-action="order-detail">详情</button></td></tr>
+<tr data-action="order-detail"><td>SS20250518001</td><td>财产保全</td><td>张正源</td><td>永安保险</td><td>¥4,250</td><td><span class="badge badge-green">已出函</span></td><td><button class="btn-sm btn-secondary" data-action="order-detail">详情</button></td></tr>
+<tr data-action="order-detail"><td>SS20250512003</td><td>行为保全</td><td>王经理</td><td>太平洋保险</td><td>¥2,100</td><td><span class="badge badge-red">已驳回</span></td><td><button class="btn-sm btn-secondary" data-action="order-detail">详情</button></td></tr>
+</tbody></table></div></div>`},
+
+users:{title:'用户管理',subtitle:'C端注册用户 · 实名认证',render:()=>`
+<div class="filter-bar"><input placeholder="手机号/姓名/企业名…"><select><option>全部</option><option>已实名</option><option>未实名</option><option>VIP</option></select><button class="btn-sm btn-primary" data-action="search-users">搜索</button></div>
+<div class="panel"><div class="panel-body" style="padding:0"><table class="data-table"><thead><tr><th>用户</th><th>手机号</th><th>认证</th><th>订单数</th><th>注册时间</th><th>操作</th></tr></thead><tbody>
+<tr data-action="user-detail"><td>张正源</td><td>131****2025</td><td><span class="badge badge-green">已实名</span></td><td>3</td><td>2025-03-15</td><td><button class="btn-sm btn-secondary" data-action="user-detail">详情</button></td></tr>
+<tr data-action="user-detail"><td>李法务</td><td>138****8899</td><td><span class="badge badge-green">已实名</span></td><td>8</td><td>2025-01-20</td><td><button class="btn-sm btn-secondary" data-action="user-detail">详情</button></td></tr>
+<tr data-action="user-detail"><td>王经理</td><td>159****6677</td><td><span class="badge badge-yellow">未实名</span></td><td>1</td><td>2025-05-10</td><td><button class="btn-sm btn-secondary" data-action="user-detail">详情</button></td></tr>
+</tbody></table></div></div>`},
+
+products:{title:'产品管理',subtitle:'平台保函产品 · 小程序保全入口配置',render:()=>`
+<div class="filter-bar"><button class="btn-sm btn-primary" data-action="add-product"><i class="fas fa-plus"></i> 新增产品</button><button class="btn-sm btn-secondary" data-action="add-miniapp-entry"><i class="fas fa-mobile-alt"></i> 新增小程序入口</button></div>
+<div class="panel"><div class="panel-head"><h3>保函产品</h3></div><div class="panel-body" style="padding:0"><table class="data-table"><thead><tr><th>产品名称</th><th>类型</th><th>最低保费</th><th>最高额度</th><th>状态</th><th>操作</th></tr></thead><tbody>
+<tr><td>诉讼财产保全保函</td><td>财产保全</td><td>¥480</td><td>5000万</td><td><span class="badge badge-green">上架</span></td><td><button class="btn-sm btn-secondary" data-action="edit-product">编辑</button></td></tr>
+<tr><td>继续执行保函</td><td>继续执行</td><td>¥800</td><td>按标的</td><td><span class="badge badge-green">上架</span></td><td><button class="btn-sm btn-secondary" data-action="edit-product">编辑</button></td></tr>
+<tr><td>证据保全保函</td><td>证据保全</td><td>¥600</td><td>2000万</td><td><span class="badge badge-gray">下架</span></td><td><button class="btn-sm btn-primary" data-action="toggle-product">上架</button></td></tr>
+</tbody></table></div></div>
+<div class="panel"><div class="panel-head"><h3>小程序 · 保全服务入口</h3><span style="font-size:11px;color:#6F8FAA">配置后同步首页/大厅 8 宫格</span></div><div class="panel-body" style="padding:0"><table class="data-table"><thead><tr><th>入口名称</th><th>图标</th><th>跳转</th><th>场景</th><th>排序</th><th>状态</th><th>操作</th></tr></thead><tbody>
+<tr><td>财产保全</td><td><i class="fas fa-chart-line"></i></td><td>propertyPreserve</td><td>首页+大厅</td><td>1</td><td><span class="badge badge-green">上架</span></td><td><button class="btn-sm btn-secondary" data-action="edit-miniapp-entry">编辑</button></td></tr>
+<tr><td>证据保全</td><td><i class="fas fa-microphone-alt"></i></td><td>evidencePreserve</td><td>首页+大厅</td><td>2</td><td><span class="badge badge-green">上架</span></td><td><button class="btn-sm btn-secondary" data-action="edit-miniapp-entry">编辑</button></td></tr>
+<tr><td>行为保全</td><td><i class="fas fa-gavel"></i></td><td>behaviorPreserve</td><td>首页+大厅</td><td>3</td><td><span class="badge badge-green">上架</span></td><td><button class="btn-sm btn-secondary" data-action="edit-miniapp-entry">编辑</button></td></tr>
+<tr><td>解封保全</td><td><i class="fas fa-lock-open"></i></td><td>unsealPreserve</td><td>首页+大厅</td><td>4</td><td><span class="badge badge-green">上架</span></td><td><button class="btn-sm btn-secondary" data-action="edit-miniapp-entry">编辑</button></td></tr>
+<tr><td>先予执行</td><td><i class="fas fa-fast-forward"></i></td><td>advanceExecution</td><td>大厅</td><td>5</td><td><span class="badge badge-green">上架</span></td><td><button class="btn-sm btn-secondary" data-action="edit-miniapp-entry">编辑</button></td></tr>
+<tr><td>不予执行</td><td><i class="fas fa-stop-circle"></i></td><td>noExecution</td><td>首页</td><td>6</td><td><span class="badge badge-gray">下架</span></td><td><button class="btn-sm btn-primary" data-action="toggle-miniapp-entry">上架</button></td></tr>
+<tr><td>继续执行</td><td><i class="fas fa-play"></i></td><td>continueExecution</td><td>首页+大厅</td><td>7</td><td><span class="badge badge-green">上架</span></td><td><button class="btn-sm btn-secondary" data-action="edit-miniapp-entry">编辑</button></td></tr>
+<tr><td>诉讼担保</td><td><i class="fas fa-scale-balanced"></i></td><td>litigationGuarantee</td><td>首页+大厅</td><td>8</td><td><span class="badge badge-green">上架</span></td><td><button class="btn-sm btn-secondary" data-action="edit-miniapp-entry">编辑</button></td></tr>
+</tbody></table></div></div>`},
+
+courts:{title:'法院接入',subtitle:'全国法院电子保全系统对接',render:()=>`
+<div class="filter-bar"><input placeholder="搜索法院…"><select><option>全部省份</option><option>北京</option><option>上海</option><option>广东</option></select><button class="btn-sm btn-primary" data-action="add-court"><i class="fas fa-plus"></i> 新增法院</button></div>
+<div class="stat-grid" style="grid-template-columns:repeat(3,1fr)"><div class="stat-card"><div class="num">328</div><div class="lbl">已接入法院</div></div><div class="stat-card"><div class="num">45</div><div class="lbl">接入中</div></div><div class="stat-card"><div class="num">12</div><div class="lbl">待对接</div></div></div>
+<div class="panel"><div class="panel-body" style="padding:0"><table class="data-table"><thead><tr><th>法院名称</th><th>省份</th><th>接入状态</th><th>平均裁定</th><th>操作</th></tr></thead><tbody>
+<tr><td>北京市朝阳区人民法院</td><td>北京</td><td><span class="badge badge-green">已接入</span></td><td>2h</td><td><button class="btn-sm btn-secondary" data-action="court-detail">详情</button></td></tr>
+<tr><td>上海市浦东新区人民法院</td><td>上海</td><td><span class="badge badge-green">已接入</span></td><td>当日</td><td><button class="btn-sm btn-secondary" data-action="court-detail">详情</button></td></tr>
+<tr><td>深圳市南山区人民法院</td><td>广东</td><td><span class="badge badge-yellow">接入中</span></td><td>—</td><td><button class="btn-sm btn-primary" data-action="court-push">推进</button></td></tr>
+</tbody></table></div></div>`},
+
+templates:{title:'范本库',subtitle:'司法文书模板管理',render:()=>`
+<div class="filter-bar"><button class="btn-sm btn-primary" data-action="upload-template"><i class="fas fa-upload"></i> 上传模板</button></div>
+<div class="panel"><div class="panel-body" style="padding:0"><table class="data-table"><thead><tr><th>模板名称</th><th>类型</th><th>格式</th><th>下载量</th><th>操作</th></tr></thead><tbody>
+<tr><td>财产保全申请书(最高法标准版)</td><td>申请书</td><td>PDF</td><td>12,680</td><td><button class="btn-sm btn-secondary" data-action="preview-template">预览</button> <button class="btn-sm btn-secondary" data-action="edit-template">编辑</button></td></tr>
+<tr><td>证据保全担保函(2025最新)</td><td>担保函</td><td>Word</td><td>8,420</td><td><button class="btn-sm btn-secondary" data-action="preview-template">预览</button> <button class="btn-sm btn-secondary" data-action="edit-template">编辑</button></td></tr>
+<tr><td>解封反担保函范文</td><td>担保函</td><td>PDF</td><td>5,230</td><td><button class="btn-sm btn-secondary" data-action="preview-template">预览</button> <button class="btn-sm btn-secondary" data-action="edit-template">编辑</button></td></tr>
+</tbody></table></div></div>`},
+
+content:{title:'内容运营',subtitle:'新闻动态 · 政策解读',render:()=>`
+<div class="filter-bar"><button class="btn-sm btn-primary" data-action="add-article"><i class="fas fa-plus"></i> 发布文章</button></div>
+<div class="tabs"><button class="tab-btn on" data-tab="all">全部</button><button class="tab-btn" data-tab="rule">新规</button><button class="tab-btn" data-tab="tech">技术</button><button class="tab-btn" data-tab="data">数据</button></div>
+<div class="panel"><div class="panel-body" style="padding:0"><table class="data-table"><thead><tr><th>标题</th><th>分类</th><th>发布时间</th><th>阅读量</th><th>操作</th></tr></thead><tbody>
+<tr data-cat="rule"><td>最高法：全面推广电子保函替代现金保证金</td><td><span class="badge badge-yellow">新规</span></td><td>2025-04-15</td><td>28,600</td><td><button class="btn-sm btn-secondary" data-action="edit-article">编辑</button></td></tr>
+<tr data-cat="tech"><td>区块链存证对接人民法院调解平台</td><td><span class="badge badge-blue">技术</span></td><td>2025-05-10</td><td>15,200</td><td><button class="btn-sm btn-secondary" data-action="edit-article">编辑</button></td></tr>
+<tr data-cat="data"><td>2025电子保函覆盖率提升32%</td><td><span class="badge badge-green">数据</span></td><td>2025-05-20</td><td>9,800</td><td><button class="btn-sm btn-secondary" data-action="edit-article">编辑</button></td></tr>
+</tbody></table></div></div>`},
+
+finance:{title:'财务对账',subtitle:'保费结算 · 机构分账',render:()=>`
+<div class="stat-grid"><div class="stat-card"><div class="num">¥328.6万</div><div class="lbl">本月总保费</div></div><div class="stat-card"><div class="num">¥49.3万</div><div class="lbl">平台服务费</div></div><div class="stat-card"><div class="num">¥279.3万</div><div class="lbl">机构结算</div></div><div class="stat-card"><div class="num">15</div><div class="lbl">待结算账单</div></div></div>
+<div class="filter-bar"><select><option>2025年5月</option><option>2025年4月</option></select><button class="btn-sm btn-primary" data-action="gen-bill">生成对账单</button><button class="btn-sm btn-secondary" data-action="export-finance">导出报表</button></div>
+<div class="panel"><div class="panel-head"><h3>机构结算明细</h3></div><div class="panel-body" style="padding:0"><table class="data-table"><thead><tr><th>机构</th><th>出函数</th><th>保费总额</th><th>平台费(15%)</th><th>应结算</th><th>状态</th><th>操作</th></tr></thead><tbody>
+<tr><td>永安保险</td><td>286</td><td>¥128.6万</td><td>¥19.3万</td><td>¥109.3万</td><td><span class="badge badge-yellow">待确认</span></td><td><button class="btn-sm btn-primary" data-action="confirm-settle">确认结算</button></td></tr>
+<tr><td>太平洋保险</td><td>245</td><td>¥112.3万</td><td>¥16.8万</td><td>¥95.5万</td><td><span class="badge badge-green">已结算</span></td><td><button class="btn-sm btn-secondary" data-action="view-receipt">查看凭证</button></td></tr>
+</tbody></table></div></div>`},
+
+blockchain:{title:'区块链存证',subtitle:'司法链存证记录与核验',render:()=>`
+<div class="filter-bar"><input placeholder="保函编号/链哈希…"><button class="btn-sm btn-primary" data-action="search-chain">搜索</button></div>
+<div class="stat-grid" style="grid-template-columns:repeat(3,1fr)"><div class="stat-card"><div class="num">3,842</div><div class="lbl">累计存证</div></div><div class="stat-card"><div class="num">156</div><div class="lbl">今日新增</div></div><div class="stat-card"><div class="num">99.8%</div><div class="lbl">核验通过率</div></div></div>
+<div class="panel"><div class="panel-body" style="padding:0"><table class="data-table"><thead><tr><th>保函编号</th><th>机构</th><th>链哈希</th><th>存证时间</th><th>操作</th></tr></thead><tbody>
+<tr><td>YASS20250518001234</td><td>永安保险</td><td style="font-family:monospace;font-size:11px">0x7f3a…9c2e</td><td>2025-05-18 14:30</td><td><button class="btn-sm btn-secondary" data-action="verify-chain">核验</button></td></tr>
+<tr><td>TPIC20250522000888</td><td>太平洋保险</td><td style="font-family:monospace;font-size:11px">0x4b2c…1a8f</td><td>2025-05-22 09:15</td><td><button class="btn-sm btn-secondary" data-action="verify-chain">核验</button></td></tr>
+</tbody></table></div></div>`},
+
+system:{title:'系统设置',subtitle:'角色权限 · 系统参数 · 操作日志',render:()=>`
+<div class="tabs"><button class="tab-btn on" data-tab="roles">角色权限</button><button class="tab-btn" data-tab="params">系统参数</button><button class="tab-btn" data-tab="logs">操作日志</button></div>
+<div id="systemTabContent">
+<div class="panel"><div class="panel-head"><h3>角色管理</h3><button class="btn-sm btn-primary" data-action="add-role">新增角色</button></div><div class="panel-body" style="padding:0"><table class="data-table"><thead><tr><th>角色</th><th>描述</th><th>成员数</th><th>操作</th></tr></thead><tbody>
+<tr><td>超级管理员</td><td>全部权限</td><td>2</td><td><button class="btn-sm btn-secondary" data-action="edit-role">编辑</button></td></tr>
+<tr><td>运营专员</td><td>机构/订单/内容管理</td><td>5</td><td><button class="btn-sm btn-secondary" data-action="edit-role">编辑</button></td></tr>
+<tr><td>财务专员</td><td>财务对账</td><td>3</td><td><button class="btn-sm btn-secondary" data-action="edit-role">编辑</button></td></tr>
+</tbody></table></div></div>
+<div class="panel"><div class="panel-head"><h3>系统参数</h3></div><div class="panel-body"><div class="form-grid">
+<div class="form-group"><label>平台服务费率 (%)</label><input type="number" value="15"></div>
+<div class="form-group"><label>最低保费 (元)</label><input type="number" value="480"></div>
+<div class="form-group"><label>极速出函时限 (小时)</label><input type="number" value="2"></div>
+<div class="form-group"><label>客服热线</label><input value="400-888-2025"></div>
+</div><button class="btn-sm btn-primary" data-action="save-params" style="margin-top:10px">保存参数</button></div></div>
+</div>`}
+};
+
+function loadModule(id){
+currentModule=id;
+const m=MODULES[id];if(!m)return;
+pageTitle.textContent=m.title;pageSubtitle.textContent=m.subtitle;
+adminContent.innerHTML=m.render();
+document.querySelectorAll('.nav-link').forEach(n=>n.classList.toggle('active',n.dataset.module===id));
+bindContentEvents();
+}
+
+function bindContentEvents(){
+adminContent.querySelectorAll('[data-action]').forEach(el=>{
+el.addEventListener('click',e=>{e.stopPropagation();handleAction(el.dataset.action,e)});
+});
+adminContent.querySelectorAll('tr[data-action]').forEach(tr=>{
+tr.addEventListener('click',()=>handleAction(tr.dataset.action));
+});
+adminContent.querySelectorAll('.tab-btn').forEach(btn=>{
+btn.addEventListener('click',()=>{
+btn.parentElement.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('on'));
+btn.classList.add('on');
+if(currentModule==='content'){
+const cat=btn.dataset.tab;
+adminContent.querySelectorAll('[data-cat]').forEach(row=>{
+row.style.display=(cat==='all'||row.dataset.cat===cat)?'':'none';
+});
+}
+});
+});
+}
+
+function handleAction(action,e){
+if(e)e.stopPropagation();
+const actions={
+'nav-institutions':()=>loadModule('institutions'),
+'nav-orders':()=>loadModule('orders'),
+'nav-users':()=>loadModule('users'),
+'add-institution':()=>openModal('新增机构',`<div class="form-grid"><div class="form-group"><label>机构名称</label><input id="instName" placeholder="例：某某保险"></div><div class="form-group"><label>统一社会信用代码</label><input placeholder="91110000…"></div><div class="form-group"><label>联系人</label><input placeholder="姓名"></div><div class="form-group"><label>联系电话</label><input placeholder="手机号"></div><div class="form-group"><label>基础费率(‰)</label><input type="number" value="0.85" step="0.01"></div><div class="form-group"><label>机构评级</label><select><option>AAA</option><option>AA+</option><option>AA</option></select></div></div>`,`<button class="btn-sm btn-secondary" onclick="document.getElementById('modalOverlay').classList.remove('show')">取消</button><button class="btn-sm btn-primary" id="modalSubmit">提交入驻</button>`),
+'inst-detail':()=>openModal('机构详情 - 永安保险',`<p style="font-size:13px;line-height:1.8;color:#334155">机构名称：永安保险<br>费率：0.85‰ · 评级 AAA<br>本月出函：286 笔 · 保费 ¥128.6万<br>接入法院：328 家<br>状态：正常运营<br>入驻时间：2024-06-15</p>`,`<button class="btn-sm btn-secondary" onclick="document.getElementById('modalOverlay').classList.remove('show')">关闭</button><button class="btn-sm btn-primary" id="modalEditInst">编辑机构</button>`),
+'inst-edit':()=>openModal('编辑机构 - 永安保险',`<div class="form-group"><label>基础费率(‰)</label><input type="number" value="0.85"></div><div class="form-group"><label>最低保费(元)</label><input type="number" value="480"></div><div class="form-group"><label>最高担保额度(万)</label><input type="number" value="5000"></div><div class="form-group"><label>出函时效(小时)</label><input type="number" value="2"></div>`,`<button class="btn-sm btn-secondary" onclick="document.getElementById('modalOverlay').classList.remove('show')">取消</button><button class="btn-sm btn-primary" id="modalSaveInst">保存</button>`),
+'inst-approve':()=>openModal('机构入驻审核 - 阳光担保',`<p style="font-size:13px;line-height:1.8;margin-bottom:14px">申请机构：阳光担保<br>联系人：赵经理 · 138****5566<br>申请材料：营业执照、保险许可证、合作协议</p><div class="form-group"><label>审核意见</label><textarea placeholder="填写审核意见…">材料齐全，建议通过入驻申请。</textarea></div>`,`<button class="btn-sm btn-danger" id="modalRejectInst">驳回</button><button class="btn-sm btn-primary" id="modalApproveInst">通过入驻</button>`),
+'inst-enable':()=>{showToast('机构已启用');loadModule('institutions')},
+'rate-approve':()=>{showToast('费率变更已批准，已通知机构');loadModule('institutions')},
+'rate-reject':()=>{showToast('费率变更已驳回');loadModule('institutions')},
+'open-rate-approval':()=>loadModule('institutions'),
+'order-detail':()=>openModal('订单详情 - SS20250529001',`<div style="font-size:13px;line-height:1.9;color:#334155"><strong>基本信息</strong><br>订单号：SS20250529001<br>类型：财产保全保函<br>状态：待审核<br>机构：永安保险<br>保费：¥4,250<br><br><strong>案件信息</strong><br>案号：（2025）京0105民初12345号<br>法院：北京市朝阳区人民法院<br>申请人：张正源<br>被保全人：北京某某贸易有限公司<br>保全金额：¥4,250,000<br><br><strong>流程记录</strong><br>2025-05-29 09:15 用户提交<br>2025-05-29 09:16 AI预审通过</div>`,`<button class="btn-sm btn-secondary" onclick="document.getElementById('modalOverlay').classList.remove('show')">关闭</button>`),
+'search-orders':()=>showToast('搜索完成，共 4 条结果'),
+'user-detail':()=>openModal('用户详情 - 张正源',`<p style="font-size:13px;line-height:1.8">姓名：张正源<br>手机：131****2025<br>认证：已实名 · VIP<br>注册：2025-03-15<br>累计订单：3 笔 · 累计保费 ¥12,680</p><table class="data-table" style="margin-top:14px"><thead><tr><th>订单号</th><th>类型</th><th>保费</th><th>状态</th></tr></thead><tbody><tr><td>SS20250518001</td><td>财产保全</td><td>¥4,250</td><td><span class="badge badge-green">已出函</span></td></tr></tbody></table>`,`<button class="btn-sm btn-secondary" onclick="document.getElementById('modalOverlay').classList.remove('show')">关闭</button>`),
+'search-users':()=>showToast('搜索完成，共 3 条结果'),
+'add-product':()=>openModal('新增产品',`<div class="form-group"><label>产品名称</label><input placeholder="例：行为保全保函"></div><div class="form-group"><label>保全类型</label><select><option>财产保全</option><option>证据保全</option><option>行为保全</option></select></div><div class="form-group"><label>最低保费(元)</label><input type="number" value="600"></div><div class="form-group"><label>最高额度(万)</label><input type="number" value="2000"></div>`,`<button class="btn-sm btn-secondary" onclick="document.getElementById('modalOverlay').classList.remove('show')">取消</button><button class="btn-sm btn-primary" id="modalSaveProduct">保存</button>`),
+'edit-product':()=>openModal('编辑产品',`<div class="form-group"><label>产品名称</label><input value="诉讼财产保全保函"></div><div class="form-group"><label>最低保费(元)</label><input type="number" value="480"></div><div class="form-group"><label>最高额度(万)</label><input type="number" value="5000"></div>`,`<button class="btn-sm btn-secondary" onclick="document.getElementById('modalOverlay').classList.remove('show')">取消</button><button class="btn-sm btn-primary" id="modalSaveProduct">保存</button>`),
+'toggle-product':()=>{showToast('产品已上架');loadModule('products')},
+'add-miniapp-entry':()=>openModal('新增小程序保全入口',`<div class="form-grid"><div class="form-group"><label>入口名称</label><input placeholder="例：财产保全"></div><div class="form-group"><label>图标 class</label><input placeholder="fas fa-chart-line"></div><div class="form-group"><label>跳转 pageId</label><input placeholder="propertyPreserve"></div><div class="form-group"><label>展示场景</label><select><option>首页+大厅</option><option>仅首页</option><option>仅大厅</option></select></div><div class="form-group"><label>排序</label><input type="number" value="9"></div><div class="form-group"><label>状态</label><select><option>上架</option><option>下架</option></select></div></div>`,`<button class="btn-sm btn-secondary" onclick="document.getElementById('modalOverlay').classList.remove('show')">取消</button><button class="btn-sm btn-primary" id="modalSaveMiniappEntry">保存</button>`),
+'edit-miniapp-entry':()=>openModal('编辑小程序保全入口',`<div class="form-grid"><div class="form-group"><label>入口名称</label><input value="财产保全"></div><div class="form-group"><label>图标 class</label><input value="fas fa-chart-line"></div><div class="form-group"><label>跳转 pageId</label><input value="propertyPreserve"></div><div class="form-group"><label>展示场景</label><select><option selected>首页+大厅</option><option>仅首页</option><option>仅大厅</option></select></div><div class="form-group"><label>排序</label><input type="number" value="1"></div></div>`,`<button class="btn-sm btn-secondary" onclick="document.getElementById('modalOverlay').classList.remove('show')">取消</button><button class="btn-sm btn-primary" id="modalSaveMiniappEntry">保存</button>`),
+'toggle-miniapp-entry':()=>{showToast('小程序入口已上架，将同步至 C 端');loadModule('products')},
+'add-court':()=>openModal('新增法院',`<div class="form-group"><label>法院名称</label><input placeholder="XX人民法院"></div><div class="form-group"><label>省份</label><select><option>北京</option><option>上海</option><option>广东</option></select></div><div class="form-group"><label>对接方式</label><select><option>电子保函直连</option><option>API对接</option></select></div>`,`<button class="btn-sm btn-secondary" onclick="document.getElementById('modalOverlay').classList.remove('show')">取消</button><button class="btn-sm btn-primary" id="modalSaveCourt">保存</button>`),
+'court-detail':()=>openModal('法院详情',`<p style="font-size:13px;line-height:1.8">法院：北京市朝阳区人民法院<br>省份：北京<br>状态：已接入<br>接入时间：2024-03-01<br>平均裁定：2小时<br>本月保函：156 笔</p>`,`<button class="btn-sm btn-secondary" onclick="document.getElementById('modalOverlay').classList.remove('show')">关闭</button>`),
+'court-push':()=>showToast('已标记为优先推进'),
+'upload-template':()=>openModal('上传模板',`<div class="form-group"><label>模板名称</label><input></div><div class="form-group"><label>类型</label><select><option>申请书</option><option>担保函</option></select></div><div class="form-group"><label>文件</label><input type="file"></div>`,`<button class="btn-sm btn-secondary" onclick="document.getElementById('modalOverlay').classList.remove('show')">取消</button><button class="btn-sm btn-primary" id="modalUploadTpl">上传</button>`),
+'preview-template':()=>showToast('模板预览已打开'),
+'edit-template':()=>openModal('编辑模板',`<div class="form-group"><label>模板名称</label><input value="财产保全申请书(最高法标准版)"></div><div class="form-group"><label>描述</label><textarea>最高法标准版 · 12页</textarea></div>`,`<button class="btn-sm btn-secondary" onclick="document.getElementById('modalOverlay').classList.remove('show')">取消</button><button class="btn-sm btn-primary" id="modalSaveTpl">保存</button>`),
+'add-article':()=>openModal('发布文章',`<div class="form-group"><label>标题</label><input placeholder="文章标题"></div><div class="form-group"><label>分类</label><select><option>新规</option><option>技术</option><option>数据</option></select></div><div class="form-group"><label>正文</label><textarea style="min-height:120px" placeholder="文章内容…"></textarea></div>`,`<button class="btn-sm btn-secondary" onclick="document.getElementById('modalOverlay').classList.remove('show')">取消</button><button class="btn-sm btn-primary" id="modalPublish">发布</button>`),
+'edit-article':()=>openModal('编辑文章',`<div class="form-group"><label>标题</label><input value="最高法：全面推广电子保函替代现金保证金"></div><div class="form-group"><label>分类</label><select><option selected>新规</option><option>技术</option></select></div><div class="form-group"><label>正文</label><textarea style="min-height:100px">2025年4月 · 智慧法院建设提速…</textarea></div>`,`<button class="btn-sm btn-secondary" onclick="document.getElementById('modalOverlay').classList.remove('show')">取消</button><button class="btn-sm btn-primary" id="modalSaveArticle">保存</button>`),
+'gen-bill':()=>showToast('5月对账单已生成'),
+'export-finance':()=>showToast('财务报表已导出'),
+'confirm-settle':()=>{showToast('结算已确认');loadModule('finance')},
+'view-receipt':()=>showToast('结算凭证已打开'),
+'search-chain':()=>showToast('搜索完成'),
+'verify-chain':()=>showToast('链上核验通过 · 数据一致'),
+'add-role':()=>openModal('新增角色',`<div class="form-group"><label>角色名称</label><input></div><div class="form-group"><label>描述</label><input></div><div class="form-group"><label>权限</label><textarea placeholder="勾选权限模块…">机构管理, 订单监控, 用户管理</textarea></div>`,`<button class="btn-sm btn-secondary" onclick="document.getElementById('modalOverlay').classList.remove('show')">取消</button><button class="btn-sm btn-primary" id="modalSaveRole">保存</button>`),
+'edit-role':()=>openModal('编辑角色',`<div class="form-group"><label>角色名称</label><input value="运营专员"></div><div class="form-group"><label>权限</label><textarea>机构管理, 订单监控, 内容运营</textarea></div>`,`<button class="btn-sm btn-secondary" onclick="document.getElementById('modalOverlay').classList.remove('show')">取消</button><button class="btn-sm btn-primary" id="modalSaveRole">保存</button>`),
+'save-params':()=>showToast('系统参数已保存')
+};
+if(actions[action])actions[action]();
+}
+
+function bindModalEvents(){
+document.getElementById('modalClose').onclick=closeModal;
+modalOverlay.onclick=e=>{if(e.target===modalOverlay)closeModal()};
+const submitIds=['modalSubmit','modalSaveInst','modalApproveInst','modalSaveProduct','modalSaveMiniappEntry','modalSaveCourt','modalUploadTpl','modalSaveTpl','modalPublish','modalSaveArticle','modalSaveRole'];
+submitIds.forEach(id=>{
+const btn=document.getElementById(id);
+if(btn)btn.onclick=()=>{showToast('操作成功');closeModal();loadModule(currentModule)};
+});
+const rejectBtn=document.getElementById('modalRejectInst');
+if(rejectBtn)rejectBtn.onclick=()=>{showToast('入驻申请已驳回');closeModal();loadModule('institutions')};
+const editInst=document.getElementById('modalEditInst');
+if(editInst)editInst.onclick=()=>{closeModal();handleAction('inst-edit')};
+}
+
+document.querySelectorAll('.nav-link').forEach(link=>{
+link.addEventListener('click',()=>loadModule(link.dataset.module));
+});
+document.getElementById('exportBtn').addEventListener('click',()=>showToast('数据已导出'));
+document.getElementById('quickActionBtn').addEventListener('click',()=>openModal('快捷操作',`<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+<button class="btn-sm btn-primary" style="padding:14px" data-quick="add-institution">新增机构</button>
+<button class="btn-sm btn-primary" style="padding:14px" data-quick="add-product">新增产品</button>
+<button class="btn-sm btn-secondary" style="padding:14px" data-quick="nav-orders">订单监控</button>
+<button class="btn-sm btn-secondary" style="padding:14px" data-quick="gen-bill">生成对账单</button>
+</div>`,`<button class="btn-sm btn-secondary" onclick="document.getElementById('modalOverlay').classList.remove('show')">关闭</button>`));
+
+/* PRD specs */
+const PRD_SPECS={
+'nav-dashboard':{title:'数据概览',module:'概览',page:'dashboard',priority:'P0',business:'平台管理员 landing 页，展示机构数、订单量、保额、用户数等核心 KPI 及待办事项，支撑运营决策。',logic:['四指标卡片可点击跳转对应模块','30日订单趋势图','待办：费率审批/机构入驻/异常订单','机构出函 TOP5 排行'],acceptance:['指标数据准确','待办可点击跳转','排行表格可点详情'],api:'GET /api/admin/dashboard'},
+'nav-institutions':{title:'机构管理',module:'业务',page:'institutions',priority:'P0',business:'管理平台合作保险机构/担保公司：入驻审核、费率审批、启停控制。',logic:['机构列表 CRUD','入驻审核 workflow','费率变更审批','启用/停用机构'],acceptance:['新增机构弹窗提交成功','审核通过/驳回 Toast','费率批准生效'],api:'GET /api/admin/institutions'},
+'nav-orders':{title:'订单监控',module:'业务',page:'orders',priority:'P0',business:'全平台保全保函订单监控，支持多维度筛选与详情查看。',logic:['按状态/机构筛选','订单详情弹窗','异常订单标记'],acceptance:['搜索 Toast','详情弹窗完整'],api:'GET /api/admin/orders'},
+'nav-users':{title:'用户管理',module:'业务',page:'users',priority:'P1',business:'C端注册用户管理，查看实名状态与历史订单。',logic:['搜索用户','用户详情含订单列表'],acceptance:['详情弹窗展示订单'],api:'GET /api/admin/users'},
+'nav-products':{title:'产品管理',module:'业务',page:'products',priority:'P1',business:'平台级保函产品配置，并统一管理小程序首页/保全大厅「保全服务」入口（名称、图标、排序、上下架、跳转路由），C 端按接口动态渲染。',logic:['保函产品上下架','新增/编辑产品','小程序保全入口 CRUD','入口关联 pageId 与展示场景 home/hall'],acceptance:['上架 Toast','编辑保存成功','入口配置变更后小程序网格同步'],api:'GET /api/admin/products · GET /api/admin/miniapp/preserve-services'},
+'nav-courts':{title:'法院接入',module:'资源',page:'courts',priority:'P1',business:'管理全国法院电子保全系统对接状态。',logic:['328家已接入统计','新增法院','推进接入中法院'],acceptance:['法院详情弹窗','推进 Toast'],api:'GET /api/admin/courts'},
+'nav-templates':{title:'范本库',module:'资源',page:'templates',priority:'P1',business:'司法文书模板上传与管理，供 C 端用户下载。',logic:['上传/编辑/预览模板','下载量统计'],acceptance:['上传成功 Toast'],api:'GET /api/admin/templates'},
+'nav-content':{title:'内容运营',module:'资源',page:'content',priority:'P2',business:'平台新闻动态与政策解读内容发布。',logic:['分类 tab 筛选','发布/编辑文章'],acceptance:['分类筛选正确','发布 Toast'],api:'GET /api/admin/articles'},
+'nav-finance':{title:'财务对账',module:'财务',page:'finance',priority:'P0',business:'平台与机构保费分账结算，生成对账单。',logic:['月度保费/平台费/结算统计','机构结算明细','确认结算 workflow'],acceptance:['确认结算 Toast','导出报表'],api:'GET /api/admin/finance/settlement'},
+'nav-blockchain':{title:'区块链存证',module:'财务',page:'blockchain',priority:'P1',business:'全平台保函司法链存证记录查询与核验。',logic:['保函编号/链哈希搜索','链上核验'],acceptance:['核验通过 Toast'],api:'GET /api/admin/blockchain/records'},
+'nav-system':{title:'系统设置',module:'系统',page:'system',priority:'P1',business:'角色权限、系统参数、操作日志管理。',logic:['角色 CRUD','平台服务费率等参数','保存参数'],acceptance:['参数保存 Toast','角色编辑弹窗'],api:'GET /api/admin/system/config'},
+'stat-card':{title:'KPI 指标卡片',module:'概览',page:'dashboard',priority:'P0',business:'核心运营指标展示，部分可点击跳转关联模块。',logic:['数字 T+0 或 T+1 更新','趋势百分比','点击跳转'],acceptance:['hover 效果','点击跳转正确'],api:''},
+'rate-approval':{title:'费率变更审批',module:'机构',page:'institutions',priority:'P0',business:'机构提交费率变更需平台审批后生效。',logic:['展示原费率/新费率','批准→通知机构','驳回→通知原因'],acceptance:['批准/驳回 Toast'],api:'POST /api/admin/rate/approve'},
+'inst-approve':{title:'机构入驻审核',module:'机构',page:'institutions',priority:'P0',business:'新机构入驻平台前的资质审核。',logic:['查看申请材料','填写审核意见','通过/驳回'],acceptance:['审核弹窗完整','通过 Toast'],api:'POST /api/admin/institution/approve'},
+'order-detail-modal':{title:'订单详情',module:'订单',page:'orders',priority:'P0',business:'平台侧查看任意订单完整信息与流程记录。',logic:['基本信息+案件信息+流程记录','弹窗展示'],acceptance:['信息与机构端一致'],api:'GET /api/admin/order/{id}'},
+'settle-confirm':{title:'确认结算',module:'财务',page:'finance',priority:'P0',business:'平台确认机构月度结算，触发打款流程。',logic:['待确认→已结算','生成结算凭证'],acceptance:['确认 Toast','状态变更'],api:'POST /api/admin/finance/confirm'}
+};
+
+const PRD_MAP=[
+{sel:'.nav-link[data-module="dashboard"]',id:'nav-dashboard'},{sel:'.nav-link[data-module="institutions"]',id:'nav-institutions'},
+{sel:'.nav-link[data-module="orders"]',id:'nav-orders'},{sel:'.nav-link[data-module="users"]',id:'nav-users'},
+{sel:'.nav-link[data-module="products"]',id:'nav-products'},{sel:'.nav-link[data-module="courts"]',id:'nav-courts'},
+{sel:'.nav-link[data-module="templates"]',id:'nav-templates'},{sel:'.nav-link[data-module="content"]',id:'nav-content'},
+{sel:'.nav-link[data-module="finance"]',id:'nav-finance'},{sel:'.nav-link[data-module="blockchain"]',id:'nav-blockchain'},
+{sel:'.nav-link[data-module="system"]',id:'nav-system'},{sel:'.stat-card',id:'stat-card'}
+];
+
+function initPRD(){
+const prdEmpty=document.getElementById('prdEmpty'),prdContent=document.getElementById('prdContent'),prdTooltip=document.getElementById('prdTooltip');
+let activeEl=null,hoverTimer=null,pendingEl=null;
+function renderPanel(spec){
+prdEmpty.style.display='none';prdContent.style.display='block';
+prdContent.innerHTML=`<div class="prd-section"><div class="prd-title">${spec.title}</div><div class="prd-meta"><span class="prd-meta-tag prd-meta-module">${spec.module}</span><span class="prd-meta-tag prd-meta-p0">${spec.priority}</span><span class="prd-meta-tag prd-meta-page">${spec.page}</span></div></div>
+<div class="prd-section"><div class="prd-section-title">① 业务需求</div><div class="prd-business-text">${spec.business}</div></div>
+<div class="prd-section"><div class="prd-section-title">② 功能详细逻辑</div>${(spec.logic||[]).map(l=>`<div class="prd-logic-item">${l}</div>`).join('')}</div>
+<div class="prd-section"><div class="prd-section-title">③ 验收标准</div><ul class="prd-list">${(spec.acceptance||[]).map(a=>`<li>${a}</li>`).join('')}</ul></div>
+${spec.api?`<div class="prd-section"><div class="prd-section-title">接口</div><div class="prd-api-box">${spec.api}</div></div>`:''}`;
+}
+function bindSpecs(){
+document.querySelectorAll('.nav-link,.stat-card,.btn-sm,.topbar-btn,.panel-head a,tr,[data-action]').forEach(el=>{
+if(el._prdBound)return;el._prdBound=true;
+let specId=null;
+PRD_MAP.forEach(m=>{if(el.matches(m.sel))specId=m.id});
+if(el.dataset.action==='rate-approve'||el.dataset.action==='rate-reject')specId='rate-approval';
+if(el.dataset.action==='inst-approve')specId='inst-approve';
+if(el.dataset.action==='order-detail')specId='order-detail-modal';
+if(el.dataset.action==='confirm-settle')specId='settle-confirm';
+const spec=specId&&PRD_SPECS[specId];
+if(!spec)return;
+el.addEventListener('mouseenter',()=>{
+if(hoverTimer)clearTimeout(hoverTimer);
+if(pendingEl)pendingEl.classList.remove('prd-pending');
+pendingEl=el;el.classList.add('prd-pending');
+hoverTimer=setTimeout(()=>{el.classList.remove('prd-pending');if(activeEl&&activeEl!==el)activeEl.classList.remove('prd-highlight');activeEl=el;el.classList.add('prd-highlight');renderPanel(spec);prdTooltip.textContent=spec.title;prdTooltip.classList.add('show')},1000);
+});
+el.addEventListener('mouseleave',()=>{if(hoverTimer)clearTimeout(hoverTimer);if(pendingEl===el){el.classList.remove('prd-pending');pendingEl=null}prdTooltip.classList.remove('show')});
+});
+}
+new MutationObserver(()=>bindSpecs()).observe(document.body,{childList:true,subtree:true});
+bindSpecs();
+}
+loadModule('dashboard');
+initPRD();
+document.getElementById('modalOverlay').addEventListener('click',e=>{
+if(e.target.dataset&&e.target.dataset.quick){closeModal();handleAction(e.target.dataset.quick)}
+});
+})();
+
+</script>
+</body>
+</html>
